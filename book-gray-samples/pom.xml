@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>book-gray</artifactId>
+        <groupId>cn.dingyuegroup</groupId>
+        <version>1.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>book-gray-samples</artifactId>
+    <packaging>pom</packaging>
+    <name>book-gray-samples</name>
+    <modules>
+        <module>book-gray-client-a-sample</module>
+        <module>book-gray-client-b-sample</module>
+        <module>book-gray-eureka-sample</module>
+        <module>book-gray-client-zuul-sample</module>
+    </modules>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!--skip deploy (this is just a test module) -->
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

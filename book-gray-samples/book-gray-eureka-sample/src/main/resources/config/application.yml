@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: eureka-server
+server:
+  port: 20001
+eureka:
+  instance:
+    hostname: localhost
+    lease-renewal-interval-in-seconds: 8
+    lease-expiration-duration-in-seconds: 20
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:${server.port}/eureka/
+    registry-fetch-interval-seconds: 10
+    instance-info-replication-interval-seconds: 10
+  server:
+    #关闭注册中心的保护机制
+    enable-self-preservation: false

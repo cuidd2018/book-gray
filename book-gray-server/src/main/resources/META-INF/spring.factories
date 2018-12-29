@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    cn.dingyuegroup.gray.server.config.GrayServerAutoConfiguration,\
+    cn.dingyuegroup.gray.server.config.GrayServiceEurekaAutoConfiguration
