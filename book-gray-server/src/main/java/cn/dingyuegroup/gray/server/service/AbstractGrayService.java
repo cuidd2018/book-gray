@@ -35,7 +35,6 @@ public abstract class AbstractGrayService {
      */
     public ResponseEntity<List<GrayServiceVO>> services() {
         List<String> serviceIds = discoveryClient.getServices();
-        eurekaClient.getApplications().getRegisteredApplications().remove(1);
         List<GrayServiceVO> services = new ArrayList<>(serviceIds.size());
         for (String serviceId : serviceIds) {
             List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
