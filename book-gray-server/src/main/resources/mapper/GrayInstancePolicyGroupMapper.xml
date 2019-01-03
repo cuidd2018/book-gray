@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingyuegroup.gray.server.mysql.dao.GrayInstancePolicyGroupMapper">
+  <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayInstancePolicyGroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="instance_id" jdbcType="VARCHAR" property="instanceId" />
+    <result column="policy_group_id" jdbcType="VARCHAR" property="policyGroupId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gray_instance_policy_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstancePolicyGroup">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into gray_instance_policy_group (instance_id, policy_group_id)
+    values (#{instanceId,jdbcType=VARCHAR}, #{policyGroupId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstancePolicyGroup">
+    update gray_instance_policy_group
+    set instance_id = #{instanceId,jdbcType=VARCHAR},
+      policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, instance_id, policy_group_id
+    from gray_instance_policy_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, instance_id, policy_group_id
+    from gray_instance_policy_group
+  </select>
+</mapper>

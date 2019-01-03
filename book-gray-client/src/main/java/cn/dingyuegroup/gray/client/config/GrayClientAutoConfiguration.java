@@ -35,14 +35,6 @@ public class GrayClientAutoConfiguration {
         return new BambooAutoConfiguration.UnUseBambooIRule();
     }
 
-
-//    @Bean
-//    public IRule ribbonRule(@Autowired(required = false) IClientConfig config) {
-//        GrayLoadBalanceRule rule = new GrayLoadBalanceRule();
-//        rule.initWithNiwsConfig(config);
-//        return rule;
-//    }
-
     @Bean
     @Order(value = BambooConstants.INITIALIZING_ORDER + 1)
     public GrayClientInitializingBean grayClientInitializingBean() {

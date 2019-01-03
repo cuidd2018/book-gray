@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingyuegroup.gray.server.mysql.dao.GrayPolicyMapper">
+  <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicy">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="policy_id" jdbcType="VARCHAR" property="policyId" />
+    <result column="policy_type" jdbcType="SMALLINT" property="policyType" />
+    <result column="policy" jdbcType="VARCHAR" property="policy" />
+    <result column="is_delete" jdbcType="SMALLINT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gray_policy
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicy">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into gray_policy (policy_id, policy_type, policy, 
+      is_delete, create_time, update_time
+      )
+    values (#{policyId,jdbcType=VARCHAR}, #{policyType,jdbcType=SMALLINT}, #{policy,jdbcType=VARCHAR}, 
+      #{isDelete,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicy">
+    update gray_policy
+    set policy_id = #{policyId,jdbcType=VARCHAR},
+      policy_type = #{policyType,jdbcType=SMALLINT},
+      policy = #{policy,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, policy_id, policy_type, policy, is_delete, create_time, update_time
+    from gray_policy
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, policy_id, policy_type, policy, is_delete, create_time, update_time
+    from gray_policy
+  </select>
+</mapper>

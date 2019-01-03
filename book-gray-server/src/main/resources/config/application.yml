@@ -1,6 +1,8 @@
 spring:
   application:
     name: gray-server
+  profiles:
+    active: dev
 server:
   port: 20202
 eureka:
