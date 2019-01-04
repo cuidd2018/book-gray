@@ -1,16 +1,20 @@
 package cn.dingyuegroup.gray.server.mysql.dao;
 
-import cn.dingyuegroup.gray.server.mysql.entity.GrayService;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
+
 import java.util.List;
 
 public interface GrayServiceMapper {
+
     int deleteByPrimaryKey(Integer id);
 
-    int insert(GrayService record);
+    int insert(GrayServiceEntity record);
 
-    GrayService selectByPrimaryKey(Integer id);
+    GrayServiceEntity selectByPrimaryKey(Integer id);
 
-    List<GrayService> selectAll();
+    List<GrayServiceEntity> selectAll();
 
-    int updateByPrimaryKey(GrayService record);
+    int updateByPrimaryKey(GrayServiceEntity record);
+
+    GrayServiceEntity selectByServiceId(String serviceId);
 }

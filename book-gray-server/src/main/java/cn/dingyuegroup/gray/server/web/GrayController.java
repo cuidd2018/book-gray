@@ -5,6 +5,7 @@ import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
+import cn.dingyuegroup.gray.server.vertify.VertifyRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,10 @@ public class GrayController {
      *
      * @return 灰度服务VO集合
      */
-    @RequestMapping(value = "/services", method = RequestMethod.GET)
+    @RequestMapping(value = "/services")
     public ResponseEntity<List<GrayServiceVO>> services() {
-        return grayService.services();
+        List<GrayServiceVO> list = grayService.services();
+        return ResponseEntity.ok(list);
     }
 
 
@@ -38,18 +40,21 @@ public class GrayController {
      * @param serviceId 服务id
      * @return 灰度服务实例VO列表
      */
-    @RequestMapping(value = "/services/{serviceId}/instances", method = RequestMethod.GET)
-    public ResponseEntity<List<GrayInstanceVO>> instances(@PathVariable("serviceId") String serviceId) {
-        return grayService.instances(serviceId);
+    @VertifyRequest
+    @RequestMapping(value = "/services/instances", method = RequestMethod.GET)
+    public ResponseEntity<List<GrayInstanceVO>> instances(@RequestParam("serviceId") String serviceId) {
+        List<GrayInstanceVO> list = grayService.instances(serviceId);
+        return ResponseEntity.ok(list);
     }
 
 
     @ApiOperation(value = "更新实例灰度状态")
-    @RequestMapping(value = "/services/{serviceId}/instance/status/{status}", method = RequestMethod.PUT)
+    @VertifyRequest
+    @RequestMapping(value = "/services/instance/status", method = RequestMethod.GET)
     public ResponseEntity<Void> editInstanceStatus(
-            @PathVariable("serviceId") String serviceId,
+            @RequestParam("serviceId") String serviceId,
             @RequestParam("instanceId") String instanceId,
-            @ApiParam("0:关闭, 1:启用") @PathVariable("status") int status) {
+            @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
         return grayService.editInstanceStatus(serviceId, instanceId, status);
     }
 
@@ -61,8 +66,8 @@ public class GrayController {
      * @param instanceId 实例id
      * @return 灰策略组VO列表
      */
-    @RequestMapping(value = "/services/{serviceId}/instance/policyGroups", method = RequestMethod.GET)
-    public ResponseEntity<List<GrayPolicyGroupVO>> policyGroups(@PathVariable("serviceId") String serviceId,
+    @RequestMapping(value = "/services/instance/policyGroups", method = RequestMethod.GET)
+    public ResponseEntity<List<GrayPolicyGroupVO>> policyGroups(@RequestParam("serviceId") String serviceId,
                                                                 @RequestParam("instanceId") String instanceId) {
         return grayService.policyGroups(serviceId, instanceId);
     }

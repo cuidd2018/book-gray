@@ -18,16 +18,6 @@ import org.springframework.core.annotation.Order;
 @Import(value = {WebConfiguration.class})
 public class GrayServerAutoConfiguration {
 
-    @Autowired
-    private GrayServerConfig grayServerConfig;
-
-    @Bean
-    @ConditionalOnMissingBean
-    public DefaultGrayServiceManager defaultGrayServiceManager() {
-        return new DefaultGrayServiceManager(grayServerConfig);
-    }
-
-
     @Bean
     @Order(value = BambooConstants.INITIALIZING_ORDER + 1)
     public GrayServerInitializingBean grayServerInitializingBean() {

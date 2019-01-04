@@ -17,6 +17,11 @@ public class GrayService {
 
     }
 
+    public GrayService(String serviceId, List<GrayInstance> grayInstances) {
+        this.serviceId = serviceId;
+        this.grayInstances = grayInstances;
+    }
+
 
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;

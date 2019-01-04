@@ -8,10 +8,14 @@ import cn.dingyuegroup.gray.server.model.fo.GrayPolicyGroupFO;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
 import com.netflix.discovery.EurekaClient;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +25,14 @@ public abstract class AbstractGrayService {
     private GrayServiceManager grayServiceManager;
     private DiscoveryClient discoveryClient;
     private EurekaClient eurekaClient;
+    private GrayServiceMapper grayServiceMapper;
 
-    public AbstractGrayService(GrayServiceManager grayServiceManager, DiscoveryClient discoveryClient, EurekaClient eurekaClient) {
+    public AbstractGrayService(GrayServiceManager grayServiceManager, DiscoveryClient discoveryClient,
+                               EurekaClient eurekaClient, GrayServiceMapper grayServiceMapper) {
         this.grayServiceManager = grayServiceManager;
         this.discoveryClient = discoveryClient;
         this.eurekaClient = eurekaClient;
+        this.grayServiceMapper = grayServiceMapper;
     }
 
     /**
@@ -33,17 +40,29 @@ public abstract class AbstractGrayService {
      *
      * @return 灰度服务VO集合
      */
-    public ResponseEntity<List<GrayServiceVO>> services() {
+    public List<GrayServiceVO> services() {
+        List<GrayServiceVO> services = new ArrayList<>();
+        //从eureka获取服务
         List<String> serviceIds = discoveryClient.getServices();
-        List<GrayServiceVO> services = new ArrayList<>(serviceIds.size());
+        if (CollectionUtils.isEmpty(serviceIds)) {
+            return services;
+        }
+        //获取各服务自定义配置信息
+        List<GrayServiceEntity> entityList = grayServiceMapper.selectAll();
         for (String serviceId : serviceIds) {
+            //获取每个服务的服务实例
             List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
             if (null == instances || instances.isEmpty()) {
                 continue;
             }
             GrayServiceVO vo = new GrayServiceVO();
+            for (GrayServiceEntity entity : entityList) {
+                if (!StringUtils.isEmpty(entity.getServiceId()) && entity.getServiceId().equals(serviceId)) {
+                    vo.setAppName(entity.getAppName());
+                    break;
+                }
+            }
             vo.setServiceId(serviceId);
-            vo.setAppName(serviceId);
             vo.setInstanceSize(instances.size());
             GrayService grayService = grayServiceManager.getGrayService(serviceId);
             if (grayService != null) {
@@ -52,7 +71,7 @@ public abstract class AbstractGrayService {
             }
             services.add(vo);
         }
-        return ResponseEntity.ok(services);
+        return services;
     }
 
     /**
@@ -61,12 +80,36 @@ public abstract class AbstractGrayService {
      * @param serviceId 服务id
      * @return 灰度服务实例VO列表
      */
-    public abstract ResponseEntity<List<GrayInstanceVO>> instances(String serviceId);
+    public abstract List<GrayInstanceVO> instances(String serviceId);
+
+    /**
+     * 校验服务是否存在
+     *
+     * @param serviceId
+     * @return
+     */
+    public boolean vertifyService(String serviceId) {
+        GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
+        if (entity != null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 校验服务实例是否存在
+     *
+     * @param instanceId
+     * @return
+     */
+    public abstract boolean vertifyInstance(String serviceId, String instanceId);
 
     public ResponseEntity<Void> editInstanceStatus(String serviceId, String instanceId, int status) {
-
-        return grayServiceManager.updateInstanceStatus(serviceId, instanceId, status)
-                ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+        boolean b = grayServiceManager.updateInstanceStatus(serviceId, instanceId, status);
+        if (b) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 

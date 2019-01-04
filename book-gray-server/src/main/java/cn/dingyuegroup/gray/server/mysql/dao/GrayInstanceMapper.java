@@ -1,17 +1,26 @@
 package cn.dingyuegroup.gray.server.mysql.dao;
 
-import cn.dingyuegroup.gray.server.mysql.entity.GrayInstance;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
 
 import java.util.List;
 
 public interface GrayInstanceMapper {
+
     int deleteByPrimaryKey(Integer id);
 
-    int insert(GrayInstance record);
+    int insert(GrayInstanceEntity record);
 
-    GrayInstance selectByPrimaryKey(Integer id);
+    GrayInstanceEntity selectByPrimaryKey(Integer id);
 
-    List<GrayInstance> selectAll();
+    List<GrayInstanceEntity> selectAll();
 
-    int updateByPrimaryKey(GrayInstance record);
+    int updateByPrimaryKey(GrayInstanceEntity record);
+
+    GrayInstanceEntity selectByInstanceId(String instanceId);
+
+    List<GrayInstanceEntity> selectByServiceId(String serviceId);
+
+    int deleteByInstanceId(String instanceId);
+
+    int updateByInstanceId(GrayInstanceEntity record);
 }

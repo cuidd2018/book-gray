@@ -3,9 +3,18 @@ package cn.dingyuegroup.gray.server.manager;
 import cn.dingyuegroup.gray.core.*;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
 import cn.dingyuegroup.gray.server.context.GrayServerContext;
+import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
+import cn.dingyuegroup.gray.server.service.AbstractGrayService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,32 +23,32 @@ import java.util.concurrent.locks.ReentrantLock;
  * 维护一个Map, 用来管理GrayService，key是service id。
  * 并且每隔一段时间就调用EurekaGrayServerEvictor，检查列表中的实例是否下线，将下线的服务从灰度列表中删除。
  */
+@Service
 public class DefaultGrayServiceManager implements GrayServiceManager {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Map<String, GrayService> grayServiceMap = new ConcurrentHashMap<>();
     private Lock lock = new ReentrantLock();
-    private GrayServerConfig serverConfig;
     private Timer evictionTimer = new Timer("Gray-EvictionTimer", true);
 
-
-    public DefaultGrayServiceManager(GrayServerConfig config) {
-        this.serverConfig = config;
-    }
+    @Autowired
+    private AbstractGrayService grayService;
+    @Autowired
+    private GrayServerConfig serverConfig;
+    @Autowired
+    private GrayInstanceMapper grayInstanceMapper;
 
     @Override
     public void addGrayInstance(GrayInstance instance) {
-
-        GrayService grayService = grayServiceMap.get(instance.getServiceId());
         lock.lock();
+        GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instance.getInstanceId());
         try {
-            if (grayService == null) {
-                grayService = new GrayService();
-                grayService.setServiceId(instance.getServiceId());
-                grayServiceMap.put(instance.getServiceId(), grayService);
-            }
-            if (!grayService.contains(instance.getInstanceId())) {
-                grayService.addGrayInstance(instance);
+            if (entity == null) {
+                entity = new GrayInstanceEntity();
+                entity.setInstanceId(instance.getInstanceId());
+                entity.setServiceId(instance.getServiceId());
+                entity.setOpenGray(instance.isOpenGray() ? 1 : 0);
+                grayInstanceMapper.insert(entity);
             }
         } finally {
             lock.unlock();
@@ -48,15 +57,10 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
 
     @Override
     public void deleteGrayInstance(String serviceId, String instanceId) {
-        GrayService grayService = grayServiceMap.get(serviceId);
-        if (grayService == null) {
-            return;
-        }
         lock.lock();
         try {
-            if (grayService.removeGrayInstance(instanceId) != null && grayService.getGrayInstances().isEmpty()) {
-                grayServiceMap.remove(serviceId);
-            }
+            int r = grayInstanceMapper.deleteByInstanceId(instanceId);
+            logger.info("删除服务实例serviceId:{},instanceId:{},结果:{}", serviceId, instanceId, r);
         } finally {
             lock.unlock();
         }
@@ -97,12 +101,45 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
 
     @Override
     public Collection<GrayService> allGrayService() {
-        return new ArrayList<>(grayServiceMap.values());
+        List<GrayService> grayServiceList = new ArrayList<>();
+        //为了信息准确，从eureka获取服务列表
+        List<GrayServiceVO> list = grayService.services();
+        if (CollectionUtils.isEmpty(list)) {
+            return grayServiceList;
+        }
+        for (GrayServiceVO vo : list) {
+            GrayService grayService = getGrayService(vo.getServiceId());
+            if (grayService != null) {//注意判空
+                grayServiceList.add(grayService);
+            }
+        }
+        return grayServiceList;
     }
 
     @Override
     public GrayService getGrayService(String serviceId) {
-        return grayServiceMap.get(serviceId);
+        //为了信息准确，从eureka获取服务的实例
+        List<GrayInstanceVO> grayInstanceVOList = grayService.instances(serviceId);
+        if (CollectionUtils.isEmpty(grayInstanceVOList)) {
+            return null;
+        }
+        List<GrayInstance> grayInstanceList = new ArrayList<>();
+        List<GrayInstanceEntity> list = grayInstanceMapper.selectByServiceId(serviceId);
+        for (GrayInstanceVO vo : grayInstanceVOList) {
+            GrayInstance grayInstance = new GrayInstance();
+            grayInstance.setServiceId(serviceId);
+            grayInstance.setInstanceId(vo.getInstanceId());
+            if (!CollectionUtils.isEmpty(list)) {
+                GrayInstanceEntity entity = list.stream().filter(e -> e.getInstanceId().equals(vo.getInstanceId())).findFirst().get();
+                if (entity != null) {
+                    //获取服务实例的持久化灰度状态
+                    grayInstance.setOpenGray(entity.getOpenGray() == 0 ? false : true);
+                }
+            }
+            grayInstanceList.add(grayInstance);
+        }
+        GrayService grayService = new GrayService(serviceId, grayInstanceList);
+        return grayService;
     }
 
 
@@ -122,9 +159,15 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             grayInstance = new GrayInstance();
             grayInstance.setServiceId(serviceId);
             grayInstance.setInstanceId(instanceId);
-            addGrayInstance(grayInstance);
         }
+        addGrayInstance(grayInstance);//持久化服务实例
         grayInstance.setOpenGray(status == 1);
+        GrayInstanceEntity entity = new GrayInstanceEntity();
+        entity.setInstanceId(instanceId);
+        entity.setOpenGray(status);
+        //把灰度状态持久化
+        int r = grayInstanceMapper.updateByInstanceId(entity);
+        logger.info("更新服务实例灰度状态serviceId:{},instanceId:{},r:{}", serviceId, instanceId, r);
         return true;
     }
 

@@ -5,14 +5,18 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class GrayService {
+public class GrayServiceEntity {
     private Integer id;
 
     private String serviceId;
+
+    private String appName;
 
     private Date createTime;
 
     private Date updateTime;
 
     private Short isDelete;
+
+    private Short sort;
 }

@@ -5,36 +5,41 @@ import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Service
-@ConditionalOnBean(EurekaClient.class)
 public class EurekaGrayService extends AbstractGrayService {
 
     private final EurekaClient eurekaClient;
     private final DiscoveryClient discoveryClient;
     private final GrayServiceManager grayServiceManager;
+    private final GrayServiceMapper grayServiceMapper;
 
-    @Autowired
     public EurekaGrayService(EurekaClient eurekaClient, DiscoveryClient discoveryClient, GrayServiceManager
-            grayServiceManager) {
-        super(grayServiceManager, discoveryClient, eurekaClient);
+            grayServiceManager, GrayServiceMapper grayServiceMapper) {
+        super(grayServiceManager, discoveryClient, eurekaClient, grayServiceMapper);
         this.eurekaClient = eurekaClient;
         this.discoveryClient = discoveryClient;
         this.grayServiceManager = grayServiceManager;
+        this.grayServiceMapper = grayServiceMapper;
     }
+
+    @Autowired
+    private GrayInstanceMapper grayInstanceMapper;
 
     /**
      * 返回服务实例列表
@@ -43,25 +48,49 @@ public class EurekaGrayService extends AbstractGrayService {
      * @return 灰度服务实例VO列表
      */
     @Override
-    public ResponseEntity<List<GrayInstanceVO>> instances(String serviceId) {
+    public List<GrayInstanceVO> instances(String serviceId) {
         List<GrayInstanceVO> list = new ArrayList<>();
+        GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
+        //从eureka获取服务实例详细信息
         Application app = eurekaClient.getApplication(serviceId);
         List<InstanceInfo> instanceInfos = app.getInstances();
         for (InstanceInfo instanceInfo : instanceInfos) {
             GrayInstanceVO vo = new GrayInstanceVO();
-            vo.setAppName(app.getName());
+            if (entity != null) {
+                vo.setAppName(entity.getAppName());
+            }
             vo.setServiceId(serviceId);
             vo.setInstanceId(instanceInfo.getInstanceId());
             vo.setMetadata(instanceInfo.getMetadata());
             vo.setUrl(instanceInfo.getHomePageUrl());
-            GrayInstance grayInstance = grayServiceManager.getGrayInstane(serviceId, instanceInfo.getInstanceId());
-            if (grayInstance != null) {
-                vo.setOpenGray(grayInstance.isOpenGray());
-                vo.setHasGrayPolicies(grayInstance.hasGrayPolicy());
+            vo.setOpenGray(true);
+            GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceInfo.getInstanceId());
+            if (grayInstanceEntity != null) {
+                vo.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
+                //vo.setHasGrayPolicies(grayInstance.hasGrayPolicy());
             }
             list.add(vo);
         }
-        return ResponseEntity.ok(list);
+        return list;
+    }
+
+    /**
+     * 校验服务实例是否存在
+     *
+     * @param instanceId
+     * @return
+     */
+    @Override
+    public boolean vertifyInstance(String serviceId, String instanceId) {
+        List<GrayInstanceVO> list = instances(serviceId);
+        if (CollectionUtils.isEmpty(list)) {
+            return false;
+        }
+        GrayInstanceVO vo = list.stream().filter(e -> e.getInstanceId().equals(instanceId)).findFirst().get();
+        if (vo != null) {
+            return true;
+        }
+        return false;
     }
 
 
