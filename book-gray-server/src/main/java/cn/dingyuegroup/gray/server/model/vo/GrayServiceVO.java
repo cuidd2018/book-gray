@@ -10,9 +10,6 @@ import lombok.Data;
 @Builder
 public class GrayServiceVO {
 
-    public GrayServiceVO() {
-    }
-
     @ApiModelProperty("服务名")
     private String appName;
 

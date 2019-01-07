@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractGrayService {
 
@@ -52,11 +53,12 @@ public abstract class AbstractGrayService {
         //从eureka获取在线服务
         List<String> upServiceIds = discoveryClient.getServices();
         upServiceIds.stream().forEach(e -> {
-            GrayServiceVO vo = services.parallelStream().filter(f -> f.getServiceId().equals(e)).findAny().get();
-            if (vo != null) {
+            Optional<GrayServiceVO> optional = services.parallelStream().filter(f -> f.getServiceId().equals(e)).findAny();
+            if (optional.isPresent()) {
+                GrayServiceVO vo = optional.get();
                 vo.setStatus(true);
             } else {
-                vo = GrayServiceVO.builder()
+                GrayServiceVO vo = GrayServiceVO.builder()
                         .serviceId(e)
                         .status(true)
                         .build();

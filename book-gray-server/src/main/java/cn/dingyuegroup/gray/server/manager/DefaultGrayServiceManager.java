@@ -124,7 +124,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         if (CollectionUtils.isEmpty(grayInstanceVOList)) {
             return null;
         }
-        List<GrayInstance> grayInstanceList = grayInstanceVOList.stream().map(e -> new GrayInstance(e.getServiceId(), e.getInstanceId(), e.isOpenGray(), null))
+        List<GrayInstance> grayInstanceList = grayInstanceVOList.stream().map(e -> new GrayInstance(e.getServiceId(), e.getInstanceId(), e.isOpenGray(), new ArrayList<GrayPolicyGroup>()))
                 .collect(Collectors.toList());
         GrayService grayService = new GrayService(serviceId, grayInstanceList);
         return grayService;

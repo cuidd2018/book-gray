@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class EurekaGrayService extends AbstractGrayService {
 
@@ -66,13 +67,14 @@ public class EurekaGrayService extends AbstractGrayService {
         Application app = eurekaClient.getApplication(serviceId);
         List<InstanceInfo> instanceInfos = app.getInstances();
         instanceInfos.stream().forEach(e -> {
-            GrayInstanceVO vo = list.parallelStream().filter(f -> f.getInstanceId().equals(e.getInstanceId())).findAny().get();
-            if (vo != null) {//已持久化
+            Optional<GrayInstanceVO> optional = list.parallelStream().filter(f -> f.getInstanceId().equals(e.getInstanceId())).findAny();
+            if (optional.isPresent()) {//已持久化
+                GrayInstanceVO vo = optional.get();
                 vo.setStatus(true);//在线状态
                 vo.setMetadata(e.getMetadata());
                 vo.setUrl(e.getHomePageUrl());
-            } else {
-                vo = GrayInstanceVO.builder()
+            } else {//未持久化
+                GrayInstanceVO vo = GrayInstanceVO.builder()
                         .serviceId(serviceId)
                         .status(true)
                         .instanceId(e.getInstanceId())
