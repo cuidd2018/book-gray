@@ -37,4 +37,9 @@
         <include refid="Base_Column_List"/>
         from gray_policy_group_policy
     </select>
+    <select id="selectByPolicyGroupId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_policy_group_policy WHERE policy_group_id=#{policyGroupId,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -52,4 +52,10 @@
             #{item}
         </foreach>
     </select>
+    <select id="selectByPolicyGroupId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_policy_group
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
+    </select>
 </mapper>

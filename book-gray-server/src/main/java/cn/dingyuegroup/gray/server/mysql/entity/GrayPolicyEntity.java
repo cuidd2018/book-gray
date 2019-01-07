@@ -5,12 +5,12 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class GrayPolicy {
+public class GrayPolicyEntity {
     private Integer id;
 
     private String policyId;
 
-    private Short policyType;
+    private String policyType;
 
     private String policy;
 

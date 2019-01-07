@@ -6,6 +6,7 @@ import cn.dingyuegroup.gray.core.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayInstancePolicyGroupMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
@@ -41,6 +42,7 @@ public class EurekaGrayService extends AbstractGrayService {
 
     @Autowired
     private GrayInstanceMapper grayInstanceMapper;
+
 
     /**
      * 返回服务实例列表
@@ -86,7 +88,6 @@ public class EurekaGrayService extends AbstractGrayService {
                 list.add(vo);
             }
         });
-        //vo.setHasGrayPolicies(grayInstance.hasGrayPolicy());
         return list;
     }
 

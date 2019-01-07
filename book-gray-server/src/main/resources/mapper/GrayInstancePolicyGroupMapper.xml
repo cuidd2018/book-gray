@@ -43,4 +43,11 @@
         from gray_instance_policy_group
         where instance_id = #{instanceId,jdbcType=VARCHAR}
     </select>
+    <select id="selectPolicyGroupByInstanceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_instance_policy_group
+        where 1>1
+    </select>
+
 </mapper>

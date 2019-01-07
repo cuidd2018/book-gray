@@ -6,18 +6,20 @@ import cn.dingyuegroup.gray.server.context.GrayServerContext;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayInstancePolicyGroupMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 
 /**
@@ -38,6 +40,9 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     private GrayServerConfig serverConfig;
     @Autowired
     private GrayInstanceMapper grayInstanceMapper;
+    @Autowired
+    @Qualifier(value = "GrayInstancePolicyGroupMapperProxy")
+    private GrayInstancePolicyGroupMapper grayInstancePolicyGroupMapper;
 
     @Override
     public void addGrayInstance(GrayInstance instance) {
@@ -124,8 +129,35 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         if (CollectionUtils.isEmpty(grayInstanceVOList)) {
             return null;
         }
-        List<GrayInstance> grayInstanceList = grayInstanceVOList.stream().map(e -> new GrayInstance(e.getServiceId(), e.getInstanceId(), e.isOpenGray(), new ArrayList<GrayPolicyGroup>()))
-                .collect(Collectors.toList());
+        List<GrayInstance> grayInstanceList = new ArrayList<>();
+        grayInstanceVOList.stream().forEach(e -> {
+            List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(e.getInstanceId());
+            if (CollectionUtils.isEmpty(grayPolicyGroupEntities)) {
+                return;
+            }
+            List<GrayPolicyGroup> grayPolicyGroups = new ArrayList<>();
+            grayPolicyGroupEntities.stream().forEach(f -> {
+                GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
+                grayPolicyGroup.setPolicyGroupId(f.getPolicyGroupId());
+                grayPolicyGroup.setAlias(f.getAlias());
+                grayPolicyGroup.setEnable(f.getEnable() == 0 ? false : true);
+                f.getGrayPolicyEntities().stream().forEach(m -> {
+                    GrayPolicy grayPolicy = new GrayPolicy();
+                    grayPolicy.setPolicyId(m.getPolicyId());
+                    grayPolicy.setPolicyType(m.getPolicyType());
+                    //TODO
+                    grayPolicy.setInfos(new HashMap<>());
+                    grayPolicyGroup.addGrayPolicy(grayPolicy);
+                });
+                grayPolicyGroups.add(grayPolicyGroup);
+            });
+            GrayInstance grayInstance = new GrayInstance();
+            grayInstance.setInstanceId(e.getInstanceId());
+            grayInstance.setOpenGray(e.isOpenGray());
+            grayInstance.setServiceId(serviceId);
+            grayInstance.setGrayPolicyGroups(grayPolicyGroups);
+            grayInstanceList.add(grayInstance);
+        });
         GrayService grayService = new GrayService(serviceId, grayInstanceList);
         return grayService;
     }

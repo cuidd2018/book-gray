@@ -16,4 +16,6 @@ public interface GrayPolicyGroupMapper {
     int updateByPrimaryKey(GrayPolicyGroupEntity record);
 
     List<GrayPolicyGroupEntity> selectListByPolicyGroupId(List<String> groupIds);
+
+    GrayPolicyGroupEntity selectByPolicyGroupId(String groupPolicyId);
 }

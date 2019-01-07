@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.dingyuegroup.gray.server.mysql.dao.GrayPolicyMapper">
-    <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicy">
+    <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="policy_id" jdbcType="VARCHAR" property="policyId"/>
-        <result column="policy_type" jdbcType="SMALLINT" property="policyType"/>
+        <result column="policy_type" jdbcType="VARCHAR" property="policyType"/>
         <result column="policy" jdbcType="VARCHAR" property="policy"/>
         <result column="is_delete" jdbcType="SMALLINT" property="isDelete"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
@@ -17,21 +17,21 @@
     delete from gray_policy
     where id = #{id,jdbcType=INTEGER}
   </delete>
-    <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicy">
+    <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_policy (policy_id, policy_type, policy,
         is_delete, create_time, update_time
         )
-        values (#{policyId,jdbcType=VARCHAR}, #{policyType,jdbcType=SMALLINT}, #{policy,jdbcType=VARCHAR},
+        values (#{policyId,jdbcType=VARCHAR}, #{policyType,jdbcType=VARCHAR}, #{policy,jdbcType=VARCHAR},
         #{isDelete,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
         )
     </insert>
-    <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicy">
+    <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
     update gray_policy
     set policy_id = #{policyId,jdbcType=VARCHAR},
-      policy_type = #{policyType,jdbcType=SMALLINT},
+      policy_type = #{policyType,jdbcType=VARCHAR},
       policy = #{policy,jdbcType=VARCHAR},
       is_delete = #{isDelete,jdbcType=SMALLINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -48,5 +48,19 @@
         select
         <include refid="Base_Column_List"/>
         from gray_policy
+    </select>
+    <select id="selectListByPolicyId" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from gray_policy
+        where is_delete=0 AND policy_id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectByPolicyId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_policy WHERE policy_id=#{policyId,jdbcType=VARCHAR} and is_delete=0
     </select>
 </mapper>
