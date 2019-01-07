@@ -37,4 +37,10 @@
         <include refid="Base_Column_List"/>
         from gray_instance_policy_group
     </select>
+    <select id="selectByInstanceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_instance_policy_group
+        where instance_id = #{instanceId,jdbcType=VARCHAR}
+    </select>
 </mapper>

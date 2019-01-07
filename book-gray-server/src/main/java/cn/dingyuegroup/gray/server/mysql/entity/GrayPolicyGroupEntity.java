@@ -3,7 +3,7 @@ package cn.dingyuegroup.gray.server.mysql.entity;
 import lombok.Data;
 
 @Data
-public class GrayPolicyGroup {
+public class GrayPolicyGroupEntity {
     private Integer id;
 
     private String policyGroupId;

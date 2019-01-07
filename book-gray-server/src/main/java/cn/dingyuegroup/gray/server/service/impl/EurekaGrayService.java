@@ -51,26 +51,40 @@ public class EurekaGrayService extends AbstractGrayService {
     public List<GrayInstanceVO> instances(String serviceId) {
         List<GrayInstanceVO> list = new ArrayList<>();
         GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
-        //从eureka获取服务实例详细信息
+        List<GrayInstanceEntity> grayInstanceEntityList = grayInstanceMapper.selectByServiceId(serviceId);
+        grayInstanceEntityList.stream().forEach(e -> {
+            GrayInstanceVO vo = GrayInstanceVO.builder()
+                    .serviceId(serviceId)
+                    .status(false)//默认不在线
+                    .appName(entity != null ? entity.getAppName() : null)
+                    .instanceId(e.getInstanceId())
+                    .openGray(e.getOpenGray() == 0 ? false : true)
+                    .build();
+            list.add(vo);
+        });
+        //从eureka获取在线服务实例详细信息
         Application app = eurekaClient.getApplication(serviceId);
         List<InstanceInfo> instanceInfos = app.getInstances();
-        for (InstanceInfo instanceInfo : instanceInfos) {
-            GrayInstanceVO vo = new GrayInstanceVO();
-            if (entity != null) {
-                vo.setAppName(entity.getAppName());
+        instanceInfos.stream().forEach(e -> {
+            GrayInstanceVO vo = list.parallelStream().filter(f -> f.getInstanceId().equals(e.getInstanceId())).findAny().get();
+            if (vo != null) {//已持久化
+                vo.setStatus(true);//在线状态
+                vo.setMetadata(e.getMetadata());
+                vo.setUrl(e.getHomePageUrl());
+            } else {
+                vo = GrayInstanceVO.builder()
+                        .serviceId(serviceId)
+                        .status(true)
+                        .instanceId(e.getInstanceId())
+                        .appName(entity != null ? entity.getAppName() : null)
+                        .openGray(true)
+                        .metadata(e.getMetadata())
+                        .url(e.getHealthCheckUrl())
+                        .build();
+                list.add(vo);
             }
-            vo.setServiceId(serviceId);
-            vo.setInstanceId(instanceInfo.getInstanceId());
-            vo.setMetadata(instanceInfo.getMetadata());
-            vo.setUrl(instanceInfo.getHomePageUrl());
-            vo.setOpenGray(true);
-            GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceInfo.getInstanceId());
-            if (grayInstanceEntity != null) {
-                vo.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
-                //vo.setHasGrayPolicies(grayInstance.hasGrayPolicy());
-            }
-            list.add(vo);
-        }
+        });
+        //vo.setHasGrayPolicies(grayInstance.hasGrayPolicy());
         return list;
     }
 
@@ -103,17 +117,13 @@ public class EurekaGrayService extends AbstractGrayService {
      */
     @Override
     public ResponseEntity<List<GrayPolicyGroupVO>> policyGroups(String serviceId, String instanceId) {
-
-        Application app = eurekaClient.getApplication(serviceId);
-        InstanceInfo instanceInfo = app.getByInstanceId(instanceId);
+        GrayServiceEntity grayServiceEntity = grayServiceMapper.selectByServiceId(serviceId);
         GrayInstance grayInstance = grayServiceManager.getGrayInstane(serviceId, instanceId);
-        String appName = instanceInfo.getAppName();
-        String homePageUrl = instanceInfo.getHomePageUrl();
         if (grayInstance != null && grayInstance.getGrayPolicyGroups() != null) {
             List<GrayPolicyGroup> policyGroups = grayInstance.getGrayPolicyGroups();
             List<GrayPolicyGroupVO> vos = new ArrayList<>(policyGroups.size());
             for (GrayPolicyGroup policyGroup : policyGroups) {
-                vos.add(getPolicyGroup(serviceId, appName, instanceId, homePageUrl, policyGroup));
+                vos.add(getPolicyGroup(serviceId, grayServiceEntity.getAppName(), instanceId, policyGroup));
             }
             return ResponseEntity.ok(vos);
         }
@@ -139,7 +149,7 @@ public class EurekaGrayService extends AbstractGrayService {
         if (grayInstance != null) {
             GrayPolicyGroup policyGroup = grayInstance.getGrayPolicyGroup(groupId);
             if (policyGroup != null) {
-                return ResponseEntity.ok(getPolicyGroup(serviceId, appName, instanceId, homePageUrl, policyGroup));
+                return ResponseEntity.ok(getPolicyGroup(serviceId, appName, instanceId, policyGroup));
             }
         }
         return ResponseEntity.ok().build();

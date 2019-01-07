@@ -1,16 +1,19 @@
 package cn.dingyuegroup.gray.server.mysql.dao;
 
-import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroup;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity;
+
 import java.util.List;
 
 public interface GrayPolicyGroupMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(GrayPolicyGroup record);
+    int insert(GrayPolicyGroupEntity record);
 
-    GrayPolicyGroup selectByPrimaryKey(Integer id);
+    GrayPolicyGroupEntity selectByPrimaryKey(Integer id);
 
-    List<GrayPolicyGroup> selectAll();
+    List<GrayPolicyGroupEntity> selectAll();
 
-    int updateByPrimaryKey(GrayPolicyGroup record);
+    int updateByPrimaryKey(GrayPolicyGroupEntity record);
+
+    List<GrayPolicyGroupEntity> selectListByPolicyGroupId(List<String> groupIds);
 }

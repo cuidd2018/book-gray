@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 
 /**
@@ -123,21 +124,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         if (CollectionUtils.isEmpty(grayInstanceVOList)) {
             return null;
         }
-        List<GrayInstance> grayInstanceList = new ArrayList<>();
-        List<GrayInstanceEntity> list = grayInstanceMapper.selectByServiceId(serviceId);
-        for (GrayInstanceVO vo : grayInstanceVOList) {
-            GrayInstance grayInstance = new GrayInstance();
-            grayInstance.setServiceId(serviceId);
-            grayInstance.setInstanceId(vo.getInstanceId());
-            if (!CollectionUtils.isEmpty(list)) {
-                GrayInstanceEntity entity = list.stream().filter(e -> e.getInstanceId().equals(vo.getInstanceId())).findFirst().get();
-                if (entity != null) {
-                    //获取服务实例的持久化灰度状态
-                    grayInstance.setOpenGray(entity.getOpenGray() == 0 ? false : true);
-                }
-            }
-            grayInstanceList.add(grayInstance);
-        }
+        List<GrayInstance> grayInstanceList = grayInstanceVOList.stream().map(e -> new GrayInstance(e.getServiceId(), e.getInstanceId(), e.isOpenGray(), null))
+                .collect(Collectors.toList());
         GrayService grayService = new GrayService(serviceId, grayInstanceList);
         return grayService;
     }

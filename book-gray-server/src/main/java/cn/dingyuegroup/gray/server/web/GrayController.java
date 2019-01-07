@@ -66,6 +66,7 @@ public class GrayController {
      * @param instanceId 实例id
      * @return 灰策略组VO列表
      */
+    @VertifyRequest
     @RequestMapping(value = "/services/instance/policyGroups", method = RequestMethod.GET)
     public ResponseEntity<List<GrayPolicyGroupVO>> policyGroups(@RequestParam("serviceId") String serviceId,
                                                                 @RequestParam("instanceId") String instanceId) {

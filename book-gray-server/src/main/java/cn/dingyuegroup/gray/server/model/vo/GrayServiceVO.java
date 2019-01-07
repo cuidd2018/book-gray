@@ -2,11 +2,16 @@ package cn.dingyuegroup.gray.server.model.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @ApiModel
 @Data
+@Builder
 public class GrayServiceVO {
+
+    public GrayServiceVO() {
+    }
 
     @ApiModelProperty("服务名")
     private String appName;
@@ -22,4 +27,7 @@ public class GrayServiceVO {
 
     @ApiModelProperty("是否拥有灰度策略")
     private boolean hasGrayPolicies;
+
+    @ApiModelProperty("是否在线")
+    private boolean status;
 }

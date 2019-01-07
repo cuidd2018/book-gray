@@ -11,11 +11,8 @@ import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
 import com.netflix.discovery.EurekaClient;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,34 +39,38 @@ public abstract class AbstractGrayService {
      */
     public List<GrayServiceVO> services() {
         List<GrayServiceVO> services = new ArrayList<>();
-        //从eureka获取服务
-        List<String> serviceIds = discoveryClient.getServices();
-        if (CollectionUtils.isEmpty(serviceIds)) {
-            return services;
-        }
-        //获取各服务自定义配置信息
+        //获取持久化的服务信息
         List<GrayServiceEntity> entityList = grayServiceMapper.selectAll();
-        for (String serviceId : serviceIds) {
-            //获取每个服务的服务实例
-            List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
-            if (null == instances || instances.isEmpty()) {
-                continue;
-            }
-            GrayServiceVO vo = new GrayServiceVO();
-            for (GrayServiceEntity entity : entityList) {
-                if (!StringUtils.isEmpty(entity.getServiceId()) && entity.getServiceId().equals(serviceId)) {
-                    vo.setAppName(entity.getAppName());
-                    break;
-                }
-            }
-            vo.setServiceId(serviceId);
-            vo.setInstanceSize(instances.size());
-            GrayService grayService = grayServiceManager.getGrayService(serviceId);
-            if (grayService != null) {
-                vo.setHasGrayInstances(grayService.isOpenGray());
-                vo.setHasGrayPolicies(grayService.hasGrayPolicy());
-            }
+        entityList.stream().forEach(e -> {
+            GrayServiceVO vo = GrayServiceVO.builder()
+                    .appName(e.getAppName())
+                    .status(false)//默认是不在线的
+                    .serviceId(e.getServiceId())
+                    .build();
             services.add(vo);
+        });
+        //从eureka获取在线服务
+        List<String> upServiceIds = discoveryClient.getServices();
+        upServiceIds.stream().forEach(e -> {
+            GrayServiceVO vo = services.parallelStream().filter(f -> f.getServiceId().equals(e)).findAny().get();
+            if (vo != null) {
+                vo.setStatus(true);
+            } else {
+                vo = GrayServiceVO.builder()
+                        .serviceId(e)
+                        .status(true)
+                        .build();
+                services.add(vo);
+            }
+        });
+
+        for (GrayServiceVO grayServiceVO : services) {
+            GrayService grayService = grayServiceManager.getGrayService(grayServiceVO.getServiceId());
+            if (grayService != null) {
+                grayServiceVO.setInstanceSize(grayService.getGrayInstances().size());
+                grayServiceVO.setHasGrayInstances(grayService.isOpenGray());
+                grayServiceVO.setHasGrayPolicies(grayService.hasGrayPolicy());
+            }
         }
         return services;
     }
@@ -186,13 +187,11 @@ public abstract class AbstractGrayService {
     }
 
 
-    protected GrayPolicyGroupVO getPolicyGroup(String serviceId, String appName, String instanceId, String homePageUrl,
-                                               GrayPolicyGroup policyGroup) {
+    protected GrayPolicyGroupVO getPolicyGroup(String serviceId, String appName, String instanceId, GrayPolicyGroup policyGroup) {
         GrayPolicyGroupVO vo = new GrayPolicyGroupVO();
         vo.setAppName(appName);
         vo.setInstanceId(instanceId);
         vo.setServiceId(serviceId);
-        vo.setUrl(homePageUrl);
         vo.setAlias(policyGroup.getAlias());
         vo.setPolicyGroupId(policyGroup.getPolicyGroupId());
         vo.setPolicies(policyGroup.getList());

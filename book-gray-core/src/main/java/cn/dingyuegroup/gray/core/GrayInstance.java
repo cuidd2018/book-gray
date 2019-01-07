@@ -18,6 +18,16 @@ public class GrayInstance {
     private List<GrayPolicyGroup> grayPolicyGroups = new ArrayList<>();
     private boolean openGray = true;
 
+    public GrayInstance() {
+    }
+
+    public GrayInstance(String serviceId, String instanceId, boolean openGray, List<GrayPolicyGroup> grayPolicyGroups) {
+        this.serviceId = serviceId;
+        this.instanceId = instanceId;
+        this.openGray = openGray;
+        this.grayPolicyGroups = grayPolicyGroups;
+    }
+
 
     public String getServiceId() {
         return serviceId;
