@@ -3,12 +3,14 @@ package cn.dingyuegroup.gray.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * 灰度实例，有状态属性
  */
 public class GrayInstance {
+    private String appName;
     private String serviceId;
     private String instanceId;
 
@@ -17,6 +19,9 @@ public class GrayInstance {
      */
     private List<GrayPolicyGroup> grayPolicyGroups = new ArrayList<>();
     private boolean openGray = true;
+    private boolean status = false;//是否在线
+    private String url;
+    private Map<String, String> metadata;
 
     public GrayInstance() {
     }
@@ -142,5 +147,37 @@ public class GrayInstance {
             }
         }
         return instance;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 }

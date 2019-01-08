@@ -131,26 +131,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         }
         List<GrayInstance> grayInstanceList = new ArrayList<>();
         grayInstanceVOList.stream().forEach(e -> {
-            List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(e.getInstanceId());
-            if (CollectionUtils.isEmpty(grayPolicyGroupEntities)) {
-                return;
-            }
-            List<GrayPolicyGroup> grayPolicyGroups = new ArrayList<>();
-            grayPolicyGroupEntities.stream().forEach(f -> {
-                GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
-                grayPolicyGroup.setPolicyGroupId(f.getPolicyGroupId());
-                grayPolicyGroup.setAlias(f.getAlias());
-                grayPolicyGroup.setEnable(f.getEnable() == 0 ? false : true);
-                f.getGrayPolicyEntities().stream().forEach(m -> {
-                    GrayPolicy grayPolicy = new GrayPolicy();
-                    grayPolicy.setPolicyId(m.getPolicyId());
-                    grayPolicy.setPolicyType(m.getPolicyType());
-                    //TODO
-                    grayPolicy.setInfos(new HashMap<>());
-                    grayPolicyGroup.addGrayPolicy(grayPolicy);
-                });
-                grayPolicyGroups.add(grayPolicyGroup);
-            });
+            List<GrayPolicyGroup> grayPolicyGroups = getPolicyGroups(e.getInstanceId());
             GrayInstance grayInstance = new GrayInstance();
             grayInstance.setInstanceId(e.getInstanceId());
             grayInstance.setOpenGray(e.isOpenGray());
@@ -170,6 +151,31 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             return grayService.getGrayInstance(instanceId);
         }
         return null;
+    }
+
+    @Override
+    public List<GrayPolicyGroup> getPolicyGroups(String instanceId) {
+        List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(instanceId);
+        if (CollectionUtils.isEmpty(grayPolicyGroupEntities)) {
+            return new ArrayList<>();
+        }
+        List<GrayPolicyGroup> grayPolicyGroups = new ArrayList<>();
+        grayPolicyGroupEntities.stream().forEach(f -> {
+            GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
+            grayPolicyGroup.setPolicyGroupId(f.getPolicyGroupId());
+            grayPolicyGroup.setAlias(f.getAlias());
+            grayPolicyGroup.setEnable(f.getEnable() == 0 ? false : true);
+            f.getGrayPolicyEntities().stream().forEach(m -> {
+                GrayPolicy grayPolicy = new GrayPolicy();
+                grayPolicy.setPolicyId(m.getPolicyId());
+                grayPolicy.setPolicyType(m.getPolicyType());
+                //TODO
+                grayPolicy.setInfos(new HashMap<>());
+                grayPolicyGroup.addGrayPolicy(grayPolicy);
+            });
+            grayPolicyGroups.add(grayPolicyGroup);
+        });
+        return grayPolicyGroups;
     }
 
     @Override

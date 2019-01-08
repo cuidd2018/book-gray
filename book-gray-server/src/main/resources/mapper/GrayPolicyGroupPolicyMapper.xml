@@ -42,4 +42,8 @@
         <include refid="Base_Column_List"/>
         from gray_policy_group_policy WHERE policy_group_id=#{policyGroupId,jdbcType=VARCHAR}
     </select>
+    <delete id="deleteByGroupIdAndPolicyId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupPolicy">
+        delete from gray_policy_group_policy
+        where policy_group_id=#{policyGroupId,jdbcType=VARCHAR} and policy_id = #{policyId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

@@ -1,6 +1,8 @@
 package cn.dingyuegroup.gray.server.vertify;
 
-import cn.dingyuegroup.gray.server.service.AbstractGrayService;
+import cn.dingyuegroup.gray.core.GrayInstance;
+import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -30,7 +32,7 @@ public class VertifyRequestAop {
     Logger logger = LoggerFactory.getLogger(VertifyRequestAop.class);
 
     @Autowired
-    private AbstractGrayService grayService;
+    private GrayServiceManager2 grayServiceManager2;
 
     //定义切面：只有controller包下的接口才进行vertifyRequest校验
     @Pointcut("execution(public * cn.dingyuegroup.gray.server.web..*.*(..)) and @annotation(org.springframework.web.bind.annotation.*)")
@@ -77,11 +79,34 @@ public class VertifyRequestAop {
         String instanceId = request.getParameter("instanceId");
         boolean b = true;
         if (!StringUtils.isEmpty(serviceId)) {
-            b = b && grayService.vertifyService(serviceId);
+            b = b && vertifyService(serviceId);
             if (!StringUtils.isEmpty(instanceId)) {
-                b = b && grayService.vertifyInstance(serviceId, instanceId);
+                b = b && vertifyInstance(serviceId, instanceId);
             }
         }
         return b;
+    }
+
+    public boolean vertifyService(String serviceId) {
+        GrayService grayService = grayServiceManager2.getGrayService(serviceId);
+        if (grayService != null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 校验
+     *
+     * @param serviceId
+     * @param instanceId
+     * @return
+     */
+    public boolean vertifyInstance(String serviceId, String instanceId) {
+        GrayInstance grayInstance = grayServiceManager2.getGrayInstance(serviceId, instanceId);
+        if (grayInstance != null) {
+            return true;
+        }
+        return false;
     }
 }

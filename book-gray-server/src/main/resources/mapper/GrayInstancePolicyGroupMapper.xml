@@ -49,5 +49,15 @@
         from gray_instance_policy_group
         where 1>1
     </select>
-
+    <select id="selectByInstanceIdAndGroupId"
+            parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstancePolicyGroup" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_instance_policy_group
+        where instance_id = #{instanceId,jdbcType=VARCHAR} and policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByInstanceIdAndGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstancePolicyGroup">
+        delete from gray_instance_policy_group
+        where instance_id = #{instanceId,jdbcType=VARCHAR} and policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

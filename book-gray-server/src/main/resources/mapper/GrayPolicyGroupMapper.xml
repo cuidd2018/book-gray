@@ -58,4 +58,18 @@
         from gray_policy_group
         where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
     </select>
+    <update id="updateByByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
+        update gray_policy_group
+        set enable = #{enable,jdbcType=SMALLINT}
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
+    </update>
+    <delete id="deleteByGroupId" parameterType="java.lang.String">
+        delete from gray_policy_group
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
+    </delete>
+    <update id="editByByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
+        update gray_policy_group
+        set alias = #{alias,jdbcType=VARCHAR}, enable = #{enable,jdbcType=SMALLINT}
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
+    </update>
 </mapper>

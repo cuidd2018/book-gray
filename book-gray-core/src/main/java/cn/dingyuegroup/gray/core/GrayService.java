@@ -9,8 +9,11 @@ import java.util.List;
  * 注册的服务， 维护一个实例列表。
  */
 public class GrayService {
+
+    private String appName;
     private String serviceId;
     private List<GrayInstance> grayInstances = new ArrayList<>();
+    private boolean status;//是否在线
 
 
     public GrayService() {
@@ -125,5 +128,21 @@ public class GrayService {
             }
         }
         return service;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 }

@@ -14,7 +14,7 @@ public class GrayPolicyEntity {
 
     private String policy;
 
-    private Short isDelete;
+    private Integer isDelete;
 
     private Date createTime;
 

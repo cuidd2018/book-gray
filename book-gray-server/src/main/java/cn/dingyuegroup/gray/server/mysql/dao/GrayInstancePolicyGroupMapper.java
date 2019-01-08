@@ -19,4 +19,8 @@ public interface GrayInstancePolicyGroupMapper {
     List<GrayInstancePolicyGroup> selectByInstanceId(String instanceId);
 
     List<GrayPolicyGroupEntity> selectPolicyGroupByInstanceId(String instanceId);
+
+    GrayInstancePolicyGroup selectByInstanceIdAndGroupId(GrayInstancePolicyGroup record);
+
+    int deleteByInstanceIdAndGroupId(GrayInstancePolicyGroup record);
 }

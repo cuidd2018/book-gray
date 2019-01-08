@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.api;
 
 import cn.dingyuegroup.gray.core.*;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

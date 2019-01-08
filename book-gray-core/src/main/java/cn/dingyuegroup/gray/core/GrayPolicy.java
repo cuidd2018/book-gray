@@ -1,5 +1,7 @@
 package cn.dingyuegroup.gray.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,5 +42,9 @@ public class GrayPolicy {
 
     public void setInfos(Map<String, String> infos) {
         this.infos = new HashMap<>(infos);
+    }
+
+    public static String genId() {
+        return "POLICY_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     }
 }

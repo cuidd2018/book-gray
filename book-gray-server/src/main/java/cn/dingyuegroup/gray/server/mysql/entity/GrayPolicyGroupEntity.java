@@ -13,9 +13,9 @@ public class GrayPolicyGroupEntity {
 
     private String alias;
 
-    private Short enable;
+    private Integer enable;
 
-    private Short isDelete;
+    private Integer isDelete;
 
     private List<GrayPolicyEntity> grayPolicyEntities = new ArrayList<>();
 }

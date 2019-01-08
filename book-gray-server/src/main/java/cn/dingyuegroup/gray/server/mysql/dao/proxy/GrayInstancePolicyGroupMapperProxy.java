@@ -36,32 +36,32 @@ public class GrayInstancePolicyGroupMapperProxy implements GrayInstancePolicyGro
 
     @Override
     public int deleteByPrimaryKey(Integer id) {
-        return 0;
+        return grayInstancePolicyGroupMapper.deleteByPrimaryKey(id);
     }
 
     @Override
     public int insert(GrayInstancePolicyGroup record) {
-        return 0;
+        return grayInstancePolicyGroupMapper.insert(record);
     }
 
     @Override
     public GrayInstancePolicyGroup selectByPrimaryKey(Integer id) {
-        return null;
+        return grayInstancePolicyGroupMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public List<GrayInstancePolicyGroup> selectAll() {
-        return null;
+        return grayInstancePolicyGroupMapper.selectAll();
     }
 
     @Override
     public int updateByPrimaryKey(GrayInstancePolicyGroup record) {
-        return 0;
+        return grayInstancePolicyGroupMapper.updateByPrimaryKey(record);
     }
 
     @Override
     public List<GrayInstancePolicyGroup> selectByInstanceId(String instanceId) {
-        return null;
+        return grayInstancePolicyGroupMapper.selectByInstanceId(instanceId);
     }
 
     @Override
@@ -91,5 +91,15 @@ public class GrayInstancePolicyGroupMapperProxy implements GrayInstancePolicyGro
             });
         });
         return list;
+    }
+
+    @Override
+    public GrayInstancePolicyGroup selectByInstanceIdAndGroupId(GrayInstancePolicyGroup record) {
+        return grayInstancePolicyGroupMapper.selectByInstanceIdAndGroupId(record);
+    }
+
+    @Override
+    public int deleteByInstanceIdAndGroupId(GrayInstancePolicyGroup record) {
+        return grayInstancePolicyGroupMapper.deleteByInstanceIdAndGroupId(record);
     }
 }

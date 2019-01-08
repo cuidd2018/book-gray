@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.server.config;
 
-import cn.dingyuegroup.gray.core.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;

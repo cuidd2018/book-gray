@@ -1,7 +1,7 @@
 package cn.dingyuegroup.gray.server.service.impl;
 
 
-import cn.dingyuegroup.gray.core.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;
 
 public class NoActionGrayServerEvictor implements GrayServerEvictor {

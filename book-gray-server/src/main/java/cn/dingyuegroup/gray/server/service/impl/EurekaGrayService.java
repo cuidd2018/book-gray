@@ -2,11 +2,10 @@ package cn.dingyuegroup.gray.server.service.impl;
 
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayPolicyGroup;
-import cn.dingyuegroup.gray.core.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayInstancePolicyGroupMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
@@ -33,7 +32,7 @@ public class EurekaGrayService extends AbstractGrayService {
 
     public EurekaGrayService(EurekaClient eurekaClient, DiscoveryClient discoveryClient, GrayServiceManager
             grayServiceManager, GrayServiceMapper grayServiceMapper) {
-        super(grayServiceManager, discoveryClient, eurekaClient, grayServiceMapper);
+        super(grayServiceManager, discoveryClient, grayServiceMapper);
         this.eurekaClient = eurekaClient;
         this.discoveryClient = discoveryClient;
         this.grayServiceManager = grayServiceManager;
@@ -89,25 +88,6 @@ public class EurekaGrayService extends AbstractGrayService {
             }
         });
         return list;
-    }
-
-    /**
-     * 校验服务实例是否存在
-     *
-     * @param instanceId
-     * @return
-     */
-    @Override
-    public boolean vertifyInstance(String serviceId, String instanceId) {
-        List<GrayInstanceVO> list = instances(serviceId);
-        if (CollectionUtils.isEmpty(list)) {
-            return false;
-        }
-        GrayInstanceVO vo = list.stream().filter(e -> e.getInstanceId().equals(instanceId)).findFirst().get();
-        if (vo != null) {
-            return true;
-        }
-        return false;
     }
 
 

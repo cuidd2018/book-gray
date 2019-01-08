@@ -18,4 +18,8 @@ public interface GrayPolicyMapper {
     List<GrayPolicyEntity> selectListByPolicyId(List<String> list);
 
     GrayPolicyEntity selectByPolicyId(String policyId);
+
+    int updateByPolicyId(GrayPolicyEntity record);
+
+    int deleteByPolicyId(String policyId);
 }

@@ -1,6 +1,8 @@
 package cn.dingyuegroup.gray.core;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -71,5 +73,9 @@ public class GrayPolicyGroup {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public static String genId() {
+        return "POLICY_GROUP_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     }
 }

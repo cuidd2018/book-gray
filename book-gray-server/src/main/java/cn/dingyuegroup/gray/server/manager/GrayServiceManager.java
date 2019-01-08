@@ -1,6 +1,12 @@
-package cn.dingyuegroup.gray.core;
+package cn.dingyuegroup.gray.server.manager;
+
+import cn.dingyuegroup.gray.core.GrayInstance;
+import cn.dingyuegroup.gray.core.GrayPolicy;
+import cn.dingyuegroup.gray.core.GrayPolicyGroup;
+import cn.dingyuegroup.gray.core.GrayService;
 
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -25,6 +31,8 @@ public interface GrayServiceManager {
     GrayService getGrayService(String serviceId);
 
     GrayInstance getGrayInstane(String serviceId, String instanceId);
+
+    List<GrayPolicyGroup> getPolicyGroups(String instanceId);
 
 
     /**

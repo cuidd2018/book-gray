@@ -2,7 +2,7 @@ package cn.dingyuegroup.gray.server.service.impl;
 
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
-import cn.dingyuegroup.gray.core.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;

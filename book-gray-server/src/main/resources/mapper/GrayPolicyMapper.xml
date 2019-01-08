@@ -63,4 +63,15 @@
         <include refid="Base_Column_List"/>
         from gray_policy WHERE policy_id=#{policyId,jdbcType=VARCHAR} and is_delete=0
     </select>
+    <update id="updateByPolicyId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
+        update gray_policy
+        set policy_type = #{policyType,jdbcType=VARCHAR},
+        policy = #{policy,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where policy_id=#{policyId,jdbcType=VARCHAR} and is_delete=0
+    </update>
+    <delete id="deleteByPolicyId" parameterType="java.lang.String">
+        delete from gray_policy
+        where policy_id=#{policyId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

@@ -3,14 +3,13 @@ package cn.dingyuegroup.gray.server.service;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
-import cn.dingyuegroup.gray.core.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.fo.GrayPolicyGroupFO;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
-import com.netflix.discovery.EurekaClient;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
 
@@ -22,14 +21,12 @@ public abstract class AbstractGrayService {
 
     private GrayServiceManager grayServiceManager;
     private DiscoveryClient discoveryClient;
-    private EurekaClient eurekaClient;
     private GrayServiceMapper grayServiceMapper;
 
     public AbstractGrayService(GrayServiceManager grayServiceManager, DiscoveryClient discoveryClient,
-                               EurekaClient eurekaClient, GrayServiceMapper grayServiceMapper) {
+                               GrayServiceMapper grayServiceMapper) {
         this.grayServiceManager = grayServiceManager;
         this.discoveryClient = discoveryClient;
-        this.eurekaClient = eurekaClient;
         this.grayServiceMapper = grayServiceMapper;
     }
 
@@ -84,28 +81,6 @@ public abstract class AbstractGrayService {
      * @return 灰度服务实例VO列表
      */
     public abstract List<GrayInstanceVO> instances(String serviceId);
-
-    /**
-     * 校验服务是否存在
-     *
-     * @param serviceId
-     * @return
-     */
-    public boolean vertifyService(String serviceId) {
-        GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
-        if (entity != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 校验服务实例是否存在
-     *
-     * @param instanceId
-     * @return
-     */
-    public abstract boolean vertifyInstance(String serviceId, String instanceId);
 
     public ResponseEntity<Void> editInstanceStatus(String serviceId, String instanceId, int status) {
         boolean b = grayServiceManager.updateInstanceStatus(serviceId, instanceId, status);

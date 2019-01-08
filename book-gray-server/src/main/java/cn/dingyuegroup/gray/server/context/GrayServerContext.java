@@ -1,7 +1,7 @@
 package cn.dingyuegroup.gray.server.context;
 
 
-import cn.dingyuegroup.gray.core.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;
 
 public class GrayServerContext {
