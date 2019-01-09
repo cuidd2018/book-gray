@@ -3,12 +3,10 @@ package cn.dingyuegroup.gray.server.web;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
-import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager2;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
-import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import cn.dingyuegroup.gray.server.vertify.VertifyRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,11 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/gray/manager/services")
 public class GrayServiceController {
-
-    @Autowired
-    private AbstractGrayService grayService;
-    @Autowired
-    private GrayServiceManager grayServiceManager;
     @Autowired
     private GrayServiceManager2 grayServiceManager2;
 

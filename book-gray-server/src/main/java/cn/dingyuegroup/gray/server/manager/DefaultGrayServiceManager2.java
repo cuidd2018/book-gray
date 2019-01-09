@@ -198,6 +198,7 @@ public class DefaultGrayServiceManager2 implements GrayServiceManager2 {
                 entity.setOpenGray(status);
                 grayInstanceMapper.insert(entity);
             } else {
+                entity.setOpenGray(status);
                 grayInstanceMapper.updateByInstanceId(entity);
             }
             logger.info("更新服务实例灰度状态serviceId:{},instanceId:{}", serviceId, instanceId);

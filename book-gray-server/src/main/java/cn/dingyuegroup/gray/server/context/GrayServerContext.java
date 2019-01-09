@@ -11,7 +11,6 @@ public class GrayServerContext {
     private static GrayServiceManager grayServiceManager;
     private static GrayServerEvictor grayServerEvictor;
 
-
     public static GrayServiceManager getGrayServiceManager() {
         return grayServiceManager;
     }

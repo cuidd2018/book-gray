@@ -87,7 +87,7 @@ public class VertifyRequestAop {
         return b;
     }
 
-    public boolean vertifyService(String serviceId) {
+    private boolean vertifyService(String serviceId) {
         GrayService grayService = grayServiceManager2.getGrayService(serviceId);
         if (grayService != null) {
             return true;
@@ -102,7 +102,7 @@ public class VertifyRequestAop {
      * @param instanceId
      * @return
      */
-    public boolean vertifyInstance(String serviceId, String instanceId) {
+    private boolean vertifyInstance(String serviceId, String instanceId) {
         GrayInstance grayInstance = grayServiceManager2.getGrayInstance(serviceId, instanceId);
         if (grayInstance != null) {
             return true;
