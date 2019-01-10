@@ -4,7 +4,7 @@ import cn.dingyuegroup.bamboo.BambooRequest;
 import cn.dingyuegroup.gray.core.GrayDecision;
 
 /**
- * 组合从个灰度策略
+ * 组合多个灰度策略
  */
 public class MultiGrayDecision implements GrayDecision {
 

@@ -14,6 +14,7 @@ public class GrayClientProperties implements GrayClientConfig {
     private String serverUrl = "http://localhost:10202";
 
     private boolean retryable = true;
+
     private int retryNumberOfRetries = RetryableInformationClient.DEFAULT_NUMBER_OF_RETRIES;
 
     private InstanceConfig instance = new InstanceConfig();

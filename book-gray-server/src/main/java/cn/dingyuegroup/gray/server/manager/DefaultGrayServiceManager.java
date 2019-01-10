@@ -205,7 +205,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setOpenGray(status);
                 grayInstanceMapper.updateByInstanceId(entity);
             }
-            logger.info("更新服务实例灰度状态serviceId:{},instanceId:{}", serviceId, instanceId);
+            logger.info("更新服务实例灰度状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
         } finally {
             lock.unlock();
         }

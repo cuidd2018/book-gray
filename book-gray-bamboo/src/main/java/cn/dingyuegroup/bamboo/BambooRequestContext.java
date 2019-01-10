@@ -27,7 +27,7 @@ public class BambooRequestContext {
     }
 
 
-    public static BambooRequestContext currentRequestCentxt() {
+    public static BambooRequestContext currentRequestContext() {
         return CURRENT_CONTEXT.get();
     }
 

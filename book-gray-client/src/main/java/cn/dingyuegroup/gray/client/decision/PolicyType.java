@@ -3,20 +3,20 @@ package cn.dingyuegroup.gray.client.decision;
 public enum PolicyType {
 
     /**
-     * @see cn.springcloud.bamboo.BambooRequest#params
+     * @see cn.dingyuegroup.bamboo.BambooRequest#params
      */
     REQUEST_PARAMETER,
     /**
-     * @see cn.springcloud.bamboo.BambooRequest#headers
+     * @see cn.dingyuegroup.bamboo.BambooRequest#headers
      */
     REQUEST_HEADER,
 
     /**
-     * @see cn.springcloud.bamboo.BambooRequest#ip
+     * @see cn.dingyuegroup.bamboo.BambooRequest#ip
      */
     REQUEST_IP,
     /**
-     * @see cn.springcloud.bamboo.BambooRequestContext#params
+     * @see cn.dingyuegroup.bamboo.BambooRequestContext#params
      */
     CONTEXT_PARAMS
 }

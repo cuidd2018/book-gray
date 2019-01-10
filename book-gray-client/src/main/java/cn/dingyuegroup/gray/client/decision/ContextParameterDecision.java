@@ -21,7 +21,7 @@ public class ContextParameterDecision implements GrayDecision {
 
     @Override
     public boolean test(BambooRequest bambooRequest) {
-        BambooRequestContext bambooRequestContext = BambooRequestContext.currentRequestCentxt();
+        BambooRequestContext bambooRequestContext = BambooRequestContext.currentRequestContext();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (!Objects.equals(entry.getValue(), bambooRequestContext.getParameter(entry.getKey()))) {
                 return false;

@@ -31,7 +31,6 @@ public class HttpInformationClient implements InformationClient {
         String url = this.baseUrl + "/gray/services/enable";
         ParameterizedTypeReference<List<GrayService>> typeRef = new ParameterizedTypeReference<List<GrayService>>() {
         };
-
         try {
             ResponseEntity<List<GrayService>> responseEntity = rest.exchange(url, HttpMethod.GET, null, typeRef);
             return responseEntity.getBody();
@@ -74,13 +73,9 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void addGrayInstance(String serviceId, String instanceId) {
-        GrayInstance grayInstance = new GrayInstance();
-        grayInstance.setInstanceId(instanceId);
-        grayInstance.setServiceId(serviceId);
-
-        String url = this.baseUrl + "/gray/services/{serviceId}/instance";
+        String url = this.baseUrl + "/gray/services/instance/add?serviceId={1}&instanceId={2}";
         try {
-            rest.postForEntity(url, grayInstance, null, serviceId);
+            ResponseEntity<Void> responseEntity = rest.getForEntity(url, Void.class, serviceId, instanceId);
         } catch (RuntimeException e) {
             log.error("灰度服务实例下线失败", e);
             throw e;

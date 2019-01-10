@@ -47,7 +47,7 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
     @Override
     public Server choose(Object key) {
         ILoadBalancer lb = getLoadBalancer();
-        BambooRequestContext requestContext = BambooRequestContext.currentRequestCentxt();
+        BambooRequestContext requestContext = BambooRequestContext.currentRequestContext();
         String serviceId = requestContext.getServiceId();
         if (requestContext != null && getGrayManager().isOpen(serviceId)) {
             GrayService grayService = getGrayManager().grayService(serviceId);

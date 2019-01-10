@@ -34,8 +34,8 @@ public class BambooApiVersionPredicate extends AbstractServerPredicate {
         } else if (BambooRequestContext.instance() != null) {
             return BambooRequestContext.instance().getLoadBalancerKey();
         } else */
-        if (BambooRequestContext.currentRequestCentxt() != null) {
-            BambooRequestContext bambooRequestContext = BambooRequestContext.currentRequestCentxt();
+        if (BambooRequestContext.currentRequestContext() != null) {
+            BambooRequestContext bambooRequestContext = BambooRequestContext.currentRequestContext();
             String apiVersion = bambooRequestContext.getApiVersion();
             if (!StringUtils.isEmpty(apiVersion)) {
                 return BambooLoadBalancerKey.builder().apiVersion(apiVersion)

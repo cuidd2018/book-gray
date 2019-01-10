@@ -9,7 +9,7 @@ import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -62,9 +62,8 @@ public class GrayServiceApiImpl implements GrayServiceApi {
     }
 
     @Override
-    public ResponseEntity<Void> instance(@PathVariable("serviceId") String serviceId, @RequestBody GrayInstance instance) {
-        /*instance.setServiceId(serviceId);
-        grayServiceManager.addGrayInstance(instance);*/
+    public ResponseEntity<Void> addInstance(@RequestParam("serviceId") String serviceId, @RequestParam String instanceId) {
+        grayServiceManager.editInstanceStatus(serviceId, instanceId, 0);
         return ResponseEntity.ok().build();
     }
 

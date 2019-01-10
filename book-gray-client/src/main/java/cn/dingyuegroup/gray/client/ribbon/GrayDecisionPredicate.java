@@ -20,7 +20,7 @@ public class GrayDecisionPredicate extends AbstractServerPredicate {
 
     @Override
     public boolean apply(PredicateKey input) {
-        BambooRequestContext bambooRequestContext = BambooRequestContext.currentRequestCentxt();
+        BambooRequestContext bambooRequestContext = BambooRequestContext.currentRequestContext();
         if (bambooRequestContext == null || bambooRequestContext.getBambooRequest() == null) {
             return false;
         }
