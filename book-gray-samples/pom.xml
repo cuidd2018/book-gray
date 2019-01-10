@@ -18,6 +18,12 @@
         <module>book-gray-eureka-sample</module>
         <module>book-gray-client-zuul-sample</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+    </dependencies>
     <build>
         <pluginManagement>
             <plugins>

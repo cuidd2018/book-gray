@@ -1,14 +1,13 @@
 package cn.dingyuegroup.gray.server.manager;
 
-import cn.dingyuegroup.gray.core.*;
+import cn.dingyuegroup.gray.core.GrayInstance;
+import cn.dingyuegroup.gray.core.GrayPolicy;
+import cn.dingyuegroup.gray.core.GrayPolicyGroup;
+import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
 import cn.dingyuegroup.gray.server.context.GrayServerContext;
-import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
-import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayInstancePolicyGroupMapper;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity;
+import cn.dingyuegroup.gray.server.mysql.dao.*;
+import cn.dingyuegroup.gray.server.mysql.entity.*;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,151 +19,156 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.stream.Collectors;
 
 /**
- * 维护一个Map, 用来管理GrayService，key是service id。
- * 并且每隔一段时间就调用EurekaGrayServerEvictor，检查列表中的实例是否下线，将下线的服务从灰度列表中删除。
+ * Created by 170147 on 2019/1/8.
  */
 @Service
 public class DefaultGrayServiceManager implements GrayServiceManager {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Lock lock = new ReentrantLock();
-    private Timer evictionTimer = new Timer("Gray-EvictionTimer", true);
-
     @Autowired
-    private AbstractGrayService grayService;
-    @Autowired
-    private GrayServerConfig serverConfig;
+    private GrayServiceMapper grayServiceMapper;
     @Autowired
     private GrayInstanceMapper grayInstanceMapper;
     @Autowired
     @Qualifier(value = "GrayInstancePolicyGroupMapperProxy")
     private GrayInstancePolicyGroupMapper grayInstancePolicyGroupMapper;
+    @Autowired
+    private GrayPolicyGroupMapper grayPolicyGroupMapper;
+    @Autowired
+    private GrayPolicyMapper grayPolicyMapper;
+    @Autowired
+    private GrayPolicyGroupPolicyMapper grayPolicyGroupPolicyMapper;
+    @Autowired
+    private GrayServerConfig serverConfig;
+    @Autowired
+    private AbstractGrayService abstractGrayService;
 
+    private Lock lock = new ReentrantLock();
+
+    private Timer evictionTimer = new Timer("Gray-EvictionTimer", true);
+
+    /**
+     * 获取全部的灰度服务实例
+     *
+     * @return
+     */
     @Override
-    public void addGrayInstance(GrayInstance instance) {
-        lock.lock();
-        GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instance.getInstanceId());
-        try {
-            if (entity == null) {
-                entity = new GrayInstanceEntity();
-                entity.setInstanceId(instance.getInstanceId());
-                entity.setServiceId(instance.getServiceId());
-                entity.setOpenGray(instance.isOpenGray() ? 1 : 0);
-                grayInstanceMapper.insert(entity);
-            }
-        } finally {
-            lock.unlock();
+    public List<GrayService> getServices() {
+        List<GrayService> services = new ArrayList<>();
+        //获取持久化的服务信息
+        List<GrayServiceEntity> entityList = grayServiceMapper.selectAll();
+        if (entityList == null) {
+            entityList = new ArrayList<>();
         }
+        //从eureka获取在线服务
+        List<String> upServiceIds = abstractGrayService.upServiceIds();
+        List<String> entityIds = entityList.stream().map(GrayServiceEntity::getServiceId).collect(Collectors.toList());
+        entityIds.removeAll(upServiceIds);//去重
+        upServiceIds.addAll(entityIds);//取并集
+        upServiceIds.stream().forEach(e -> {
+            GrayService grayService = getGrayService(e);
+            services.add(grayService);
+        });
+        return services;
     }
 
-    @Override
-    public void deleteGrayInstance(String serviceId, String instanceId) {
-        lock.lock();
-        try {
-            int r = grayInstanceMapper.deleteByInstanceId(instanceId);
-            logger.info("删除服务实例serviceId:{},instanceId:{},结果:{}", serviceId, instanceId, r);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public void addGrayPolicy(String serviceId, String instanceId, String policyGroupId, GrayPolicy policy) {
-        GrayInstance grayInstance = getGrayInstane(serviceId, instanceId);
-        if (grayInstance != null) {
-            grayInstance.addGrayPolicy(policyGroupId, policy);
-        }
-    }
-
-    @Override
-    public void deleteGrayPolicy(String serviceId, String instanceId, String policyGroupId, String policyId) {
-        GrayInstance grayInstance = getGrayInstane(serviceId, instanceId);
-        if (grayInstance != null) {
-            grayInstance.removeGrayPolicy(policyGroupId, policyId);
-        }
-    }
-
-    @Override
-    public void addGrayPolicyGroup(String serviceId, String instanceId, GrayPolicyGroup policyGroup) {
-        GrayInstance grayInstance = getGrayInstane(serviceId, instanceId);
-        if (grayInstance != null) {
-            grayInstance.addGrayPolicyGroup(policyGroup);
-        }
-    }
-
-    @Override
-    public void deleteGrayPolicyGroup(String serviceId, String instanceId, String policyGroupId) {
-        GrayInstance grayInstance = getGrayInstane(serviceId, instanceId);
-        if (grayInstance != null) {
-            grayInstance.removeGrayPolicyGroup(policyGroupId);
-        }
-    }
-
-
-    @Override
-    public Collection<GrayService> allGrayService() {
-        List<GrayService> grayServiceList = new ArrayList<>();
-        //为了信息准确，从eureka获取服务列表
-        List<GrayServiceVO> list = grayService.services();
-        if (CollectionUtils.isEmpty(list)) {
-            return grayServiceList;
-        }
-        for (GrayServiceVO vo : list) {
-            GrayService grayService = getGrayService(vo.getServiceId());
-            if (grayService != null) {//注意判空
-                grayServiceList.add(grayService);
-            }
-        }
-        return grayServiceList;
-    }
-
+    /**
+     * 获取服务信息
+     *
+     * @param serviceId
+     * @return
+     */
     @Override
     public GrayService getGrayService(String serviceId) {
-        //为了信息准确，从eureka获取服务的实例
-        List<GrayInstanceVO> grayInstanceVOList = grayService.instances(serviceId);
-        if (CollectionUtils.isEmpty(grayInstanceVOList)) {
-            return null;
+        GrayService grayService = new GrayService();
+        grayService.setServiceId(serviceId);
+        grayService.setStatus(false);
+        GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
+        if (entity != null) {
+            grayService.setAppName(entity.getAppName());
         }
-        List<GrayInstance> grayInstanceList = new ArrayList<>();
-        grayInstanceVOList.stream().forEach(e -> {
-            List<GrayPolicyGroup> grayPolicyGroups = getPolicyGroups(e.getInstanceId());
-            GrayInstance grayInstance = new GrayInstance();
-            grayInstance.setInstanceId(e.getInstanceId());
-            grayInstance.setOpenGray(e.isOpenGray());
-            grayInstance.setServiceId(serviceId);
-            grayInstance.setGrayPolicyGroups(grayPolicyGroups);
-            grayInstanceList.add(grayInstance);
-        });
-        GrayService grayService = new GrayService(serviceId, grayInstanceList);
+        //从eureka获取在线服务
+        List<String> upServiceIds = abstractGrayService.upServiceIds();
+        if (!CollectionUtils.isEmpty(upServiceIds)) {
+            Optional<String> optional = upServiceIds.parallelStream().filter(e -> e.equals(serviceId)).findAny();
+            if (optional.isPresent()) {
+                grayService.setStatus(true);//在线状态
+            }
+        }
+        List<GrayInstance> grayInstances = getInstances(serviceId);
+        grayService.setGrayInstances(grayInstances);
         return grayService;
     }
 
-
+    /**
+     * 获取服务下的所有实例
+     *
+     * @param serviceId
+     * @return
+     */
     @Override
-    public GrayInstance getGrayInstane(String serviceId, String instanceId) {
-        GrayService grayService = getGrayService(serviceId);
-        if (grayService != null) {
-            return grayService.getGrayInstance(instanceId);
+    public List<GrayInstance> getInstances(String serviceId) {
+        List<GrayInstance> list = new ArrayList<>();
+        //获取持久化的服务实例信息
+        List<GrayInstanceEntity> grayInstanceEntityList = grayInstanceMapper.selectByServiceId(serviceId);
+        if (grayInstanceEntityList == null) {
+            grayInstanceEntityList = new ArrayList<>();
         }
-        return null;
+        //从eureka获取在线服务实例详细信息
+        List<String> upIds = abstractGrayService.upInstanceIds(serviceId);
+        List<String> entityIds = grayInstanceEntityList.stream().map(GrayInstanceEntity::getInstanceId).collect(Collectors.toList());
+        entityIds.removeAll(upIds);//去重
+        upIds.addAll(entityIds);//取并集
+        upIds.stream().forEach(e -> {
+            GrayInstance grayInstance = getGrayInstance(serviceId, e);
+            list.add(grayInstance);
+        });
+        return list;
     }
 
+    /**
+     * 获取某个服务实例下的所有灰度策略组
+     *
+     * @param instanceId
+     * @return
+     */
     @Override
-    public List<GrayPolicyGroup> getPolicyGroups(String instanceId) {
-        List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(instanceId);
-        if (CollectionUtils.isEmpty(grayPolicyGroupEntities)) {
-            return new ArrayList<>();
+    public GrayInstance getGrayInstance(String serviceId, String instanceId) {
+        List<GrayInstance> instanceInfos = abstractGrayService.upInstances(serviceId);
+        if (!CollectionUtils.isEmpty(instanceInfos)) {
+            Optional<GrayInstance> optional = instanceInfos.stream().filter(e -> e.getInstanceId().equals(instanceId)).findAny();
+            if (optional.isPresent()) {
+                return optional.get();
+            }
         }
-        List<GrayPolicyGroup> grayPolicyGroups = new ArrayList<>();
+        GrayInstance grayInstance = new GrayInstance();
+        grayInstance.setServiceId(serviceId);
+        grayInstance.setInstanceId(instanceId);
+        grayInstance.setStatus(false);//不在线
+        grayInstance.setOpenGray(true);//默认是开启灰度状态
+        GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceId);
+        if (grayInstanceEntity != null) {
+            grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
+        }
+        GrayServiceEntity grayServiceEntity = grayServiceMapper.selectByServiceId(serviceId);
+        if (grayServiceEntity != null) {
+            grayInstance.setAppName(grayServiceEntity.getAppName());
+        }
+        //获取服务实例下的灰度策略组集合
+        List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(instanceId);
+        if (grayPolicyGroupEntities == null) {
+            grayPolicyGroupEntities = new ArrayList<>();
+        }
         grayPolicyGroupEntities.stream().forEach(f -> {
             GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
             grayPolicyGroup.setPolicyGroupId(f.getPolicyGroupId());
             grayPolicyGroup.setAlias(f.getAlias());
             grayPolicyGroup.setEnable(f.getEnable() == 0 ? false : true);
+            //获取策略组下的策略集合
             f.getGrayPolicyEntities().stream().forEach(m -> {
                 GrayPolicy grayPolicy = new GrayPolicy();
                 grayPolicy.setPolicyId(m.getPolicyId());
@@ -173,43 +177,267 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 grayPolicy.setInfos(new HashMap<>());
                 grayPolicyGroup.addGrayPolicy(grayPolicy);
             });
-            grayPolicyGroups.add(grayPolicyGroup);
+            grayInstance.getGrayPolicyGroups().add(grayPolicyGroup);
         });
-        return grayPolicyGroups;
+        return grayInstance;
     }
 
+    /**
+     * 更新服务实例的灰度状态
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param status
+     * @return
+     */
     @Override
-    public boolean updateInstanceStatus(String serviceId, String instanceId, int status) {
-        GrayInstance grayInstance = getGrayInstane(serviceId, instanceId);
-        if (grayInstance == null) {
-            grayInstance = new GrayInstance();
-            grayInstance.setServiceId(serviceId);
-            grayInstance.setInstanceId(instanceId);
+    public boolean editInstanceStatus(String serviceId, String instanceId, int status) {
+        lock.lock();
+        try {
+            GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instanceId);
+            if (entity == null) {
+                entity = new GrayInstanceEntity();
+                entity.setInstanceId(instanceId);
+                entity.setServiceId(serviceId);
+                entity.setOpenGray(status);
+                grayInstanceMapper.insert(entity);
+            } else {
+                entity.setOpenGray(status);
+                grayInstanceMapper.updateByInstanceId(entity);
+            }
+            logger.info("更新服务实例灰度状态serviceId:{},instanceId:{}", serviceId, instanceId);
+        } finally {
+            lock.unlock();
         }
-        addGrayInstance(grayInstance);//持久化服务实例
-        grayInstance.setOpenGray(status == 1);
-        GrayInstanceEntity entity = new GrayInstanceEntity();
-        entity.setInstanceId(instanceId);
-        entity.setOpenGray(status);
-        //把灰度状态持久化
-        int r = grayInstanceMapper.updateByInstanceId(entity);
-        logger.info("更新服务实例灰度状态serviceId:{},instanceId:{},r:{}", serviceId, instanceId, r);
         return true;
     }
 
+    /**
+     * 更新策略组的状态
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param groupId
+     * @param enable
+     * @return
+     */
     @Override
-    public boolean updatePolicyGroupStatus(String serviceId, String instanceId, String groupId, int enable) {
-        GrayInstance grayInstance = getGrayInstane(serviceId, instanceId);
-        if (grayInstance != null) {
-            GrayPolicyGroup policyGroup = grayInstance.getGrayPolicyGroup(groupId);
-            if (policyGroup != null) {
-                policyGroup.setEnable(enable == 1);
-                return true;
-            }
+    public boolean editPolicyGroupStatus(String serviceId, String instanceId, String groupId, int enable) {
+        GrayPolicyGroupEntity entity = grayPolicyGroupMapper.selectByPolicyGroupId(groupId);
+        if (entity == null) {
+            return false;
         }
+        entity.setEnable(enable);
+        grayPolicyGroupMapper.updateByByPolicyGroupId(entity);
+        return true;
+    }
+
+    /**
+     * 添加策略组
+     *
+     * @param alias
+     * @param enable
+     * @return
+     */
+    @Override
+    public boolean addPolicyGroup(String alias, Integer enable) {
+        GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
+        entity.setPolicyGroupId(GrayPolicyGroup.genId());
+        entity.setIsDelete(0);
+        entity.setEnable(enable);
+        entity.setAlias(alias);
+        grayPolicyGroupMapper.insert(entity);
+        return true;
+    }
+
+    /**
+     * 删除策略组
+     *
+     * @param groupId
+     * @return
+     */
+    @Override
+    public boolean delPolicyGroup(String groupId) {
+        grayPolicyGroupMapper.deleteByGroupId(groupId);
+        return true;
+    }
+
+    /**
+     * 编辑策略组
+     *
+     * @param groupId
+     * @param alias
+     * @param enable
+     * @return
+     */
+    @Override
+    public boolean editPolicyGroup(String groupId, String alias, Integer enable) {
+        GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
+        entity.setPolicyGroupId(groupId);
+        entity.setEnable(enable);
+        entity.setAlias(alias);
+        grayPolicyGroupMapper.editByByPolicyGroupId(entity);
         return false;
     }
 
+    /**
+     * 添加策略
+     *
+     * @param policyType
+     * @param policy
+     * @return
+     */
+    @Override
+    public boolean addPolicy(String policyType, String policy) {
+        GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
+        grayPolicyEntity.setPolicyId(GrayPolicy.genId());
+        grayPolicyEntity.setPolicy(policy);
+        grayPolicyEntity.setCreateTime(new Date());
+        grayPolicyEntity.setIsDelete(0);
+        grayPolicyEntity.setPolicyType(policyType);
+        grayPolicyMapper.insert(grayPolicyEntity);
+        return true;
+    }
+
+    /**
+     * 编辑策略
+     *
+     * @param policyId
+     * @param policyType
+     * @param policy
+     * @return
+     */
+    @Override
+    public boolean editPolicy(String policyId, String policyType, String policy) {
+        GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
+        grayPolicyEntity.setPolicyId(policyId);
+        grayPolicyEntity.setPolicy(policy);
+        grayPolicyEntity.setUpdateTime(new Date());
+        grayPolicyEntity.setPolicyType(policyType);
+        grayPolicyMapper.updateByPolicyId(grayPolicyEntity);
+        return true;
+    }
+
+    /**
+     * 删除策略组
+     *
+     * @param policyId
+     * @return
+     */
+    @Override
+    public boolean delPolicy(String policyId) {
+        grayPolicyMapper.deleteByPolicyId(policyId);
+        return true;
+    }
+
+    /**
+     * 策略组添加策略
+     *
+     * @param groupId
+     * @param policyId
+     * @return
+     */
+    @Override
+    public boolean addPolicyGroupPolicy(String groupId, String policyId) {
+        GrayPolicyGroupPolicy grayPolicyGroupPolicy = new GrayPolicyGroupPolicy();
+        grayPolicyGroupPolicy.setPolicyGroupId(groupId);
+        grayPolicyGroupPolicy.setPolicyId(policyId);
+        grayPolicyGroupPolicyMapper.insert(grayPolicyGroupPolicy);
+        return true;
+    }
+
+    /**
+     * 策略组删除策略
+     *
+     * @param groupId
+     * @param policyId
+     * @return
+     */
+    @Override
+    public boolean delPolicyGroupPolicy(String groupId, String policyId) {
+        GrayPolicyGroupPolicy grayPolicyGroupPolicy = new GrayPolicyGroupPolicy();
+        grayPolicyGroupPolicy.setPolicyGroupId(groupId);
+        grayPolicyGroupPolicy.setPolicyId(policyId);
+        grayPolicyGroupPolicyMapper.deleteByGroupIdAndPolicyId(grayPolicyGroupPolicy);
+        return true;
+    }
+
+    /**
+     * 添加策略组
+     *
+     * @param serviceId
+     * @return
+     */
+    @Override
+    public boolean addInstancePolicyGroup(String serviceId, String instanceId, String groupId) {
+        GrayPolicyGroupEntity grayPolicyGroupEntity = grayPolicyGroupMapper.selectByPolicyGroupId(groupId);
+        if (grayPolicyGroupEntity == null) {
+            return false;
+        }
+        GrayInstancePolicyGroup grayInstancePolicyGroup = new GrayInstancePolicyGroup();
+        grayInstancePolicyGroup.setPolicyGroupId(groupId);
+        grayInstancePolicyGroup.setInstanceId(instanceId);
+        GrayInstancePolicyGroup entity = grayInstancePolicyGroupMapper.selectByInstanceIdAndGroupId(grayInstancePolicyGroup);
+        if (entity == null) {
+            grayInstancePolicyGroupMapper.insert(grayInstancePolicyGroup);
+        }
+        return true;
+    }
+
+    /**
+     * 服务实例删除灰度策略组
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param groupId
+     * @return
+     */
+    @Override
+    public boolean delInstancePolicyGroup(String serviceId, String instanceId, String groupId) {
+        GrayInstancePolicyGroup grayInstancePolicyGroup = new GrayInstancePolicyGroup();
+        grayInstancePolicyGroup.setPolicyGroupId(groupId);
+        grayInstancePolicyGroup.setInstanceId(instanceId);
+        grayInstancePolicyGroupMapper.deleteByInstanceIdAndGroupId(grayInstancePolicyGroup);
+        return true;
+    }
+
+    /**
+     * 获取服务实例下的灰度策略组
+     *
+     * @param serviceId
+     * @param instanceId
+     * @return
+     */
+    @Override
+    public List<GrayPolicyGroup> getGrayPolicyGroup(String serviceId, String instanceId) {
+        List<GrayPolicyGroup> list = new ArrayList<>();
+        //获取服务实例下的灰度策略组集合
+        List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(instanceId);
+        if (grayPolicyGroupEntities == null) {
+            grayPolicyGroupEntities = new ArrayList<>();
+        }
+        grayPolicyGroupEntities.stream().forEach(f -> {
+            GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
+            grayPolicyGroup.setPolicyGroupId(f.getPolicyGroupId());
+            grayPolicyGroup.setAlias(f.getAlias());
+            grayPolicyGroup.setEnable(f.getEnable() == 0 ? false : true);
+            //获取策略组下的策略集合
+            f.getGrayPolicyEntities().stream().forEach(m -> {
+                GrayPolicy grayPolicy = new GrayPolicy();
+                grayPolicy.setPolicyId(m.getPolicyId());
+                grayPolicy.setPolicyType(m.getPolicyType());
+                //TODO
+                grayPolicy.setInfos(new HashMap<>());
+                grayPolicyGroup.addGrayPolicy(grayPolicy);
+            });
+            list.add(grayPolicyGroup);
+        });
+        return list;
+    }
+
+    /**
+     * 打开检查
+     */
     @Override
     public void openForWork() {
         evictionTimer.schedule(new EvictionTask(),
@@ -219,14 +447,12 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
 
     @Override
     public void shutdown() {
-        evictionTimer.cancel();
-    }
 
+    }
 
     protected void evict() {
         GrayServerContext.getGrayServerEvictor().evict(this);
     }
-
 
     class EvictionTask extends TimerTask {
 

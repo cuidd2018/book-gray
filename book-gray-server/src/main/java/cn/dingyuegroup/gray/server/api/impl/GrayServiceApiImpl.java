@@ -6,7 +6,6 @@ import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.api.GrayServiceApi;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
-import cn.dingyuegroup.gray.server.manager.GrayServiceManager2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,19 +20,17 @@ import java.util.List;
 public class GrayServiceApiImpl implements GrayServiceApi {
     @Autowired
     private GrayServiceManager grayServiceManager;
-    @Autowired
-    private GrayServiceManager2 grayServiceManager2;
 
 
     @Override
     public List<GrayService> services() {
-        List<GrayService> grayServices = grayServiceManager2.getServices();
+        List<GrayService> grayServices = grayServiceManager.getServices();
         return new ArrayList<>(grayServices);
     }
 
     @Override
     public List<GrayService> enableServices() {
-        Collection<GrayService> grayServices = grayServiceManager2.getServices();
+        Collection<GrayService> grayServices = grayServiceManager.getServices();
         List<GrayService> serviceList = new ArrayList<>(grayServices.size());
         for (GrayService grayService : grayServices) {
             if (grayService.isOpenGray()) {
@@ -45,17 +42,17 @@ public class GrayServiceApiImpl implements GrayServiceApi {
 
     @Override
     public GrayService service(@PathVariable("serviceId") String serviceId) {
-        return grayServiceManager2.getGrayService(serviceId);
+        return grayServiceManager.getGrayService(serviceId);
     }
 
     @Override
     public List<GrayInstance> instances(@PathVariable("serviceId") String serviceId) {
-        return grayServiceManager2.getGrayService(serviceId).getGrayInstances();
+        return grayServiceManager.getGrayService(serviceId).getGrayInstances();
     }
 
     @Override
     public GrayInstance getInstance(@PathVariable("serviceId") String serviceId, String instanceId) {
-        return grayServiceManager2.getGrayInstance(serviceId, instanceId);
+        return grayServiceManager.getGrayInstance(serviceId, instanceId);
     }
 
     @Override
@@ -74,24 +71,24 @@ public class GrayServiceApiImpl implements GrayServiceApi {
 
     @Override
     public List<GrayPolicyGroup> policyGroups(@PathVariable("serviceId") String serviceId, String instanceId) {
-        return grayServiceManager2.getGrayInstance(serviceId, instanceId).getGrayPolicyGroups();
+        return grayServiceManager.getGrayInstance(serviceId, instanceId).getGrayPolicyGroups();
     }
 
     @Override
     public GrayPolicyGroup policyGroup(@PathVariable("serviceId") String serviceId, String instanceId,
                                        @PathVariable("groupId") String groupId) {
-        return grayServiceManager2.getGrayInstance(serviceId, instanceId).getGrayPolicyGroup(groupId);
+        return grayServiceManager.getGrayInstance(serviceId, instanceId).getGrayPolicyGroup(groupId);
     }
 
     @Override
     public List<GrayPolicy> policies(@PathVariable("serviceId") String serviceId, String instanceId,
                                      @PathVariable("groupId") String groupId) {
-        return grayServiceManager2.getGrayInstance(serviceId, instanceId).getGrayPolicyGroup(groupId).getList();
+        return grayServiceManager.getGrayInstance(serviceId, instanceId).getGrayPolicyGroup(groupId).getList();
     }
 
     @Override
     public GrayPolicy policy(@PathVariable("serviceId") String serviceId, String instanceId,
                              @PathVariable("groupId") String groupId, @PathVariable("policyId") String policyId) {
-        return grayServiceManager2.getGrayInstance(serviceId, instanceId).getGrayPolicyGroup(groupId).getGrayPolicy(policyId);
+        return grayServiceManager.getGrayInstance(serviceId, instanceId).getGrayPolicyGroup(groupId).getGrayPolicy(policyId);
     }
 }

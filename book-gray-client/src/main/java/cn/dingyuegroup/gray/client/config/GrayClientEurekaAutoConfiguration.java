@@ -3,14 +3,17 @@ package cn.dingyuegroup.gray.client.config;
 import cn.dingyuegroup.gray.client.context.InstanceLocalInfo;
 import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnBean(EurekaClient.class)
+@AutoConfigureAfter(EurekaClientAutoConfiguration.class)
 public class GrayClientEurekaAutoConfiguration {
 
     @Bean

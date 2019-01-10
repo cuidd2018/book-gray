@@ -1,179 +1,60 @@
 package cn.dingyuegroup.gray.server.service;
 
 import cn.dingyuegroup.gray.core.GrayInstance;
-import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
-import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
-import cn.dingyuegroup.gray.server.model.fo.GrayPolicyGroupFO;
-import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
-import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
-import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Created by 170147 on 2019/1/9.
+ */
 public abstract class AbstractGrayService {
 
-    private GrayServiceManager grayServiceManager;
-    private DiscoveryClient discoveryClient;
-    private GrayServiceMapper grayServiceMapper;
+    private final DiscoveryClient discoveryClient;
+    private final GrayServiceMapper grayServiceMapper;
 
-    public AbstractGrayService(GrayServiceManager grayServiceManager, DiscoveryClient discoveryClient,
-                               GrayServiceMapper grayServiceMapper) {
-        this.grayServiceManager = grayServiceManager;
+    public AbstractGrayService(DiscoveryClient discoveryClient, GrayServiceMapper grayServiceMapper) {
         this.discoveryClient = discoveryClient;
         this.grayServiceMapper = grayServiceMapper;
     }
 
     /**
-     * 返回所有服务
+     * 获取所有在线的服务
      *
-     * @return 灰度服务VO集合
+     * @return
      */
-    public List<GrayServiceVO> services() {
-        List<GrayServiceVO> services = new ArrayList<>();
-        //获取持久化的服务信息
-        List<GrayServiceEntity> entityList = grayServiceMapper.selectAll();
-        entityList.stream().forEach(e -> {
-            GrayServiceVO vo = GrayServiceVO.builder()
-                    .appName(e.getAppName())
-                    .status(false)//默认是不在线的
-                    .serviceId(e.getServiceId())
-                    .build();
-            services.add(vo);
-        });
-        //从eureka获取在线服务
-        List<String> upServiceIds = discoveryClient.getServices();
+    public List<GrayService> upServices() {
+        List<String> upServiceIds = upServiceIds();
+        List<GrayService> list = new ArrayList<>();
         upServiceIds.stream().forEach(e -> {
-            Optional<GrayServiceVO> optional = services.parallelStream().filter(f -> f.getServiceId().equals(e)).findAny();
-            if (optional.isPresent()) {
-                GrayServiceVO vo = optional.get();
-                vo.setStatus(true);
-            } else {
-                GrayServiceVO vo = GrayServiceVO.builder()
-                        .serviceId(e)
-                        .status(true)
-                        .build();
-                services.add(vo);
+            GrayService grayService = new GrayService();
+            grayService.setServiceId(e);
+            GrayServiceEntity entity = grayServiceMapper.selectByServiceId(e);
+            if (entity != null) {
+                grayService.setAppName(entity.getAppName());
             }
+            grayService.setStatus(true);//在线
+            List<GrayInstance> grayInstances = upInstances(e);
+            grayService.setGrayInstances(grayInstances);
+            list.add(grayService);
         });
+        return list;
+    }
 
-        for (GrayServiceVO grayServiceVO : services) {
-            GrayService grayService = grayServiceManager.getGrayService(grayServiceVO.getServiceId());
-            if (grayService != null) {
-                grayServiceVO.setInstanceSize(grayService.getGrayInstances().size());
-                grayServiceVO.setHasGrayInstances(grayService.isOpenGray());
-                grayServiceVO.setHasGrayPolicies(grayService.hasGrayPolicy());
-            }
+    public List<String> upServiceIds() {
+        List<String> upServiceIds = discoveryClient.getServices();
+        if (CollectionUtils.isEmpty(upServiceIds)) {
+            return new ArrayList<>();
         }
-        return services;
+        return upServiceIds;
     }
 
-    /**
-     * 返回服务实例列表
-     *
-     * @param serviceId 服务id
-     * @return 灰度服务实例VO列表
-     */
-    public abstract List<GrayInstanceVO> instances(String serviceId);
+    public abstract List<String> upInstanceIds(String serviceId);
 
-    public ResponseEntity<Void> editInstanceStatus(String serviceId, String instanceId, int status) {
-        boolean b = grayServiceManager.updateInstanceStatus(serviceId, instanceId, status);
-        if (b) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-
-    /**
-     * 服务实例的所有灰度策略组
-     *
-     * @param serviceId  服务id
-     * @param instanceId 实例id
-     * @return 灰策略组VO列表
-     */
-    public abstract ResponseEntity<List<GrayPolicyGroupVO>> policyGroups(String serviceId, String instanceId);
-
-
-    /**
-     * 灰度策略组
-     *
-     * @param serviceId  服务id
-     * @param instanceId 实例id
-     * @param groupId    灰度策略组id
-     * @return 灰度策略组VO
-     */
-    public abstract ResponseEntity<GrayPolicyGroupVO> policyGroup(String serviceId, String instanceId, String groupId);
-
-
-    public ResponseEntity<Void> editPolicyGroupStatus(String serviceId, String instanceId, String groupId, int enable) {
-
-        return grayServiceManager.updatePolicyGroupStatus(serviceId, instanceId, groupId, enable)
-                ? ResponseEntity.ok().build() :
-                ResponseEntity.badRequest().build();
-    }
-
-
-    /**
-     * 添加策略组
-     *
-     * @param serviceId     服务id
-     * @param policyGroupFO 灰度策略组FO
-     * @return Void
-     */
-    public ResponseEntity<Void> policyGroup(String serviceId, GrayPolicyGroupFO policyGroupFO) {
-        GrayInstance grayInstance = grayServiceManager.getGrayInstane(serviceId, policyGroupFO.getInstanceId());
-        if (grayInstance == null) {
-            grayInstance = new GrayInstance();
-            grayInstance.setServiceId(serviceId);
-            grayInstance.setInstanceId(policyGroupFO.getInstanceId());
-            grayServiceManager.addGrayInstance(grayInstance);
-            grayInstance = grayServiceManager.getGrayInstane(serviceId, policyGroupFO.getInstanceId());
-        }
-
-        grayInstance.addGrayPolicyGroup(policyGroupFO.toGrayPolicyGroup());
-
-        return ResponseEntity.ok().build();
-    }
-
-
-    /**
-     * 删除策略组
-     *
-     * @param serviceId     服务id
-     * @param instanceId    实例id
-     * @param policyGroupId 灰度策略组id
-     * @return Void
-     */
-    public ResponseEntity<Void> delPolicyGroup(String serviceId, String instanceId, String policyGroupId) {
-        GrayInstance grayInstance = grayServiceManager.getGrayInstane(serviceId, instanceId);
-        if (grayInstance != null) {
-            if (grayInstance.removeGrayPolicyGroup(policyGroupId) != null && grayInstance.getGrayPolicyGroups()
-                    .isEmpty()) {
-                grayServiceManager.deleteGrayInstance(serviceId, instanceId);
-            }
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-
-    protected GrayPolicyGroupVO getPolicyGroup(String serviceId, String appName, String instanceId, GrayPolicyGroup policyGroup) {
-        GrayPolicyGroupVO vo = new GrayPolicyGroupVO();
-        vo.setAppName(appName);
-        vo.setInstanceId(instanceId);
-        vo.setServiceId(serviceId);
-        vo.setAlias(policyGroup.getAlias());
-        vo.setPolicyGroupId(policyGroup.getPolicyGroupId());
-        vo.setPolicies(policyGroup.getList());
-        vo.setEnable(policyGroup.isEnable());
-        return vo;
-    }
-
+    public abstract List<GrayInstance> upInstances(String serviceId);
 }

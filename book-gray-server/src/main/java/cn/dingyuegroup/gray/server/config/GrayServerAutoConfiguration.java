@@ -1,12 +1,8 @@
 package cn.dingyuegroup.gray.server.config;
 
 import cn.dingyuegroup.bamboo.BambooConstants;
-import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfigBean;
 import cn.dingyuegroup.gray.server.context.GrayServerInitializingBean;
-import cn.dingyuegroup.gray.server.manager.DefaultGrayServiceManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

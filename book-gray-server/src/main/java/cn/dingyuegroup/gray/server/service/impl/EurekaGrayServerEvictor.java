@@ -24,7 +24,7 @@ public class EurekaGrayServerEvictor implements GrayServerEvictor {
 
     @Override
     public void evict(GrayServiceManager serviceManager) {
-        Collection<GrayService> grayServices = serviceManager.allGrayService();
+        Collection<GrayService> grayServices = serviceManager.getServices();
         grayServices.forEach(grayService -> {
             grayService.getGrayInstances().forEach(grayInstance -> {
                 evict(serviceManager, grayInstance);
@@ -36,7 +36,7 @@ public class EurekaGrayServerEvictor implements GrayServerEvictor {
 
     private void evict(GrayServiceManager serviceManager, GrayInstance grayInstance) {
         if (isDownline(grayInstance)) {
-            serviceManager.deleteGrayInstance(grayInstance.getServiceId(), grayInstance.getInstanceId());
+            //serviceManager.deleteGrayInstance(grayInstance.getServiceId(), grayInstance.getInstanceId());
         }
     }
 
