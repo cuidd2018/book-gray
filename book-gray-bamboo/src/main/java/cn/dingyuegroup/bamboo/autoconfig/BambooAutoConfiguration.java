@@ -31,7 +31,6 @@ import java.util.List;
 @RibbonClients(defaultConfiguration = BambooRibbonClientsConfiguration.class)
 public class BambooAutoConfiguration {
 
-
     public static class UnUseBambooIRule {
 
     }
