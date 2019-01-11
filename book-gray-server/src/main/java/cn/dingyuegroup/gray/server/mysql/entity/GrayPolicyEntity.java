@@ -12,11 +12,15 @@ public class GrayPolicyEntity {
 
     private String policyType;
 
-    private String policy;
+    private String policyKey;
 
     private Integer isDelete;
 
     private Date createTime;
 
     private Date updateTime;
+
+    private String policyValue;
+
+    private String policyMatchType;
 }

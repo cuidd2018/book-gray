@@ -17,5 +17,7 @@ public class GrayPolicyGroupEntity {
 
     private Integer isDelete;
 
+    private String groupType;
+
     private List<GrayPolicyEntity> grayPolicyEntities = new ArrayList<>();
 }

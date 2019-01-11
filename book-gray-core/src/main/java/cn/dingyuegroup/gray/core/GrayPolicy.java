@@ -13,6 +13,12 @@ import java.util.Map;
 @ToString
 public class GrayPolicy {
 
+    public enum POLICY {
+        POLICY_KEY,
+        POLICY_VALUE,
+        POLICY_MATCH_TYPE
+    }
+
     private String policyId;
     private String policyType;
     private Map<String, String> infos = new HashMap<>();

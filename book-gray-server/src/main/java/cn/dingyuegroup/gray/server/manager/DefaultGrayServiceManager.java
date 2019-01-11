@@ -289,12 +289,13 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicyGroup(String alias, Integer enable) {
+    public boolean addPolicyGroup(String alias, Integer enable, String groupType) {
         GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
         entity.setPolicyGroupId(GrayPolicyGroup.genId());
         entity.setIsDelete(0);
         entity.setEnable(enable);
         entity.setAlias(alias);
+        entity.setGroupType(groupType);
         grayPolicyGroupMapper.insert(entity);
         return true;
     }
@@ -320,11 +321,12 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean editPolicyGroup(String groupId, String alias, Integer enable) {
+    public boolean editPolicyGroup(String groupId, String alias, Integer enable, String groupType) {
         GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
         entity.setPolicyGroupId(groupId);
         entity.setEnable(enable);
         entity.setAlias(alias);
+        entity.setGroupType(groupType);
         grayPolicyGroupMapper.editByByPolicyGroupId(entity);
         return false;
     }
@@ -333,14 +335,15 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * 添加策略
      *
      * @param policyType
-     * @param policy
      * @return
      */
     @Override
-    public boolean addPolicy(String policyType, String policy) {
+    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType) {
         GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
         grayPolicyEntity.setPolicyId(GrayPolicy.genId());
-        grayPolicyEntity.setPolicy(policy);
+        grayPolicyEntity.setPolicyKey(policyKey);
+        grayPolicyEntity.setPolicyValue(policyValue);
+        grayPolicyEntity.setPolicyMatchType(policyMatchType);
         grayPolicyEntity.setCreateTime(new Date());
         grayPolicyEntity.setIsDelete(0);
         grayPolicyEntity.setPolicyType(policyType);
@@ -353,14 +356,15 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      *
      * @param policyId
      * @param policyType
-     * @param policy
      * @return
      */
     @Override
-    public boolean editPolicy(String policyId, String policyType, String policy) {
+    public boolean editPolicy(String policyId, String policyType, String policyKey, String policyValue, String policyMatchType) {
         GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
         grayPolicyEntity.setPolicyId(policyId);
-        grayPolicyEntity.setPolicy(policy);
+        grayPolicyEntity.setPolicyKey(policyKey);
+        grayPolicyEntity.setPolicyValue(policyValue);
+        grayPolicyEntity.setPolicyMatchType(policyMatchType);
         grayPolicyEntity.setUpdateTime(new Date());
         grayPolicyEntity.setPolicyType(policyType);
         grayPolicyMapper.updateByPolicyId(grayPolicyEntity);
@@ -475,7 +479,10 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 GrayPolicy grayPolicy = new GrayPolicy();
                 grayPolicy.setPolicyId(m.getPolicyId());
                 grayPolicy.setPolicyType(m.getPolicyType());
-
+                Map<String, String> params = new HashMap<>();
+                params.put(GrayPolicy.POLICY.POLICY_KEY.name(), m.getPolicyKey());
+                params.put(GrayPolicy.POLICY.POLICY_VALUE.name(), m.getPolicyKey());
+                params.put(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name(), m.getPolicyMatchType().toString());
                 grayPolicy.setInfos(new HashMap<>());
                 grayPolicyGroup.addGrayPolicy(grayPolicy);
             });

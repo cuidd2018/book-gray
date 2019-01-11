@@ -19,14 +19,16 @@ public class GrayPolicyController {
     private GrayServiceManager grayServiceManager;
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ResponseEntity<Void> addPolicy(@RequestParam("policyType") String policyType, @RequestParam("policy") String policy) {
-        grayServiceManager.addPolicy(policyType, policy);
+    public ResponseEntity<Void> addPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey
+            , @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType) {
+        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType);
         return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ResponseEntity<Void> editPolicy(@RequestParam("policyType") String policyType, @RequestParam("policy") String policy, @RequestParam String policyId) {
-        grayServiceManager.editPolicy(policyId, policyType, policy);
+    public ResponseEntity<Void> editPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey
+            , @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType, @RequestParam String policyId) {
+        grayServiceManager.editPolicy(policyId, policyType, policyKey, policyValue, policyMatchType);
         return ResponseEntity.ok().build();
     }
 
@@ -37,14 +39,14 @@ public class GrayPolicyController {
     }
 
     @RequestMapping(value = "/group/add", method = RequestMethod.GET)
-    public ResponseEntity<Void> addGroup(@RequestParam String alias, @RequestParam Integer enable) {
-        grayServiceManager.addPolicyGroup(alias, enable);
+    public ResponseEntity<Void> addGroup(@RequestParam String alias, @RequestParam Integer enable, @RequestParam String groupType) {
+        grayServiceManager.addPolicyGroup(alias, enable, groupType);
         return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/group/edit", method = RequestMethod.GET)
-    public ResponseEntity<Void> editGroup(@RequestParam String groupId, @RequestParam String alias, @RequestParam Integer enable) {
-        grayServiceManager.editPolicyGroup(groupId, alias, enable);
+    public ResponseEntity<Void> editGroup(@RequestParam String groupId, @RequestParam String alias, @RequestParam Integer enable, @RequestParam String groupType) {
+        grayServiceManager.editPolicyGroup(groupId, alias, enable, groupType);
         return ResponseEntity.ok().build();
     }
 

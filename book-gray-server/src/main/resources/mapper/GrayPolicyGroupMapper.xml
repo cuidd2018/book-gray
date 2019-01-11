@@ -6,10 +6,11 @@
         <result column="policy_group_id" jdbcType="VARCHAR" property="policyGroupId"/>
         <result column="alias" jdbcType="VARCHAR" property="alias"/>
         <result column="enable" jdbcType="SMALLINT" property="enable"/>
+        <result column="group_type" jdbcType="VARCHAR" property="groupType"/>
         <result column="is_delete" jdbcType="SMALLINT" property="isDelete"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, policy_group_id, alias, enable, is_delete
+        id, policy_group_id, alias, enable, is_delete, group_type
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_policy_group
@@ -20,15 +21,16 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_policy_group (policy_group_id, alias, enable,
-        is_delete)
+        is_delete, group_type)
         values (#{policyGroupId,jdbcType=VARCHAR}, #{alias,jdbcType=VARCHAR}, #{enable,jdbcType=SMALLINT},
-        #{isDelete,jdbcType=SMALLINT})
+        #{isDelete,jdbcType=SMALLINT}, #{groupType,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
     update gray_policy_group
     set policy_group_id = #{policyGroupId,jdbcType=VARCHAR},
       alias = #{alias,jdbcType=VARCHAR},
       enable = #{enable,jdbcType=SMALLINT},
+      group_type = #{groupType,jdbcType=VARCHAR},
       is_delete = #{isDelete,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -69,7 +71,7 @@
     </delete>
     <update id="editByByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
         update gray_policy_group
-        set alias = #{alias,jdbcType=VARCHAR}, enable = #{enable,jdbcType=SMALLINT}
+        set alias = #{alias,jdbcType=VARCHAR}, enable = #{enable,jdbcType=SMALLINT}, group_type = #{groupType,jdbcType=VARCHAR}
         where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
     </update>
 </mapper>
