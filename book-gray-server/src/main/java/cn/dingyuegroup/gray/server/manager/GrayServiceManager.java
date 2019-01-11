@@ -27,6 +27,15 @@ public interface GrayServiceManager {
     GrayService getGrayService(String serviceId);
 
     /**
+     * 更新服务的在线状态
+     *
+     * @param serviceId
+     * @param status
+     * @return
+     */
+    boolean editGrayServiceOnlineStatus(String serviceId, int status);
+
+    /**
      * 获取某服务下的所有服务实例
      *
      * @param serviceId
@@ -50,7 +59,17 @@ public interface GrayServiceManager {
      * @param status
      * @return
      */
-    boolean editInstanceStatus(String serviceId, String instanceId, int status);
+    boolean editInstanceGrayStatus(String serviceId, String instanceId, int status);
+
+    /**
+     * 更新服务实例的在线状态
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param status
+     * @return
+     */
+    boolean editInstanceOnlineStatus(String serviceId, String instanceId, int status);
 
     /**
      * 更新策略组的状态

@@ -33,6 +33,7 @@ public class HttpInformationClient implements InformationClient {
         };
         try {
             ResponseEntity<List<GrayService>> responseEntity = rest.exchange(url, HttpMethod.GET, null, typeRef);
+            log.info("灰度服务列表:{}", responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
             return responseEntity.getBody();
         } catch (RuntimeException e) {
             log.error("获取灰度服务列表失败", e);
@@ -42,12 +43,12 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public GrayService grayService(String serviceId) {
-        String url = this.baseUrl + "/gray/services/{serviceId}";
+        String url = this.baseUrl + "/gray/services/get";
         Map<String, String> params = new HashMap<>();
         params.put("serviceId", serviceId);
-
         try {
             ResponseEntity<GrayService> responseEntity = rest.getForEntity(url, GrayService.class, params);
+            log.info("获取灰度服务:serviceId:{},service:{}", serviceId, responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
             return responseEntity.getBody();
         } catch (RuntimeException e) {
             log.error("获取灰度服务失败", e);
@@ -57,13 +58,13 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public GrayInstance grayInstance(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/services/{serviceId}/instance/?instanceId={instanceId}";
-
+        String url = this.baseUrl + "/gray/services/instance/get";
         Map<String, String> params = new HashMap<>();
         params.put("serviceId", serviceId);
         params.put("instanceId", instanceId);
         try {
             ResponseEntity<GrayInstance> responseEntity = rest.getForEntity(url, GrayInstance.class, params);
+            log.info("获取灰度服务实例:serviceId:{},instanceId:{},instance:{}", serviceId, instanceId, responseEntity.getBody() == null ? null : responseEntity.getBody());
             return responseEntity.getBody();
         } catch (RuntimeException e) {
             log.error("获取灰度服务实例失败", e);
@@ -73,9 +74,9 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void addGrayInstance(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/services/instance/add?serviceId={1}&instanceId={2}";
+        String url = this.baseUrl + "/gray/services/instance/online?serviceId={1}&instanceId={2}";
         try {
-            ResponseEntity<Void> responseEntity = rest.getForEntity(url, Void.class, serviceId, instanceId);
+            rest.getForEntity(url, Void.class, serviceId, instanceId);
         } catch (RuntimeException e) {
             log.error("灰度服务实例下线失败", e);
             throw e;
@@ -88,18 +89,17 @@ public class HttpInformationClient implements InformationClient {
         if (!localInfo.isGray()) {
             return;
         }
-
         serviceDownline(localInfo.getServiceId(), localInfo.getInstanceId());
     }
 
     @Override
     public void serviceDownline(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/services/{serviceId}/instance/?instanceId={instanceId}";
-        Map<String, String> params = new HashMap<>();
-        params.put("serviceId", serviceId);
+        String url = this.baseUrl + "/gray/services/instance/offline";
         try {
+            Map<String, String> params = new HashMap<>();
+            params.put("serviceId", serviceId);
             params.put("instanceId", instanceId);
-            rest.delete(url, params);
+            rest.getForEntity(url, Void.class, params);
         } catch (Exception e) {
             log.error("灰度服务实例下线失败", e);
             throw e;

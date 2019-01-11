@@ -1,5 +1,7 @@
 package cn.dingyuegroup.gray.core;
 
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Map;
 /**
  * 灰度实例，有状态属性
  */
+@ToString
 public class GrayInstance {
     private String appName;
     private String serviceId;
@@ -135,6 +138,10 @@ public class GrayInstance {
         newInstance.setInstanceId(instanceId);
         newInstance.setServiceId(serviceId);
         newInstance.setOpenGray(openGray);
+        newInstance.setStatus(status);
+        newInstance.setAppName(appName);
+        newInstance.setUrl(url);
+        newInstance.setMetadata(metadata);
         return newInstance;
     }
 

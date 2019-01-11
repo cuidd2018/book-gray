@@ -47,7 +47,6 @@ public class BaseGrayManager extends AbstractGrayManager {
             List<GrayService> grayServices = super.listGrayService();
             if (grayServices == null) {
                 return null;
-
             }
             updateGrayServices(grayServices);
         }
@@ -85,7 +84,6 @@ public class BaseGrayManager extends AbstractGrayManager {
         if (grayServices == null) {
             return;
         }
-
         Map<String, GrayService> grayMap = new HashMap<>();
         grayServices.forEach(grayService -> grayMap.put(grayService.getServiceId(), grayService));
         grayServiceMap = new ConcurrentHashMap(grayMap);

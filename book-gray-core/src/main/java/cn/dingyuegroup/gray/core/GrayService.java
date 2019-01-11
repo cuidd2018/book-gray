@@ -1,5 +1,7 @@
 package cn.dingyuegroup.gray.core;
 
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 /**
  * 注册的服务， 维护一个实例列表。
  */
+@ToString
 public class GrayService {
 
     private String appName;
@@ -116,6 +119,8 @@ public class GrayService {
     public GrayService toNewGrayService() {
         GrayService newService = new GrayService();
         newService.setServiceId(serviceId);
+        newService.setStatus(status);
+        newService.setAppName(appName);
         return newService;
     }
 

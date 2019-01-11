@@ -22,5 +22,7 @@ public interface GrayInstanceMapper {
 
     int deleteByInstanceId(String instanceId);
 
-    int updateByInstanceId(GrayInstanceEntity record);
+    int updateGrayStatusByInstanceId(GrayInstanceEntity record);
+
+    int updateStatusByInstanceId(GrayInstanceEntity record);
 }

@@ -6,9 +6,12 @@
         <result column="instance_id" jdbcType="VARCHAR" property="instanceId"/>
         <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
         <result column="open_gray" jdbcType="SMALLINT" property="openGray"/>
+        <result column="status" jdbcType="SMALLINT" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, instance_id, service_id, open_gray
+        id, instance_id, service_id, open_gray, status, create_time, update_time
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_instance
@@ -22,15 +25,19 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into gray_instance (instance_id, service_id, open_gray
+        insert into gray_instance (instance_id, service_id, open_gray, status, create_time, update_time
         )
-        values (#{instanceId,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR}, #{openGray,jdbcType=SMALLINT}
+        values (#{instanceId,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR}, #{openGray,jdbcType=SMALLINT},
+        #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
     update gray_instance
     set instance_id = #{instanceId,jdbcType=VARCHAR},
       service_id = #{serviceId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       open_gray = #{openGray,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -57,9 +64,17 @@
         from gray_instance
         where service_id = #{serviceId,jdbcType=VARCHAR}
     </select>
-    <update id="updateByInstanceId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
+    <update id="updateGrayStatusByInstanceId"
+            parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
         update gray_instance
-        set open_gray = #{openGray,jdbcType=SMALLINT}
+        set open_gray = #{openGray,jdbcType=SMALLINT},update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where instance_id = #{instanceId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateStatusByInstanceId"
+            parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
+        update gray_instance
+        set status = #{status,jdbcType=SMALLINT},update_time = #{updateTime,jdbcType=TIMESTAMP}
         where instance_id = #{instanceId,jdbcType=VARCHAR}
     </update>
 </mapper>

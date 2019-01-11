@@ -84,24 +84,55 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      */
     @Override
     public GrayService getGrayService(String serviceId) {
+        List<GrayService> upGrayServices = abstractGrayService.upServices();
+        if (!CollectionUtils.isEmpty(upGrayServices)) {
+            Optional<GrayService> optional = upGrayServices.parallelStream().filter(e -> e.getServiceId().equals(serviceId)).findAny();
+            if (optional.isPresent()) {
+                return optional.get();
+            }
+        }
         GrayService grayService = new GrayService();
         grayService.setServiceId(serviceId);
         grayService.setStatus(false);
         GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
-        if (entity != null) {
+        if (entity != null) {//持久化的状态是在线，并且从eureka获取的状态也是在线
             grayService.setAppName(entity.getAppName());
-        }
-        //从eureka获取在线服务
-        List<String> upServiceIds = abstractGrayService.upServiceIds();
-        if (!CollectionUtils.isEmpty(upServiceIds)) {
-            Optional<String> optional = upServiceIds.parallelStream().filter(e -> e.equals(serviceId)).findAny();
-            if (optional.isPresent()) {
-                grayService.setStatus(true);//在线状态
-            }
+            grayService.setStatus(grayService.isStatus() && entity.getStatus() == 0 ? false : true);
         }
         List<GrayInstance> grayInstances = getInstances(serviceId);
         grayService.setGrayInstances(grayInstances);
         return grayService;
+    }
+
+    /**
+     * 更新服务的在线状态
+     *
+     * @param serviceId
+     * @param status
+     * @return
+     */
+    @Override
+    public boolean editGrayServiceOnlineStatus(String serviceId, int status) {
+        lock.lock();
+        try {
+            GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
+            if (entity == null) {
+                entity = new GrayServiceEntity();
+                entity.setServiceId(serviceId);
+                entity.setCreateTime(new Date());
+                entity.setIsDelete(0);
+                entity.setStatus(status);
+                grayServiceMapper.insert(entity);
+            } else {
+                entity.setStatus(status);
+                entity.setUpdateTime(new Date());
+                grayServiceMapper.updateStatusByServiceId(entity);
+            }
+            logger.info("更新服务实例在线状态成功：serviceId:{}", serviceId);
+        } finally {
+            lock.unlock();
+        }
+        return true;
     }
 
     /**
@@ -150,35 +181,18 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayInstance.setInstanceId(instanceId);
         grayInstance.setStatus(false);//不在线
         grayInstance.setOpenGray(true);//默认是开启灰度状态
-        GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceId);
-        if (grayInstanceEntity != null) {
-            grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
-        }
         GrayServiceEntity grayServiceEntity = grayServiceMapper.selectByServiceId(serviceId);
         if (grayServiceEntity != null) {
             grayInstance.setAppName(grayServiceEntity.getAppName());
+            grayInstance.setStatus(grayInstance.isStatus() && grayServiceEntity.getStatus() == 0 ? false : true);
         }
-        //获取服务实例下的灰度策略组集合
-        List<GrayPolicyGroupEntity> grayPolicyGroupEntities = grayInstancePolicyGroupMapper.selectPolicyGroupByInstanceId(instanceId);
-        if (grayPolicyGroupEntities == null) {
-            grayPolicyGroupEntities = new ArrayList<>();
+        GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceId);
+        if (grayInstanceEntity != null) {
+            grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
+            grayInstance.setStatus(grayInstance.isStatus() && grayInstanceEntity.getStatus() == 0 ? false : true);
         }
-        grayPolicyGroupEntities.stream().forEach(f -> {
-            GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
-            grayPolicyGroup.setPolicyGroupId(f.getPolicyGroupId());
-            grayPolicyGroup.setAlias(f.getAlias());
-            grayPolicyGroup.setEnable(f.getEnable() == 0 ? false : true);
-            //获取策略组下的策略集合
-            f.getGrayPolicyEntities().stream().forEach(m -> {
-                GrayPolicy grayPolicy = new GrayPolicy();
-                grayPolicy.setPolicyId(m.getPolicyId());
-                grayPolicy.setPolicyType(m.getPolicyType());
-                //TODO
-                grayPolicy.setInfos(new HashMap<>());
-                grayPolicyGroup.addGrayPolicy(grayPolicy);
-            });
-            grayInstance.getGrayPolicyGroups().add(grayPolicyGroup);
-        });
+        List<GrayPolicyGroup> grayPolicyGroups = getGrayPolicyGroup(serviceId, instanceId);
+        grayInstance.setGrayPolicyGroups(grayPolicyGroups);
         return grayInstance;
     }
 
@@ -191,7 +205,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean editInstanceStatus(String serviceId, String instanceId, int status) {
+    public boolean editInstanceGrayStatus(String serviceId, String instanceId, int status) {
         lock.lock();
         try {
             GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instanceId);
@@ -200,10 +214,45 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setInstanceId(instanceId);
                 entity.setServiceId(serviceId);
                 entity.setOpenGray(status);
+                entity.setCreateTime(new Date());
                 grayInstanceMapper.insert(entity);
             } else {
+                entity.setUpdateTime(new Date());
                 entity.setOpenGray(status);
-                grayInstanceMapper.updateByInstanceId(entity);
+                grayInstanceMapper.updateGrayStatusByInstanceId(entity);
+            }
+            logger.info("更新服务实例灰度状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
+        } finally {
+            lock.unlock();
+        }
+        return true;
+    }
+
+    /**
+     * 更新服务实例的在线状态
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param status
+     * @return
+     */
+    @Override
+    public boolean editInstanceOnlineStatus(String serviceId, String instanceId, int status) {
+        lock.lock();
+        try {
+            GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instanceId);
+            if (entity == null) {
+                entity = new GrayInstanceEntity();
+                entity.setInstanceId(instanceId);
+                entity.setServiceId(serviceId);
+                entity.setOpenGray(1);
+                entity.setStatus(status);
+                entity.setCreateTime(new Date());
+                grayInstanceMapper.insert(entity);
+            } else {
+                entity.setStatus(status);
+                entity.setUpdateTime(new Date());
+                grayInstanceMapper.updateStatusByInstanceId(entity);
             }
             logger.info("更新服务实例灰度状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
         } finally {

@@ -51,6 +51,18 @@ public class GrayServiceController {
         return ResponseEntity.ok(list);
     }
 
+    @ApiOperation(value = "更新服务在线状态")
+    @VertifyRequest
+    @RequestMapping(value = "/onlineStatus", method = RequestMethod.GET)
+    public ResponseEntity<Void> editServiceOnlineStatus(
+            @RequestParam("serviceId") String serviceId,
+            @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
+        boolean b = grayServiceManager.editGrayServiceOnlineStatus(serviceId, status);
+        if (b) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
     /**
      * 返回服务实例列表
@@ -82,18 +94,31 @@ public class GrayServiceController {
 
     @ApiOperation(value = "更新实例灰度状态")
     @VertifyRequest
-    @RequestMapping(value = "/instance/status", method = RequestMethod.GET)
-    public ResponseEntity<Void> editInstanceStatus(
+    @RequestMapping(value = "/instance/grayStatus", method = RequestMethod.GET)
+    public ResponseEntity<Void> editInstanceGrayStatus(
             @RequestParam("serviceId") String serviceId,
             @RequestParam("instanceId") String instanceId,
             @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
-        boolean b = grayServiceManager.editInstanceStatus(serviceId, instanceId, status);
+        boolean b = grayServiceManager.editInstanceGrayStatus(serviceId, instanceId, status);
         if (b) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
     }
 
+    @ApiOperation(value = "更新实例灰度状态")
+    @VertifyRequest
+    @RequestMapping(value = "/instance/onlineStatus", method = RequestMethod.GET)
+    public ResponseEntity<Void> editInstanceOnlineStatus(
+            @RequestParam("serviceId") String serviceId,
+            @RequestParam("instanceId") String instanceId,
+            @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
+        boolean b = grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, status);
+        if (b) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
     /**
      * 服务实例的所有灰度策略组

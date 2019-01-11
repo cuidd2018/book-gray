@@ -1,5 +1,7 @@
 package cn.dingyuegroup.gray.core;
 
+import lombok.ToString;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.List;
 /**
  * 灰度策略组，有状态属性
  */
+@ToString
 public class GrayPolicyGroup {
 
     private String policyGroupId;

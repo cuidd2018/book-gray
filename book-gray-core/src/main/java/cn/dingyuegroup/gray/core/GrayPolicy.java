@@ -1,5 +1,7 @@
 package cn.dingyuegroup.gray.core;
 
+import lombok.ToString;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Map;
 /**
  * 灰度策略
  */
+@ToString
 public class GrayPolicy {
 
     private String policyId;

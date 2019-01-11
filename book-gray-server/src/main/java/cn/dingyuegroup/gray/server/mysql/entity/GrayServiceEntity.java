@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class GrayServiceEntity {
+
     private Integer id;
 
     private String serviceId;
@@ -16,7 +17,9 @@ public class GrayServiceEntity {
 
     private Date updateTime;
 
-    private Short isDelete;
+    private Integer isDelete;
 
-    private Short sort;
+    private Integer sort;
+
+    private Integer status;
 }
