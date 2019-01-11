@@ -38,7 +38,6 @@ public class BambooFeignClient implements Client {
             builder.requestBody(request.body());
         }
 
-
         request.headers().entrySet().forEach(entry -> {
             for (String v : entry.getValue()) {
                 builder.addHeader(entry.getKey(), v);

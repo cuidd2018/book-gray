@@ -51,11 +51,6 @@ public abstract class AbstractGrayManager implements GrayManager {
     }
 
     @Override
-    public List<GrayDecision> grayDecision(GrayInstance instance) {
-        return grayDecision(instance.getServiceId(), instance.getInstanceId());
-    }
-
-    @Override
     public List<GrayDecision> grayDecision(String serviceId, String instanceId) {
         GrayInstance grayInstance = grayInstance(serviceId, instanceId);
         if (grayInstance == null || !grayInstance.isOpenGray()

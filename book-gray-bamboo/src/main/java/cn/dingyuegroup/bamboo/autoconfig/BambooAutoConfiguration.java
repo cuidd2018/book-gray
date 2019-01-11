@@ -27,17 +27,12 @@ import java.util.List;
 @EnableConfigurationProperties({BambooProperties.class})
 @AutoConfigureBefore({BambooFeignConfiguration.class, BambooZuulConfiguration.class})
 @Import(BambooWebConfiguration.class)
-//@RibbonClients(defaultConfiguration = {BambooExtConfigration.class})
 @RibbonClients(defaultConfiguration = BambooRibbonClientsConfiguration.class)
 public class BambooAutoConfiguration {
 
     public static class UnUseBambooIRule {
 
     }
-
-
-//    @Autowired(required = false)
-//    private IClientConfig config;
 
     @Autowired
     private SpringClientFactory springClientFactory;
@@ -58,15 +53,6 @@ public class BambooAutoConfiguration {
     public EurekaServerExtractor eurekaServerExtractor() {
         return new EurekaServerExtractor(springClientFactory);
     }
-
-
-//    @Bean
-//    @ConditionalOnMissingBean(value = {BambooAutoConfiguration.UnUseBambooIRule.class})
-//    public IRule ribbonRule() {
-//        BambooZoneAvoidanceRule rule = new BambooZoneAvoidanceRule();
-//        rule.initWithNiwsConfig(config);
-//        return rule;
-//    }
 
     @Bean
     @ConditionalOnMissingBean

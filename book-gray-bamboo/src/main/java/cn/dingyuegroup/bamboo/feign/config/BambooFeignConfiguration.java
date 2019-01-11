@@ -11,5 +11,4 @@ import org.springframework.context.annotation.Configuration;
 @EnableFeignClients(defaultConfiguration = {BambooFeignClientsConfiguration.class})
 public class BambooFeignConfiguration {
 
-
 }

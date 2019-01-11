@@ -475,7 +475,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 GrayPolicy grayPolicy = new GrayPolicy();
                 grayPolicy.setPolicyId(m.getPolicyId());
                 grayPolicy.setPolicyType(m.getPolicyType());
-                //TODO
+
                 grayPolicy.setInfos(new HashMap<>());
                 grayPolicyGroup.addGrayPolicy(grayPolicy);
             });
