@@ -24,7 +24,6 @@ public class GrayClientEurekaAutoConfiguration {
         InstanceLocalInfo localInfo = new InstanceLocalInfo();
         localInfo.setInstanceId(instanceId);
         localInfo.setServiceId(registration.getServiceId());
-        localInfo.setGray(false);
         return localInfo;
     }
 }

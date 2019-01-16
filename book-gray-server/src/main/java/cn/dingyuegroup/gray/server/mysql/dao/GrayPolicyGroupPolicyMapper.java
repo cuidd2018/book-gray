@@ -18,4 +18,6 @@ public interface GrayPolicyGroupPolicyMapper {
     List<GrayPolicyGroupPolicy> selectByPolicyGroupId(String policyGroupId);
 
     int deleteByGroupIdAndPolicyId(GrayPolicyGroupPolicy record);
+
+    int countByGroupIdAndPolicyId(GrayPolicyGroupPolicy record);
 }

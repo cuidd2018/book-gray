@@ -122,7 +122,7 @@ public class GrayService {
     public GrayService takeNewOpenGrayService() {
         GrayService service = toNewGrayService();
         for (GrayInstance grayInstance : grayInstances) {
-            if (grayInstance.isOpenGray()) {
+            if (grayInstance.isOpenGray() && grayInstance.isStatus()) {//开启灰度，且在线
                 service.addGrayInstance(grayInstance.takeNewOpenGrayInstance());
             }
         }

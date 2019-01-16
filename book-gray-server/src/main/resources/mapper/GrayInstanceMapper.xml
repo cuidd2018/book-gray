@@ -5,13 +5,14 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="instance_id" jdbcType="VARCHAR" property="instanceId"/>
         <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
+        <result column="policy_group_id" jdbcType="VARCHAR" property="policyGroupId"/>
         <result column="open_gray" jdbcType="SMALLINT" property="openGray"/>
         <result column="status" jdbcType="SMALLINT" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, instance_id, service_id, open_gray, status, create_time, update_time
+        id, instance_id, service_id, open_gray, status, create_time, update_time, policy_group_id
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_instance
@@ -25,10 +26,11 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into gray_instance (instance_id, service_id, open_gray, status, create_time, update_time
+        insert into gray_instance (instance_id, service_id, open_gray, status, create_time, update_time, policy_group_id
         )
         values (#{instanceId,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR}, #{openGray,jdbcType=SMALLINT},
-        #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+        #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+        #{policyGroupId,jdbcType=VARCHAR}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
@@ -38,7 +40,8 @@
       status = #{status,jdbcType=SMALLINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      open_gray = #{openGray,jdbcType=SMALLINT}
+      open_gray = #{openGray,jdbcType=SMALLINT},
+      policy_group_id = #{policyGroupId,jdbcType=VARCHAR},
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -75,6 +78,12 @@
             parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
         update gray_instance
         set status = #{status,jdbcType=SMALLINT},update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where instance_id = #{instanceId,jdbcType=VARCHAR}
+    </update>
+    <update id="updatePolicyGroupByInstanceId"
+            parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
+        update gray_instance
+        set policy_group_id = #{policyGroupId,jdbcType=VARCHAR},update_time = #{updateTime,jdbcType=TIMESTAMP}
         where instance_id = #{instanceId,jdbcType=VARCHAR}
     </update>
 </mapper>

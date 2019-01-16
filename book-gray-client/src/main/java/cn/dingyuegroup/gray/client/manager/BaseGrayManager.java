@@ -87,7 +87,6 @@ public class BaseGrayManager extends AbstractGrayManager {
         Map<String, GrayService> grayMap = new HashMap<>();
         grayServices.forEach(grayService -> grayMap.put(grayService.getServiceId(), grayService));
         grayServiceMap = new ConcurrentHashMap(grayMap);
-        checkLocalGray();
     }
 
 
@@ -112,18 +111,11 @@ public class BaseGrayManager extends AbstractGrayManager {
             InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
             try {
                 client.addGrayInstance(localInfo.getServiceId(), localInfo.getInstanceId());
-                localInfo.setGray(true);
             } catch (Exception e) {
                 log.error("自身实例灰度注册失败", e);
             }
         }, "GrayEnroll");
         t.start();
-    }
-
-    private void checkLocalGray() {
-        InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
-        GrayService grayService = grayServiceMap.get(localInfo.getServiceId());
-        localInfo.setGray(grayService != null && grayService.getGrayInstance(localInfo.getInstanceId()) != null);
     }
 
     class UpdateTask extends TimerTask {

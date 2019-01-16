@@ -1,6 +1,5 @@
 package cn.dingyuegroup.gray.server.api.impl;
 
-import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.api.GrayServiceApi;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
@@ -36,31 +35,13 @@ public class GrayServiceApiImpl implements GrayServiceApi {
     }
 
     @Override
-    public GrayService service(@RequestParam("serviceId") String serviceId) {
-        GrayService grayService = grayServiceManager.getGrayService(serviceId);
-        if (grayService != null && grayService.isStatus() && grayService.isOpenGray()) {//在线且开启灰度
-            return grayService;
-        }
-        return null;
-    }
-
-    @Override
-    public GrayInstance getInstance(@RequestParam("serviceId") String serviceId, String instanceId) {
-        GrayInstance grayInstance = grayServiceManager.getGrayInstance(serviceId, instanceId);
-        if (grayInstance != null && grayInstance.isStatus() && grayInstance.isOpenGray()) {//在线且开启灰度
-            return grayInstance;
-        }
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> offlineInstance(@PathVariable("serviceId") String serviceId, String instanceId) {
+    public ResponseEntity<Void> offlineInstance(@PathVariable("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
         grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 0);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<Void> onlineInstance(@RequestParam("serviceId") String serviceId, @RequestParam String instanceId) {
+    public ResponseEntity<Void> onlineInstance(@RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
         grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 1);
         return ResponseEntity.ok().build();
     }

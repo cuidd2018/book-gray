@@ -78,9 +78,9 @@ public class EurekaGrayService extends AbstractGrayService {
                 //eureka在线，并且持久化状态也是在线
                 grayInstance.setStatus(grayInstance.isStatus() && grayInstanceEntity.getStatus() == 0 ? false : true);
             }
-            //获取服务实例下的灰度策略组集合
-            List<GrayPolicyGroup> grayPolicyGroups = grayServiceManager.getGrayPolicyGroup(serviceId, e.getInstanceId());
-            grayInstance.setGrayPolicyGroups(grayPolicyGroups);
+            //获取服务实例下的灰度策略组
+            GrayPolicyGroup grayPolicyGroup = grayServiceManager.getGrayPolicyGroup(serviceId, e.getInstanceId());
+            grayInstance.setGrayPolicyGroup(grayPolicyGroup);
             list.add(grayInstance);
         });
         return list;

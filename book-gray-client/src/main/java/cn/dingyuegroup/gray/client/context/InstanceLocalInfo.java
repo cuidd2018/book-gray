@@ -3,7 +3,6 @@ package cn.dingyuegroup.gray.client.context;
 public class InstanceLocalInfo {
     private String serviceId;
     private String instanceId;
-    private boolean isGray;
 
     public String getServiceId() {
         return serviceId;
@@ -19,13 +18,5 @@ public class InstanceLocalInfo {
 
     public void setInstanceId(String instanceId) {
         this.instanceId = instanceId;
-    }
-
-    public boolean isGray() {
-        return isGray;
-    }
-
-    public void setGray(boolean gray) {
-        isGray = gray;
     }
 }

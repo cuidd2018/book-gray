@@ -9,7 +9,6 @@ import com.netflix.loadbalancer.AbstractServerPredicate;
 import com.netflix.loadbalancer.PredicateKey;
 import com.netflix.loadbalancer.Server;
 
-import java.util.List;
 import java.util.Map;
 
 public class GrayDecisionPredicate extends AbstractServerPredicate {
@@ -30,12 +29,9 @@ public class GrayDecisionPredicate extends AbstractServerPredicate {
         Map<String, String> serverMetadata = getServerMetadata(serviceId, server);
         String instanceId = ServiceUtil.getInstanceId(server, serverMetadata);
 
-        List<GrayDecision> grayDecisions =
-                getIRule().getGrayManager().grayDecision(serviceId, instanceId);
-        for (GrayDecision grayDecision : grayDecisions) {
-            if (grayDecision.test(bambooRequest)) {
-                return true;
-            }
+        GrayDecision grayDecision = getIRule().getGrayManager().grayDecision(serviceId, instanceId);
+        if (grayDecision.test(bambooRequest)) {
+            return true;
         }
         return false;
     }

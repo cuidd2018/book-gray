@@ -3,6 +3,7 @@ package cn.dingyuegroup.gray.server.manager;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity;
 
 import java.util.List;
 
@@ -155,7 +156,7 @@ public interface GrayServiceManager {
      * @param serviceId
      * @return
      */
-    boolean addInstancePolicyGroup(String serviceId, String instanceId, String groupId);
+    boolean editInstancePolicyGroup(String serviceId, String instanceId, String groupId);
 
     /**
      * 服务实例删除灰度策略组
@@ -168,13 +169,21 @@ public interface GrayServiceManager {
     boolean delInstancePolicyGroup(String serviceId, String instanceId, String groupId);
 
     /**
+     * 获取策略组下的灰度策略
+     *
+     * @param groupId
+     * @return
+     */
+    List<GrayPolicyEntity> listGrayPolicyByGroup(String groupId);
+
+    /**
      * 获取服务实例下的灰度策略组
      *
      * @param serviceId
      * @param instanceId
      * @return
      */
-    List<GrayPolicyGroup> getGrayPolicyGroup(String serviceId, String instanceId);
+    GrayPolicyGroup getGrayPolicyGroup(String serviceId, String instanceId);
 
     /**
      * 打开检查

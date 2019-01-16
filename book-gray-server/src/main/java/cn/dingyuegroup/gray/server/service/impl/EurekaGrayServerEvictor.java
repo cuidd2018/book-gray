@@ -36,7 +36,7 @@ public class EurekaGrayServerEvictor implements GrayServerEvictor {
 
     private void evict(GrayServiceManager serviceManager, GrayInstance grayInstance) {
         if (isDownline(grayInstance)) {
-            //serviceManager.deleteGrayInstance(grayInstance.getServiceId(), grayInstance.getInstanceId());
+            serviceManager.editInstanceOnlineStatus(grayInstance.getServiceId(), grayInstance.getInstanceId(), 0);
         }
     }
 

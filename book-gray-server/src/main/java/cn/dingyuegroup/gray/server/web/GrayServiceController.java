@@ -128,57 +128,21 @@ public class GrayServiceController {
      * @return 灰策略组VO列表
      */
     @VertifyRequest
-    @RequestMapping(value = "/instance/policyGroups", method = RequestMethod.GET)
-    public ResponseEntity<List<GrayPolicyGroupVO>> policyGroups(@RequestParam("serviceId") String serviceId,
+    @RequestMapping(value = "/instance/policyGroup", method = RequestMethod.GET)
+    public ResponseEntity<GrayPolicyGroupVO> policyGroup(@RequestParam("serviceId") String serviceId,
                                                                 @RequestParam("instanceId") String instanceId) {
         GrayInstance grayInstance = grayServiceManager.getGrayInstance(serviceId, instanceId);
         if (grayInstance == null) {
             return ResponseEntity.ok().build();
         }
-        List<GrayPolicyGroupVO> grayPolicyGroupVOS = new ArrayList<>();
-        grayInstance.getGrayPolicyGroups().stream().forEach(e -> {
-            GrayPolicyGroupVO vo = new GrayPolicyGroupVO();
-            vo.setServiceId(serviceId);
-            vo.setInstanceId(instanceId);
-            vo.setAppName(grayInstance.getAppName());
-            vo.setPolicyGroupId(e.getPolicyGroupId());
-            vo.setAlias(e.getAlias());
-            vo.setPolicies(e.getList());
-            vo.setEnable(e.isEnable());
-            grayPolicyGroupVOS.add(vo);
-        });
-        return ResponseEntity.ok(grayPolicyGroupVOS);
-    }
-
-
-    /**
-     * 灰度策略组
-     *
-     * @param serviceId  服务id
-     * @param instanceId 实例id
-     * @param groupId    灰度策略组id
-     * @return 灰度策略组VO
-     */
-    @RequestMapping(value = "/instance/policyGroup", method = RequestMethod.GET)
-    public ResponseEntity<GrayPolicyGroupVO> policyGroup(@RequestParam("serviceId") String serviceId,
-                                                         @RequestParam("instanceId") String instanceId,
-                                                         @RequestParam("groupId") String groupId) {
-        GrayInstance grayInstance = grayServiceManager.getGrayInstance(serviceId, instanceId);
-        if (grayInstance == null || grayInstance.getGrayPolicyGroups() == null) {
-            return ResponseEntity.ok().build();
-        }
-        Optional<GrayPolicyGroup> optional = grayInstance.getGrayPolicyGroups().stream().filter(e -> e.getPolicyGroupId().equals(groupId)).findAny();
         GrayPolicyGroupVO vo = new GrayPolicyGroupVO();
-        if (optional.isPresent()) {
-            GrayPolicyGroup grayPolicyGroup = optional.get();
-            vo.setServiceId(serviceId);
-            vo.setInstanceId(instanceId);
-            vo.setAppName(grayInstance.getAppName());
-            vo.setPolicyGroupId(grayPolicyGroup.getPolicyGroupId());
-            vo.setAlias(grayPolicyGroup.getAlias());
-            vo.setPolicies(grayPolicyGroup.getList());
-            vo.setEnable(grayPolicyGroup.isEnable());
-        }
+        vo.setServiceId(serviceId);
+        vo.setInstanceId(instanceId);
+        vo.setAppName(grayInstance.getAppName());
+        vo.setPolicyGroupId(grayInstance.getGrayPolicyGroup().getPolicyGroupId());
+        vo.setAlias(grayInstance.getGrayPolicyGroup().getAlias());
+        vo.setPolicies(grayInstance.getGrayPolicyGroup().getList());
+        vo.setEnable(grayInstance.getGrayPolicyGroup().isEnable());
         return ResponseEntity.ok(vo);
     }
 
@@ -207,7 +171,7 @@ public class GrayServiceController {
     public ResponseEntity<Void> addPolicyGroup(
             @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId,
             @RequestParam("groupId") String groupId) {
-        boolean b = grayServiceManager.addInstancePolicyGroup(serviceId, instanceId, groupId);
+        boolean b = grayServiceManager.editInstancePolicyGroup(serviceId, instanceId, groupId);
         if (b) {
             return ResponseEntity.ok().build();
         }

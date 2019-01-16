@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class HttpInformationClient implements InformationClient {
     private static final Logger log = LoggerFactory.getLogger(HttpInformationClient.class);
@@ -43,33 +45,28 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public GrayService grayService(String serviceId) {
-        String url = this.baseUrl + "/gray/services/get";
-        Map<String, String> params = new HashMap<>();
-        params.put("serviceId", serviceId);
-        try {
-            ResponseEntity<GrayService> responseEntity = rest.getForEntity(url, GrayService.class, params);
-            log.info("获取灰度服务:serviceId:{},service:{}", serviceId, responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
-            return responseEntity.getBody();
-        } catch (RuntimeException e) {
-            log.error("获取灰度服务失败", e);
-            throw e;
+        List<GrayService> list = listGrayService();
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
         }
+        Optional<GrayService> optional = list.parallelStream().filter(e -> e.getServiceId().equals(serviceId)).findAny();
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
     }
 
     @Override
     public GrayInstance grayInstance(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/services/instance/get";
-        Map<String, String> params = new HashMap<>();
-        params.put("serviceId", serviceId);
-        params.put("instanceId", instanceId);
-        try {
-            ResponseEntity<GrayInstance> responseEntity = rest.getForEntity(url, GrayInstance.class, params);
-            log.info("获取灰度服务实例:serviceId:{},instanceId:{},instance:{}", serviceId, instanceId, responseEntity.getBody() == null ? null : responseEntity.getBody());
-            return responseEntity.getBody();
-        } catch (RuntimeException e) {
-            log.error("获取灰度服务实例失败", e);
-            throw e;
+        GrayService grayService = grayService(serviceId);
+        if (grayService == null || CollectionUtils.isEmpty(grayService.getGrayInstances())) {
+            return null;
         }
+        Optional<GrayInstance> optional = grayService.getGrayInstances().parallelStream().filter(e -> e.getInstanceId().equals(instanceId)).findAny();
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        return null;
     }
 
     @Override
@@ -86,9 +83,6 @@ public class HttpInformationClient implements InformationClient {
     @Override
     public void serviceDownline() {
         InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
-        if (!localInfo.isGray()) {
-            return;
-        }
         serviceDownline(localInfo.getServiceId(), localInfo.getInstanceId());
     }
 

@@ -19,4 +19,6 @@ public class GrayInstanceEntity {
     private Date createTime;
 
     private Date updateTime;
+
+    private String policyGroupId;
 }

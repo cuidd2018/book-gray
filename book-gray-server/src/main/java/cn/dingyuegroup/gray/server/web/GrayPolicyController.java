@@ -1,12 +1,15 @@
 package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by 170147 on 2019/1/8.
@@ -36,6 +39,12 @@ public class GrayPolicyController {
     public ResponseEntity<Void> deletePolicy(@RequestParam String policyId) {
         grayServiceManager.delPolicy(policyId);
         return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public ResponseEntity<List<GrayPolicyEntity>> listPolicy(@RequestParam String groupId) {
+        List<GrayPolicyEntity> list = grayServiceManager.listGrayPolicyByGroup(groupId);
+        return ResponseEntity.ok(list);
     }
 
     @RequestMapping(value = "/group/add", method = RequestMethod.GET)
