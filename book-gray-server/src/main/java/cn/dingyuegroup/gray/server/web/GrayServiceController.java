@@ -1,7 +1,6 @@
 package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.core.GrayInstance;
-import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/gray/manager/services")
@@ -49,19 +47,6 @@ public class GrayServiceController {
             list.add(vo);
         });
         return ResponseEntity.ok(list);
-    }
-
-    @ApiOperation(value = "更新服务在线状态")
-    @VertifyRequest
-    @RequestMapping(value = "/onlineStatus", method = RequestMethod.GET)
-    public ResponseEntity<Void> editServiceOnlineStatus(
-            @RequestParam("serviceId") String serviceId,
-            @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
-        boolean b = grayServiceManager.editGrayServiceOnlineStatus(serviceId, status);
-        if (b) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
     }
 
     /**
@@ -130,7 +115,7 @@ public class GrayServiceController {
     @VertifyRequest
     @RequestMapping(value = "/instance/policyGroup", method = RequestMethod.GET)
     public ResponseEntity<GrayPolicyGroupVO> policyGroup(@RequestParam("serviceId") String serviceId,
-                                                                @RequestParam("instanceId") String instanceId) {
+                                                         @RequestParam("instanceId") String instanceId) {
         GrayInstance grayInstance = grayServiceManager.getGrayInstance(serviceId, instanceId);
         if (grayInstance == null) {
             return ResponseEntity.ok().build();

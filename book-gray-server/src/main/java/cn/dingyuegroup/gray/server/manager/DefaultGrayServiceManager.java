@@ -94,42 +94,11 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
         if (entity != null) {//持久化的状态是在线，并且从eureka获取的状态也是在线
             grayService.setAppName(entity.getAppName());
-            grayService.setStatus(grayService.isStatus() && entity.getStatus() == 0 ? false : true);
         }
         List<GrayInstance> grayInstances = getInstances(serviceId);
         grayService.setGrayInstances(grayInstances);
+        grayService.setStatus(grayService.isOnline());
         return grayService;
-    }
-
-    /**
-     * 更新服务的在线状态
-     *
-     * @param serviceId
-     * @param status
-     * @return
-     */
-    @Override
-    public boolean editGrayServiceOnlineStatus(String serviceId, int status) {
-        lock.lock();
-        try {
-            GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
-            if (entity == null) {
-                entity = new GrayServiceEntity();
-                entity.setServiceId(serviceId);
-                entity.setCreateTime(new Date());
-                entity.setIsDelete(0);
-                entity.setStatus(status);
-                grayServiceMapper.insert(entity);
-            } else {
-                entity.setStatus(status);
-                entity.setUpdateTime(new Date());
-                grayServiceMapper.updateStatusByServiceId(entity);
-            }
-            logger.info("更新服务实例在线状态成功：serviceId:{}", serviceId);
-        } finally {
-            lock.unlock();
-        }
-        return true;
     }
 
     /**
@@ -181,7 +150,6 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         GrayServiceEntity grayServiceEntity = grayServiceMapper.selectByServiceId(serviceId);
         if (grayServiceEntity != null) {
             grayInstance.setAppName(grayServiceEntity.getAppName());
-            grayInstance.setStatus(grayInstance.isStatus() && grayServiceEntity.getStatus() == 0 ? false : true);
         }
         GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceId);
         if (grayInstanceEntity != null) {

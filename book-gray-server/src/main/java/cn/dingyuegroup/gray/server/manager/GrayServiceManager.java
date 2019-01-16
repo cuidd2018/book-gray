@@ -28,15 +28,6 @@ public interface GrayServiceManager {
     GrayService getGrayService(String serviceId);
 
     /**
-     * 更新服务的在线状态
-     *
-     * @param serviceId
-     * @param status
-     * @return
-     */
-    boolean editGrayServiceOnlineStatus(String serviceId, int status);
-
-    /**
      * 获取某服务下的所有服务实例
      *
      * @param serviceId

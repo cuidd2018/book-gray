@@ -5,14 +5,13 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="app_name" jdbcType="VARCHAR" property="appName"/>
         <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
-        <result column="status" jdbcType="SMALLINT" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="is_delete" jdbcType="SMALLINT" property="isDelete"/>
         <result column="sort" jdbcType="SMALLINT" property="isDelete"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, service_id, create_time, update_time, is_delete, app_name, sort, status
+        id, service_id, create_time, update_time, is_delete, app_name, sort
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_service
@@ -23,10 +22,9 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_service (service_id, create_time, update_time,
-        is_delete, app_name, sort, status)
+        is_delete, app_name, sort)
         values (#{serviceId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-        #{isDelete,jdbcType=SMALLINT}, #{appName,jdbcType=VARCHAR}, #{sort,jdbcType=SMALLINT},
-        #{status,jdbcType=SMALLINT})
+        #{isDelete,jdbcType=SMALLINT}, #{appName,jdbcType=VARCHAR}, #{sort,jdbcType=SMALLINT})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity">
     update gray_service
@@ -35,7 +33,6 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       sort = #{sort,jdbcType=SMALLINT},
-      status = #{status,jdbcType=SMALLINT},
       is_delete = #{isDelete,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -56,11 +53,4 @@
         from gray_service
         where service_id = #{serviceId,jdbcType=VARCHAR} AND is_delete = 0
     </select>
-
-    <update id="updateStatusByServiceId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity">
-        update gray_service
-        set update_time = #{updateTime,jdbcType=TIMESTAMP},
-        status = #{status,jdbcType=SMALLINT}
-        where service_id = #{serviceId,jdbcType=VARCHAR} AND is_delete = 0
-    </update>
 </mapper>

@@ -34,14 +34,13 @@ public abstract class AbstractGrayService {
         upServiceIds.stream().forEach(e -> {
             GrayService grayService = new GrayService();
             grayService.setServiceId(e);
-            grayService.setStatus(true);//在线
             GrayServiceEntity entity = grayServiceMapper.selectByServiceId(e);
             if (entity != null) {
                 grayService.setAppName(entity.getAppName());
-                grayService.setStatus(grayService.isStatus() && entity.getStatus() == 0 ? false : true);
             }
             List<GrayInstance> grayInstances = upInstances(e);
             grayService.setGrayInstances(grayInstances);
+            grayService.setStatus(grayService.isOnline());
             list.add(grayService);
         });
         return list;

@@ -17,6 +17,4 @@ public interface GrayServiceMapper {
     int updateByPrimaryKey(GrayServiceEntity record);
 
     GrayServiceEntity selectByServiceId(String serviceId);
-
-    int updateStatusByServiceId(GrayServiceEntity record);
 }

@@ -70,7 +70,6 @@ public class EurekaGrayService extends AbstractGrayService {
             grayInstance.setUrl(e.getHomePageUrl());
             if (grayServiceEntity != null) {
                 grayInstance.setAppName(grayServiceEntity.getAppName());
-                grayInstance.setStatus(grayInstance.isStatus() && grayServiceEntity.getStatus() == 0 ? false : true);
             }
             GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(e.getInstanceId());
             if (grayInstanceEntity != null) {
