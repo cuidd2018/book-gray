@@ -59,4 +59,9 @@ public interface GrayDecision {
         }
     }
 
+    enum MATCH_TYPE {
+        EQUAL,//相等
+        REGEX
+    }
+
 }

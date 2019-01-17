@@ -1,5 +1,6 @@
 package cn.dingyuegroup.gray.core;
 
+import lombok.Data;
 import lombok.ToString;
 
 import java.text.SimpleDateFormat;
@@ -13,40 +14,23 @@ import java.util.List;
  * 灰度策略组，有状态属性
  */
 @ToString
+@Data
 public class GrayPolicyGroup {
 
     private String policyGroupId;
     private String alias;
     private List<GrayPolicy> list = new ArrayList<>();
     private boolean enable = true;
+    private String groupType;//策略组类型，与和或
 
-    public String getPolicyGroupId() {
-        return policyGroupId;
-    }
-
-    public void setPolicyGroupId(String policyGroupId) {
-        this.policyGroupId = policyGroupId;
+    public enum TYPE {
+        AND,
+        OR
     }
 
     public void addGrayPolicy(GrayPolicy policy) {
         removeGrayPolicy(policy.getPolicyId());
         list.add(policy);
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public List<GrayPolicy> getList() {
-        return list;
-    }
-
-    public void setList(List<GrayPolicy> list) {
-        this.list = list;
     }
 
     public GrayPolicy removeGrayPolicy(String policyId) {
@@ -68,14 +52,6 @@ public class GrayPolicyGroup {
             }
         }
         return null;
-    }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public static String genId() {

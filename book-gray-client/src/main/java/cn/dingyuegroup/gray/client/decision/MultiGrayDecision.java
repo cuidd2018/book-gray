@@ -22,10 +22,15 @@ public class MultiGrayDecision implements GrayDecision {
         return this;
     }
 
+    public MultiGrayDecision or(GrayDecision other) {
+        GrayDecision cur = decision;
+        decision = t -> cur.test(t) || other.test(t);
+        return this;
+    }
+
     @Override
     public boolean test(BambooRequest bambooRequest) {
         return decision.test(bambooRequest);
     }
-
 
 }

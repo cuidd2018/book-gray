@@ -28,7 +28,6 @@ public class GrayDecisionPredicate extends AbstractServerPredicate {
         String serviceId = bambooRequest.getServiceId();
         Map<String, String> serverMetadata = getServerMetadata(serviceId, server);
         String instanceId = ServiceUtil.getInstanceId(server, serverMetadata);
-
         GrayDecision grayDecision = getIRule().getGrayManager().grayDecision(serviceId, instanceId);
         if (grayDecision.test(bambooRequest)) {
             return true;

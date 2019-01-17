@@ -258,7 +258,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         entity.setPolicyGroupId(GrayPolicyGroup.genId());
         entity.setEnable(enable);
         entity.setAlias(alias);
-        entity.setGroupType(groupType);
+        entity.setGroupType(groupType == null ? GrayPolicyGroup.TYPE.AND.name() : groupType);
         grayPolicyGroupMapper.insert(entity);
         return true;
     }
@@ -505,6 +505,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayPolicyGroup.setPolicyGroupId(grayPolicyGroupEntity.getPolicyGroupId());
         grayPolicyGroup.setAlias(grayPolicyGroupEntity.getAlias());
         grayPolicyGroup.setEnable(grayPolicyGroupEntity.getEnable() == 0 ? false : true);
+        grayPolicyGroup.setGroupType(grayPolicyGroupEntity.getGroupType());//策略类型，与和或
         //获取策略组下的策略集合
         grayPolicyGroupEntity.getGrayPolicyEntities().stream().forEach(m -> {
             GrayPolicy grayPolicy = new GrayPolicy();
@@ -513,8 +514,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             Map<String, String> params = new HashMap<>();
             params.put(GrayPolicy.POLICY.POLICY_KEY.name(), m.getPolicyKey());
             params.put(GrayPolicy.POLICY.POLICY_VALUE.name(), m.getPolicyKey());
-            params.put(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name(), m.getPolicyMatchType().toString());
-            grayPolicy.setInfos(new HashMap<>());
+            params.put(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name(), m.getPolicyMatchType());
+            grayPolicy.setInfos(params);
             grayPolicyGroup.addGrayPolicy(grayPolicy);
         });
         return grayPolicyGroup;

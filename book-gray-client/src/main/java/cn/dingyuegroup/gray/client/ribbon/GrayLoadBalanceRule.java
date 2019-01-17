@@ -59,7 +59,7 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
         if (offline.isPresent()) {//有下线的服务
             servers = servers.stream().filter(e -> isOnline(serviceId, e)).collect(Collectors.toList());//剔除下线服务
         }
-        if (getGrayManager().isOpen(serviceId)) {
+        if (getGrayManager().isOpen(serviceId)) {//开启了灰度
             GrayService grayService = getGrayManager().grayService(serviceId);
             List<Server> grayServers = new ArrayList<>(grayService.getGrayInstances().size());
             List<Server> normalServers = new ArrayList<>(servers.size() - grayService.getGrayInstances().size());
