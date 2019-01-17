@@ -87,13 +87,15 @@ public abstract class AbstractGrayManager implements GrayManager {
         if (policies == null || policies.isEmpty()) {
             return GrayDecision.refuse();
         }
-        MultiGrayDecision decision = new MultiGrayDecision(GrayDecision.allow());
         if (policyGroup.getGroupType().equals(GrayPolicyGroup.TYPE.OR.name())) {
+            MultiGrayDecision decision = new MultiGrayDecision(GrayDecision.refuse());
             policies.forEach(policy -> decision.or(decisionFactory.getDecision(policy)));
+            return decision;
         } else {
+            MultiGrayDecision decision = new MultiGrayDecision(GrayDecision.allow());
             policies.forEach(policy -> decision.and(decisionFactory.getDecision(policy)));
+            return decision;
         }
-        return decision;
     }
 
 }
