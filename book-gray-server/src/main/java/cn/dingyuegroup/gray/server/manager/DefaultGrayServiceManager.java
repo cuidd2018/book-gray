@@ -154,7 +154,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceId);
         if (grayInstanceEntity != null) {
             grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
-            grayInstance.setStatus(grayInstance.isStatus() && grayInstanceEntity.getStatus() == 0 ? false : true);
+            grayInstance.setStatus(grayInstance.isStatus() && (grayInstanceEntity.getStatus() == 0 ? false : true));
         }
         GrayPolicyGroup grayPolicyGroup = getGrayPolicyGroup(serviceId, instanceId);
         grayInstance.setGrayPolicyGroup(grayPolicyGroup);
@@ -513,7 +513,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             grayPolicy.setPolicyType(m.getPolicyType());
             Map<String, String> params = new HashMap<>();
             params.put(GrayPolicy.POLICY.POLICY_KEY.name(), m.getPolicyKey());
-            params.put(GrayPolicy.POLICY.POLICY_VALUE.name(), m.getPolicyKey());
+            params.put(GrayPolicy.POLICY.POLICY_VALUE.name(), m.getPolicyValue());
             params.put(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name(), m.getPolicyMatchType());
             grayPolicy.setInfos(params);
             grayPolicyGroup.addGrayPolicy(grayPolicy);

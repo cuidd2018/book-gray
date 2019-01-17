@@ -38,6 +38,14 @@ public class GrayService {
         return optional.isPresent();
     }
 
+    public boolean hasOffline() {
+        if (getGrayInstances() == null || getGrayInstances().isEmpty()) {
+            return false;
+        }
+        Optional<GrayInstance> optional = getGrayInstances().parallelStream().filter(e -> !e.isStatus()).findAny();
+        return optional.isPresent();
+    }
+
     public void addGrayInstance(GrayInstance grayInstance) {
         grayInstances.add(grayInstance);
     }
@@ -88,7 +96,7 @@ public class GrayService {
     public GrayService takeNewOpenGrayService() {
         GrayService service = toNewGrayService();
         for (GrayInstance grayInstance : grayInstances) {
-            if (grayInstance.isOpenGray() && grayInstance.isStatus()) {//开启灰度，且在线
+            if (grayInstance.isOpenGray() || !grayInstance.isStatus()) {//开启灰度，且在线
                 service.addGrayInstance(grayInstance.takeNewOpenGrayInstance());
             }
         }

@@ -124,10 +124,12 @@ public class GrayServiceController {
         vo.setServiceId(serviceId);
         vo.setInstanceId(instanceId);
         vo.setAppName(grayInstance.getAppName());
-        vo.setPolicyGroupId(grayInstance.getGrayPolicyGroup().getPolicyGroupId());
-        vo.setAlias(grayInstance.getGrayPolicyGroup().getAlias());
-        vo.setPolicies(grayInstance.getGrayPolicyGroup().getList());
-        vo.setEnable(grayInstance.getGrayPolicyGroup().isEnable());
+        if (grayInstance.getGrayPolicyGroup() != null) {
+            vo.setPolicyGroupId(grayInstance.getGrayPolicyGroup().getPolicyGroupId());
+            vo.setAlias(grayInstance.getGrayPolicyGroup().getAlias());
+            vo.setPolicies(grayInstance.getGrayPolicyGroup().getList());
+            vo.setEnable(grayInstance.getGrayPolicyGroup().isEnable());
+        }
         return ResponseEntity.ok(vo);
     }
 

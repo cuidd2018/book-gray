@@ -49,7 +49,7 @@ public class GrayInstance {
 
     public GrayInstance takeNewOpenGrayInstance() {
         GrayInstance instance = toNewGrayInstance();
-        if (grayPolicyGroup.isEnable()) {
+        if (grayPolicyGroup != null && grayPolicyGroup.isEnable()) {
             instance.setGrayPolicyGroup(grayPolicyGroup);
         }
         return instance;

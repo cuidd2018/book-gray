@@ -4,10 +4,10 @@ import cn.dingyuegroup.bamboo.BambooRequest;
 import cn.dingyuegroup.gray.core.GrayDecision;
 import cn.dingyuegroup.gray.core.GrayPolicy;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.PatternMatchUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class RequestParameterDecision implements GrayDecision {
 
@@ -33,7 +33,7 @@ public class RequestParameterDecision implements GrayDecision {
                 if (params.get(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name()).equals(MATCH_TYPE.EQUAL.name())) {//匹配规则是相等
                     return reqValues.get(0).equals(params.get(GrayPolicy.POLICY.POLICY_VALUE.name()));
                 } else if (params.get(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name()).equals(MATCH_TYPE.REGEX.name())) {//匹配规则是正则
-                    return PatternMatchUtils.simpleMatch(params.get(GrayPolicy.POLICY.POLICY_VALUE.name()), reqValues.get(0));
+                    return Pattern.compile(params.get(GrayPolicy.POLICY.POLICY_VALUE.name())).matcher(reqValues.get(0)).matches();
                 }
             }
         }

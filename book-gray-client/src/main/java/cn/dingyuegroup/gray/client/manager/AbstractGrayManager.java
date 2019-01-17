@@ -33,7 +33,10 @@ public abstract class AbstractGrayManager implements GrayManager {
     @Override
     public boolean isOnline(String serviceId, String instanceId) {
         GrayInstance grayInstance = grayInstance(serviceId, instanceId);
-        return grayInstance != null && grayInstance.isStatus();
+        if (grayInstance == null) {
+            return true;//因为不拉取在线的服务，所以默认认为在线
+        }
+        return grayInstance.isStatus();
     }
 
     @Override

@@ -26,8 +26,8 @@ public class GrayServiceApiImpl implements GrayServiceApi {
         }
         List<GrayService> serviceList = new ArrayList<>(grayServices.size());
         for (GrayService grayService : grayServices) {
-            //在线 && 开启灰度
-            if (grayService.isStatus() && grayService.isOpenGray()) {
+            //有下线 && 开启灰度
+            if (grayService.hasOffline() || grayService.isOpenGray()) {
                 serviceList.add(grayService.takeNewOpenGrayService());
             }
         }
