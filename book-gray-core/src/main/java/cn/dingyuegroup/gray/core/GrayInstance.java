@@ -35,12 +35,6 @@ public class GrayInstance {
         return false;
     }
 
-
-    public int countGrayPolicy() {
-        int count = getGrayPolicyGroup().getList().size();
-        return count;
-    }
-
     public GrayInstance toNewGrayInstance() {
         GrayInstance newInstance = new GrayInstance();
         newInstance.setInstanceId(instanceId);

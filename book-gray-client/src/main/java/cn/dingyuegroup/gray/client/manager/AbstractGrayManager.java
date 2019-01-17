@@ -18,18 +18,22 @@ public abstract class AbstractGrayManager implements GrayManager {
     protected GrayDecisionFactory decisionFactory;
     protected InformationClient client;
 
-
     public AbstractGrayManager(InformationClient client, GrayDecisionFactory decisionFactory) {
         this.decisionFactory = decisionFactory;
         this.client = client;
     }
-
 
     @Override
     public boolean isOpen(String serviceId) {
         GrayService grayService = grayService(serviceId);
         return grayService != null
                 && grayService.isOpenGray();
+    }
+
+    @Override
+    public boolean isOnline(String serviceId, String instanceId) {
+        GrayInstance grayInstance = grayInstance(serviceId, instanceId);
+        return grayInstance != null && grayInstance.isStatus();
     }
 
     @Override

@@ -11,10 +11,12 @@ import cn.dingyuegroup.gray.core.GrayService;
 import com.google.common.base.Optional;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.*;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 灰度发布的负载规则
@@ -46,12 +48,19 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
 
     @Override
     public Server choose(Object key) {
-        ILoadBalancer lb = getLoadBalancer();
         BambooRequestContext requestContext = BambooRequestContext.currentRequestContext();
+        if (requestContext == null || StringUtils.isEmpty(requestContext.getServiceId())) {
+            return super.choose(key);
+        }
         String serviceId = requestContext.getServiceId();
-        if (requestContext != null && getGrayManager().isOpen(serviceId)) {
+        ILoadBalancer lb = getLoadBalancer();
+        List<Server> servers = lb.getAllServers();
+        java.util.Optional<Server> offline = servers.parallelStream().filter(e -> !isOnline(serviceId, e)).findAny();
+        if (offline.isPresent()) {//有下线的服务
+            servers = servers.stream().filter(e -> isOnline(serviceId, e)).collect(Collectors.toList());//剔除下线服务
+        }
+        if (getGrayManager().isOpen(serviceId)) {
             GrayService grayService = getGrayManager().grayService(serviceId);
-            List<Server> servers = lb.getAllServers();
             List<Server> grayServers = new ArrayList<>(grayService.getGrayInstances().size());
             List<Server> normalServers = new ArrayList<>(servers.size() - grayService.getGrayInstances().size());
             for (Server server : servers) {
@@ -63,16 +72,23 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
                     normalServers.add(server);
                 }
             }
-
             Optional<Server> server = grayCompositePredicate.chooseRoundRobinAfterFiltering(grayServers, key);
             if (server.isPresent()) {
                 return server.get();
-            } else {
+            } else if (subDelegate != null) {//需要版本控制
+                return choose(subDelegate.getPredicate(), normalServers, key);
+            } else {//不需要版本控制
                 return choose(super.getPredicate(), normalServers, key);
             }
-        } else if (subDelegate != null) {
+        } else if (offline.isPresent()) {//有下线
+            if (subDelegate != null) {//需要版本控制
+                return choose(subDelegate.getPredicate(), servers, key);
+            } else {//不需要版本控制
+                return choose(super.getPredicate(), servers, key);
+            }
+        } else if (subDelegate != null) {//没有下线&&需要版本控制
             return subDelegate.choose(key);
-        } else {
+        } else {//没有下线&&不需要版本控制
             return super.choose(key);
         }
     }
@@ -91,6 +107,12 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
         if (subDelegate != null) {
             subDelegate.setLoadBalancer(lb);
         }
+    }
+
+    private boolean isOnline(String serviceId, Server server) {
+        Map<String, String> serverMetadata = getServerMetadata(serviceId, server);
+        String instanceId = ServiceUtil.getInstanceId(server, serverMetadata);
+        return getGrayManager().isOnline(serviceId, instanceId);
     }
 
     private Server choose(AbstractServerPredicate serverPredicate, List<Server> servers, Object key) {

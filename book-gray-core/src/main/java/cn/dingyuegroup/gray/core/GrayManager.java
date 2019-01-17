@@ -15,6 +15,8 @@ public interface GrayManager {
 
     boolean isOpen(String serviceId);
 
+    boolean isOnline(String serviceId, String instanceId);
+
     List<GrayService> listGrayService();
 
     GrayService grayService(String serviceId);
