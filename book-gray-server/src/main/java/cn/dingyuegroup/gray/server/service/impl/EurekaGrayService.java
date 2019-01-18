@@ -42,6 +42,9 @@ public class EurekaGrayService extends AbstractGrayService {
     public List<String> upInstanceIds(String serviceId) {
         //从eureka获取在线服务实例详细信息
         Application app = eurekaClient.getApplication(serviceId);
+        if (app == null) {
+            return new ArrayList<>();
+        }
         List<InstanceInfo> instanceInfos = app.getInstances();
         if (CollectionUtils.isEmpty(instanceInfos)) {
             return new ArrayList<>();
@@ -54,6 +57,9 @@ public class EurekaGrayService extends AbstractGrayService {
     public List<GrayInstance> upInstances(String serviceId) {
         //从eureka获取在线服务实例详细信息
         Application app = eurekaClient.getApplication(serviceId);
+        if (app == null) {
+            return new ArrayList<>();
+        }
         List<InstanceInfo> instanceInfos = app.getInstances();
         if (CollectionUtils.isEmpty(instanceInfos)) {
             return new ArrayList<>();

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>book-gray-client-a-sample</artifactId>
+    <artifactId>book-gray-server-sample</artifactId>
 
 
     <dependencies>
@@ -26,14 +26,8 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
-        </dependency>
-
-        <dependency>
             <groupId>cn.dingyuegroup</groupId>
-            <artifactId>book-gray-starter-client</artifactId>
+            <artifactId>book-gray-starter-server</artifactId>
         </dependency>
     </dependencies>
 
@@ -48,4 +42,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -1,7 +1,7 @@
 package cn.dingyuegroup.gray.server.context;
 
-import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;

@@ -60,7 +60,6 @@ public class MysqlConfiguration {
     @Primary
     public DataSource druidDataSource() {
         DruidDataSource datasource = new DruidDataSource();
-
         datasource.setUrl(url);
         datasource.setUsername(username);
         datasource.setPassword(password);

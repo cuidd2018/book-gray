@@ -1,12 +1,12 @@
 package cn.dingyuegroup.gray.server.config;
 
-import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
-import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;
 import cn.dingyuegroup.gray.server.service.impl.EurekaGrayServerEvictor;
 import cn.dingyuegroup.gray.server.service.impl.EurekaGrayService;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
+import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

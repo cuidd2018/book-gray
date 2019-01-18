@@ -19,6 +19,9 @@
         <module>book-gray-server</module>
         <module>book-gray-client</module>
         <module>book-gray-samples</module>
+        <module>book-gray-starter-server</module>
+        <module>book-gray-starter-client</module>
+        <module>book-gray-starter-bamboo</module>
     </modules>
 
     <properties>
@@ -111,12 +114,32 @@
             </dependency>
             <dependency>
                 <groupId>cn.dingyuegroup</groupId>
+                <artifactId>book-gray-starter-bamboo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dingyuegroup</groupId>
                 <artifactId>book-gray-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.dingyuegroup</groupId>
                 <artifactId>book-gray-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dingyuegroup</groupId>
+                <artifactId>book-gray-starter-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dingyuegroup</groupId>
+                <artifactId>book-gray-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.dingyuegroup</groupId>
+                <artifactId>book-gray-starter-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

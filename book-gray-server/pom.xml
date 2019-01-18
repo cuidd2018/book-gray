@@ -16,14 +16,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!--aop-->
         <dependency>
@@ -110,6 +113,36 @@
                         <version>1.3.5</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <!-- SpringBoot 打包插件，把 maven-jar-plugin 打成的jar包重新打成可运行jar包 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--重写包含依赖，包含不存在的依赖，jar里没有pom里的依赖 -->
+                    <includes>
+                        <include>
+                            <groupId>null</groupId>
+                            <artifactId>null</artifactId>
+                        </include>
+                    </includes>
+                    <layout>ZIP</layout>
+                    <!--使用外部配置文件，jar包里没有资源文件 -->
+                    <addResources>true</addResources>
+                    <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <!--配置jar包特殊标识 配置后，保留原文件，生成新文件 *-run.jar -->
+                            <!--配置jar包特殊标识 不配置，原文件命名为 *.jar.original，生成新文件 *.jar -->
+                            <!--<classifier>run</classifier> -->
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

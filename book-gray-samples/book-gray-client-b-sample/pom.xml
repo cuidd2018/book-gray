@@ -37,7 +37,7 @@
 
         <dependency>
             <groupId>cn.dingyuegroup</groupId>
-            <artifactId>book-gray-client</artifactId>
+            <artifactId>book-gray-starter-client</artifactId>
         </dependency>
     </dependencies>
 
