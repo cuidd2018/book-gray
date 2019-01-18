@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.server.sample;
 
-import cn.dingyuegroup.gray.server.config.EnableGrayServer;
+import cn.dingyuegroup.gray.server.config.EnableGrayServerWithMQ;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -11,7 +11,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @SpringBootApplication
-@EnableGrayServer
+@EnableGrayServerWithMQ
 @EnableDiscoveryClient
 public class GrayServerApplication {
 
