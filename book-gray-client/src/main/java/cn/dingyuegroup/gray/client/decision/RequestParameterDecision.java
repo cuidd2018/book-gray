@@ -4,17 +4,17 @@ import cn.dingyuegroup.bamboo.BambooRequest;
 import cn.dingyuegroup.gray.core.GrayDecision;
 import cn.dingyuegroup.gray.core.GrayPolicy;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
 
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class RequestParameterDecision implements GrayDecision {
 
 
-    private final Map<String, String> params;
+    private final MultiValueMap<String, String> params;
 
-    public RequestParameterDecision(Map<String, String> params) {
+    public RequestParameterDecision(MultiValueMap<String, String> params) {
         if (params.isEmpty()) {
             throw new NullPointerException("params must not be empty");
         }
@@ -28,12 +28,13 @@ public class RequestParameterDecision implements GrayDecision {
                 && params.containsKey(GrayPolicy.POLICY.POLICY_KEY.name())
                 && params.containsKey(GrayPolicy.POLICY.POLICY_VALUE.name())
                 && params.containsKey(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name())) {
-            List<String> reqValues = bambooRequest.getParams().get(params.get(GrayPolicy.POLICY.POLICY_KEY.name()));
-            if (!CollectionUtils.isEmpty(reqValues)) {
-                if (params.get(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name()).equals(MATCH_TYPE.EQUAL.name())) {//匹配规则是相等
-                    return reqValues.get(0).equals(params.get(GrayPolicy.POLICY.POLICY_VALUE.name()));
-                } else if (params.get(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name()).equals(MATCH_TYPE.REGEX.name())) {//匹配规则是正则
-                    return Pattern.compile(params.get(GrayPolicy.POLICY.POLICY_VALUE.name())).matcher(reqValues.get(0)).matches();
+            Map<String, String> map = params.toSingleValueMap();
+            String value = bambooRequest.getParams().toSingleValueMap().get(map.get(GrayPolicy.POLICY.POLICY_KEY.name()));
+            if (value != null) {
+                if (map.get(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name()).equals(MATCH_TYPE.EQUAL.name())) {//匹配规则是相等
+                    return value.equals(map.get(GrayPolicy.POLICY.POLICY_VALUE.name()));
+                } else if (map.get(GrayPolicy.POLICY.POLICY_MATCH_TYPE.name()).equals(MATCH_TYPE.REGEX.name())) {//匹配规则是正则
+                    return Pattern.compile(map.get(GrayPolicy.POLICY.POLICY_VALUE.name())).matcher(value).matches();
                 }
             }
         }

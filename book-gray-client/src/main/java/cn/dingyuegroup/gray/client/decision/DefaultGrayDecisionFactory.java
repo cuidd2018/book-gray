@@ -29,7 +29,9 @@ public class DefaultGrayDecisionFactory implements GrayDecisionFactory {
                 headers.setAll(grayPolicy.getInfos());
                 return new RequestHeaderDecision(headers);
             case REQUEST_PARAMETER:
-                return new RequestParameterDecision(grayPolicy.getInfos());
+                MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+                params.setAll(grayPolicy.getInfos());
+                return new RequestParameterDecision(params);
             case CONTEXT_PARAMS:
                 return new ContextParameterDecision(grayPolicy.getInfos());
             default:
