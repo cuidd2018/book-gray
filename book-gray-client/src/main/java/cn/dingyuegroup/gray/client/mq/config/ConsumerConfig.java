@@ -25,13 +25,13 @@ import java.util.Properties;
 @Configuration
 @ConditionalOnBean(GrayMQMarkerConfiguration.GrayMQMarker.class)
 @PropertySource(value = "classpath:${gray.mq.path}", ignoreResourceNotFound = true)
-@ConfigurationProperties(prefix = "mq.consumer")
+@ConfigurationProperties(prefix = "gray.mq.consumer")
 public class ConsumerConfig {
-    @Value("${mq.access_key}")
+    @Value("${gray.mq.access_key}")
     private String accessKey;
-    @Value("${mq.secret_key}")
+    @Value("${gray.mq.secret_key}")
     private String secretKey;
-    @Value("${mq.ons_addr}")
+    @Value("${gray.mq.ons_addr}")
     private String onsAddr;
     //ios同步账户消费者编号
     private String consumerId;

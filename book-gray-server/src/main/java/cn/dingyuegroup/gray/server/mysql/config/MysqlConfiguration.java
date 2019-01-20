@@ -28,7 +28,7 @@ import java.sql.SQLException;
 @Data
 @Configuration
 @PropertySource(value = "classpath:${gray.mysql.path}", ignoreResourceNotFound = true)
-@ConfigurationProperties(prefix = "spring.datasource")
+@ConfigurationProperties(prefix = "gray.server.datasource")
 @MapperScan(basePackages = "cn.dingyuegroup.gray.server.mysql.dao", sqlSessionFactoryRef = "sqlSessionFactory")
 public class MysqlConfiguration {
 

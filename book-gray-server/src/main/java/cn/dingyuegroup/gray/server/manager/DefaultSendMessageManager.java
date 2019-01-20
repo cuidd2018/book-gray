@@ -22,9 +22,9 @@ public class DefaultSendMessageManager implements SendMessageManager {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${mq.consumer.topic}")
+    @Value("${gray.mq.consumer.topic}")
     private String topic;//发送消息主题
-    @Value("${mq.consumer.tag}")
+    @Value("${gray.mq.consumer.tag}")
     private String tag;
     @Autowired
     private Producer producer;
