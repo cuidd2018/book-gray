@@ -1,4 +1,6 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 	cn.dingyuegroup.gray.client.config.GrayClientAutoConfiguration,\
-    cn.dingyuegroup.gray.client.config.GrayClientEurekaAutoConfiguration
+    cn.dingyuegroup.gray.client.config.GrayClientEurekaAutoConfiguration,\
+    cn.dingyuegroup.gray.client.mq.config.ConsumerConfig,\
+    cn.dingyuegroup.gray.client.mq.listener.SyncListener

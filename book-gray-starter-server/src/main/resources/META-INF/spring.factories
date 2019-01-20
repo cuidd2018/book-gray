@@ -1,4 +1,14 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.dingyuegroup.gray.server.config.GrayServerAutoConfiguration,\
-    cn.dingyuegroup.gray.server.config.GrayServiceEurekaAutoConfiguration
+    cn.dingyuegroup.gray.server.config.GrayServiceEurekaAutoConfiguration,\
+    cn.dingyuegroup.gray.server.api.impl.GrayServiceApiImpl,\
+    cn.dingyuegroup.gray.server.manager.DefaultGrayServiceManager,\
+    cn.dingyuegroup.gray.server.manager.DefaultSendMessageManager,\
+    cn.dingyuegroup.gray.server.mq.callback.MQCallBack,\
+    cn.dingyuegroup.gray.server.mq.config.ProducerConfig,\
+    cn.dingyuegroup.gray.server.mysql.config.MysqlConfiguration,\
+    cn.dingyuegroup.gray.server.vertify.VertifyRequestAop,\
+    cn.dingyuegroup.gray.server.web.GrayPolicyController,\
+    cn.dingyuegroup.gray.server.web.GrayRefreshController,\
+    cn.dingyuegroup.gray.server.web.GrayServiceController
