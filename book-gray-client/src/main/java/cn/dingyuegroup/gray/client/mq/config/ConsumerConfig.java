@@ -53,11 +53,11 @@ public class ConsumerConfig {
         //设置每条消息消费的最大超时时间，超过设置时间则被视为消费失败，等下次重新投递再次消费。每个业务需要设置一个合理的值，单位（分钟）
         properties.setProperty(PropertyKeyConst.ConsumeTimeout, "1");
         //PropertyKeyConst#MaxCachedMessageSizeInMiB （范围在 16 MB ~ 2048 MB）默认最大消耗内存 512 MB（CID 订阅的所有 topic 缓存总和）
-        Consumer consumer = ONSFactory.createConsumer(properties);
         // 集群订阅方式 (默认)
         // properties.setProperty(PropertyKeyConst.MessageModel, PropertyValueConst.CLUSTERING);
         // 广播订阅方式
         properties.setProperty(PropertyKeyConst.MessageModel, PropertyValueConst.BROADCASTING);
+        Consumer consumer = ONSFactory.createConsumer(properties);
         consumer.subscribe(topic, tag, syncListener);
         consumer.start();
         return consumer;
