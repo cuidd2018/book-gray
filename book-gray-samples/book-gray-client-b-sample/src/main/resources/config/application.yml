@@ -1,6 +1,8 @@
 spring:
   application:
     name: service-b
+  profiles:
+    active: dev
 server:
   port: 20102
 eureka:

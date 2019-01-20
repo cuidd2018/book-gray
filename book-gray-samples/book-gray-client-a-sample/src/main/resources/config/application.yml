@@ -1,8 +1,10 @@
 spring:
   application:
     name: service-a
+  profiles:
+    active: dev
 server:
-  port: 20103
+  port: 20104
 eureka:
   client:
     register-with-eureka: true
