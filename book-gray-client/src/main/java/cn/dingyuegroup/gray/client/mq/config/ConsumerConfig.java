@@ -24,7 +24,7 @@ import java.util.Properties;
 @Data
 @Configuration
 @ConditionalOnBean(GrayMQMarkerConfiguration.GrayMQMarker.class)
-@PropertySource("classpath:config/${spring.profiles.active}/mq.properties")
+@PropertySource(value = "classpath:${gray.mq.path}", ignoreResourceNotFound = true)
 @ConfigurationProperties(prefix = "mq.consumer")
 public class ConsumerConfig {
     @Value("${mq.access_key}")

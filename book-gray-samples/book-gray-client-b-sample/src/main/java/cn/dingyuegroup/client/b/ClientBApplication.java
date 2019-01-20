@@ -1,6 +1,5 @@
 package cn.dingyuegroup.client.b;
 
-import cn.dingyuegroup.gray.client.EnableGrayClient;
 import cn.dingyuegroup.gray.client.EnableGrayClientWithMQ;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

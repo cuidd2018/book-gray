@@ -24,13 +24,10 @@ import java.sql.SQLException;
  * druid 配置.
  * <p>
  * 这样的方式不需要添加注解：@ServletComponentScan
- *
- * @author Administrator
- *         参考：http://www.cnblogs.com/vincent0928/p/6099600.html
  */
 @Data
 @Configuration
-@PropertySource("classpath:config/${spring.profiles.active}/mysql.properties")
+@PropertySource(value = "classpath:${gray.mysql.path}", ignoreResourceNotFound = true)
 @ConfigurationProperties(prefix = "spring.datasource")
 @MapperScan(basePackages = "cn.dingyuegroup.gray.server.mysql.dao", sqlSessionFactoryRef = "sqlSessionFactory")
 public class MysqlConfiguration {

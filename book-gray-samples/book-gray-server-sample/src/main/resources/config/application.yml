@@ -16,3 +16,8 @@ eureka:
   instance:
     lease-renewal-interval-in-seconds: 8
     lease-expiration-duration-in-seconds: 20
+gray:
+  mq:
+    path: config/dev/mq.properties
+  mysql:
+    path: config/dev/mysql.properties
