@@ -5,6 +5,7 @@ import cn.dingyuegroup.gray.client.mq.listener.SyncListener;
 import com.aliyun.openservices.ons.api.Consumer;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import com.aliyun.openservices.ons.api.PropertyValueConst;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,7 @@ public class ConsumerConfig {
         // 集群订阅方式 (默认)
         // properties.setProperty(PropertyKeyConst.MessageModel, PropertyValueConst.CLUSTERING);
         // 广播订阅方式
-        // properties.setProperty(PropertyKeyConst.MessageModel, PropertyValueConst.BROADCASTING);
+        properties.setProperty(PropertyKeyConst.MessageModel, PropertyValueConst.BROADCASTING);
         consumer.subscribe(topic, tag, syncListener);
         consumer.start();
         return consumer;

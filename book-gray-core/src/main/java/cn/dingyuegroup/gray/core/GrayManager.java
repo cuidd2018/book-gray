@@ -17,6 +17,8 @@ public interface GrayManager {
 
     boolean isOnline(String serviceId, String instanceId);
 
+    void updateCache();
+
     List<GrayService> listGrayService();
 
     GrayService grayService(String serviceId);

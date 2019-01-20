@@ -35,10 +35,20 @@ public class BaseGrayManager extends AbstractGrayManager {
             grayEnroll();
         }
         log.info("*****************拉取灰度列表*****************");
-        doUpdate();
+        updateCache();
         updateTimer.schedule(new UpdateTask(),
                 clientConfig.getServiceUpdateIntervalTimerInMs(),
                 clientConfig.getServiceUpdateIntervalTimerInMs());
+    }
+
+    @Override
+    public void updateCache() {
+        try {
+            log.debug("更新灰度服务列表...");
+            updateGrayServices(client.listGrayService());
+        } catch (Exception e) {
+            log.error("更新灰度服务列表失败", e);
+        }
     }
 
     @Override
@@ -90,16 +100,6 @@ public class BaseGrayManager extends AbstractGrayManager {
     }
 
 
-    private void doUpdate() {
-        try {
-            log.debug("更新灰度服务列表...");
-            updateGrayServices(client.listGrayService());
-        } catch (Exception e) {
-            log.error("更新灰度服务列表失败", e);
-        }
-    }
-
-
     private void grayEnroll() {
         Thread t = new Thread(() -> {
 
@@ -122,7 +122,7 @@ public class BaseGrayManager extends AbstractGrayManager {
 
         @Override
         public void run() {
-            doUpdate();
+            updateCache();
         }
     }
 

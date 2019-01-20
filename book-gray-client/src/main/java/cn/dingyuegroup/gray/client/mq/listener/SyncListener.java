@@ -1,5 +1,6 @@
 package cn.dingyuegroup.gray.client.mq.listener;
 
+import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
@@ -20,6 +21,7 @@ public class SyncListener implements MessageListener {
             byte[] body = message.getBody();
             String json = new String(body);
             System.out.println(json);
+            GrayClientAppContext.getGrayManager().updateCache();
         } catch (Exception e) {
             e.printStackTrace();
         }

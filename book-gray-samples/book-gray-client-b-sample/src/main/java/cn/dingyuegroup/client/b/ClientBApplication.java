@@ -1,6 +1,7 @@
 package cn.dingyuegroup.client.b;
 
 import cn.dingyuegroup.gray.client.EnableGrayClient;
+import cn.dingyuegroup.gray.client.EnableGrayClientWithMQ;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -13,7 +14,7 @@ import java.net.UnknownHostException;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableGrayClient
+@EnableGrayClientWithMQ
 @EnableFeignClients
 public class ClientBApplication {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(ClientBApplication.class);
