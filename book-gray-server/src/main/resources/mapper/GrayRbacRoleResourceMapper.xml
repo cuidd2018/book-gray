@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dingyuegroup.gray.server.mysql.dao.GrayRbacRoleResourceMapper">
+  <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacRoleResource">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="resource_id" jdbcType="VARCHAR" property="resourceId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gray_rbac_role_resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.youqu.mysql.entity.GrayRbacRoleResource">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into gray_rbac_role_resource (resource_id, role_id)
+    values (#{resourceId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.youqu.mysql.entity.GrayRbacRoleResource">
+    update gray_rbac_role_resource
+    set resource_id = #{resourceId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, resource_id, role_id
+    from gray_rbac_role_resource
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, resource_id, role_id
+    from gray_rbac_role_resource
+  </select>
+</mapper>
