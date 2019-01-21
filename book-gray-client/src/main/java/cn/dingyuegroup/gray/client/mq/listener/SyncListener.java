@@ -5,6 +5,8 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,12 +17,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class SyncListener implements MessageListener {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public Action consume(Message message, ConsumeContext consumeContext) {
         try {
             byte[] body = message.getBody();
             String json = new String(body);
-            System.out.println(json);
+            logger.info("MQ广播拉新服务列表：{}", json);
             GrayClientAppContext.getGrayManager().updateCache();
         } catch (Exception e) {
             e.printStackTrace();
