@@ -5,6 +5,7 @@ import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUserRole;
 import java.util.List;
 
 public interface GrayRbacUserRoleMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(GrayRbacUserRole record);
@@ -14,4 +15,8 @@ public interface GrayRbacUserRoleMapper {
     List<GrayRbacUserRole> selectAll();
 
     int updateByPrimaryKey(GrayRbacUserRole record);
+
+    GrayRbacUserRole selectByUdid(String udid);
+
+    GrayRbacUserRole selectByRoleId(String roleId);
 }

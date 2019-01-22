@@ -5,6 +5,7 @@ import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser;
 import java.util.List;
 
 public interface GrayRbacUserMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(GrayRbacUser record);
@@ -14,4 +15,8 @@ public interface GrayRbacUserMapper {
     List<GrayRbacUser> selectAll();
 
     int updateByPrimaryKey(GrayRbacUser record);
+
+    GrayRbacUser selectByUdid(String udid);
+
+    GrayRbacUser selectByDepartmentId(String departmentId);
 }

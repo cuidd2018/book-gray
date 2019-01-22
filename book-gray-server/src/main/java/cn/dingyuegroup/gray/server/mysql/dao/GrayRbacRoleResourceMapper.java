@@ -14,4 +14,8 @@ public interface GrayRbacRoleResourceMapper {
     List<GrayRbacRoleResource> selectAll();
 
     int updateByPrimaryKey(GrayRbacRoleResource record);
+
+    GrayRbacRoleResource selectByResourceId(String resourceId);
+
+    GrayRbacRoleResource selectByRoleId(String roleId);
 }

@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.dingyuegroup.gray.server.mysql.dao.GrayRbacResourcesMapper">
-  <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="resource_id" jdbcType="VARCHAR" property="resourceId" />
-    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="resource_id" jdbcType="VARCHAR" property="resourceId"/>
+        <result column="resource_name" jdbcType="VARCHAR" property="resourceName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, resource_id, resource_name
+    </sql>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_rbac_resources
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="net.youqu.mysql.entity.GrayRbacResources">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into gray_rbac_resources (resource_id, resource_name)
-    values (#{resourceId,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="net.youqu.mysql.entity.GrayRbacResources">
+    <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into gray_rbac_resources (resource_id, resource_name)
+        values (#{resourceId,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
     update gray_rbac_resources
     set resource_id = #{resourceId,jdbcType=VARCHAR},
       resource_name = #{resourceName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select id, resource_id, resource_name
-    from gray_rbac_resources
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, resource_id, resource_name
-    from gray_rbac_resources
-  </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_resources
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_resources
+    </select>
+    <select id="selectByResourceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_resources
+        where resource_id = #{resourceId,jdbcType=VARCHAR}
+    </select>
 </mapper>

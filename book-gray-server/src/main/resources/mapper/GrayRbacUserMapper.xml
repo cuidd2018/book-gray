@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper">
-  <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="udid" jdbcType="VARCHAR" property="udid" />
-    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="udid" jdbcType="VARCHAR" property="udid"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="department_id" jdbcType="VARCHAR" property="departmentId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, udid, nickname, remark, department_id
+    </sql>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_rbac_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="net.youqu.mysql.entity.GrayRbacUser">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into gray_rbac_user (udid, nickname, remark, 
-      department_id)
-    values (#{udid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
-      #{departmentId,jdbcType=VARCHAR})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="net.youqu.mysql.entity.GrayRbacUser">
+    <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into gray_rbac_user (udid, nickname, remark,
+        department_id)
+        values (#{udid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+        #{departmentId,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
     update gray_rbac_user
     set udid = #{udid,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
@@ -29,13 +32,27 @@
       department_id = #{departmentId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select id, udid, nickname, remark, department_id
-    from gray_rbac_user
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, udid, nickname, remark, department_id
-    from gray_rbac_user
-  </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_user
+    </select>
+    <select id="selectByUdid" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_user
+        where udid = #{udid,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByDepartmentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_user
+        where department_id = #{departmentId,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -14,4 +14,6 @@ public interface GrayRbacActionMapper {
     List<GrayRbacAction> selectAll();
 
     int updateByPrimaryKey(GrayRbacAction record);
+
+    GrayRbacAction selectByActionId(String actionId);
 }
