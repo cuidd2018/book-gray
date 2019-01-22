@@ -11,4 +11,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.dingyuegroup.gray.server.vertify.VertifyRequestAop,\
     cn.dingyuegroup.gray.server.web.GrayPolicyController,\
     cn.dingyuegroup.gray.server.web.GrayRefreshController,\
-    cn.dingyuegroup.gray.server.web.GrayServiceController
+    cn.dingyuegroup.gray.server.web.GrayServiceController,\
+    cn.dingyuegroup.gray.server.manager.DefaultRbacManager,\
+    cn.dingyuegroup.gray.server.web.GrayRbacController

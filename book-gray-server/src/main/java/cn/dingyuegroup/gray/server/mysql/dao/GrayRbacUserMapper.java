@@ -18,5 +18,9 @@ public interface GrayRbacUserMapper {
 
     GrayRbacUser selectByUdid(String udid);
 
-    GrayRbacUser selectByDepartmentId(String departmentId);
+    List<GrayRbacUser> selectByDepartmentId(String departmentId);
+
+    int updateByUdid(GrayRbacUser record);
+
+    int deleteByUdid(String udid);
 }

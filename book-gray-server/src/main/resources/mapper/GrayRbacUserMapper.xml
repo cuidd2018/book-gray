@@ -15,6 +15,10 @@
     delete from gray_rbac_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
+    <delete id="deleteByUdid" parameterType="java.lang.String">
+        delete from gray_rbac_user
+        where udid = #{udid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
@@ -55,4 +59,11 @@
         from gray_rbac_user
         where department_id = #{departmentId,jdbcType=VARCHAR}
     </select>
+    <update id="updateByUdid" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
+        update gray_rbac_user
+        set nickname = #{nickname,jdbcType=VARCHAR},
+        remark = #{remark,jdbcType=VARCHAR},
+        department_id = #{departmentId,jdbcType=VARCHAR}
+        where udid = #{udid,jdbcType=VARCHAR}
+    </update>
 </mapper>

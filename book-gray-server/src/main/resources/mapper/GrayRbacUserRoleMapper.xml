@@ -49,4 +49,10 @@
         from gray_rbac_user_role
         where role_id = #{roleId,jdbcType=VARCHAR}
     </select>
+    <update id="updateByUdidAndRoleId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUserRole">
+        update gray_rbac_user_role
+        set udid = #{udid,jdbcType=VARCHAR},
+        role_id = #{roleId,jdbcType=VARCHAR}
+        where udid = #{udid,jdbcType=VARCHAR} AND role_id = #{roleId,jdbcType=VARCHAR}
+    </update>
 </mapper>
