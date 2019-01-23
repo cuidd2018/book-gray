@@ -17,6 +17,7 @@
         <module>book-gray-client-b-sample</module>
         <module>book-gray-eureka-sample</module>
         <module>book-gray-client-zuul-sample</module>
+        <module>book-gray-server-sample</module>
     </modules>
     <dependencies>
         <dependency>
