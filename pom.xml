@@ -22,6 +22,7 @@
         <module>book-gray-starter-server</module>
         <module>book-gray-starter-client</module>
         <module>book-gray-starter-bamboo</module>
+        <module>book-gray-dependencies</module>
     </modules>
 
     <properties>
@@ -70,6 +71,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>cn.dingyuegroup</groupId>
+                <artifactId>book-gray-dependencies</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>1.2.0</version>
@@ -105,42 +113,6 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-bean-validators</artifactId>
                 <version>${springfox.version}</version>
-            </dependency>
-            <!--内部项目依赖-->
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-bamboo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-starter-bamboo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-starter-client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-server</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.dingyuegroup</groupId>
-                <artifactId>book-gray-starter-server</artifactId>
-                <version>${project.version}</version>
             </dependency>
             <!--MQ-->
             <dependency>
