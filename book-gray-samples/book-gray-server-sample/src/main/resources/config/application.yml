@@ -21,3 +21,5 @@ gray:
     path: config/dev/mq.properties
   mysql:
     path: config/dev/mysql.properties
+  redis:
+    path: config/dev/redis.properties
