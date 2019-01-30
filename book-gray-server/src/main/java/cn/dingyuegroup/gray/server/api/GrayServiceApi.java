@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@RequestMapping("/gray")
+@RequestMapping("/gray/api")
 public interface GrayServiceApi {
 
     @RequestMapping(value = "/services/enable", method = RequestMethod.GET)

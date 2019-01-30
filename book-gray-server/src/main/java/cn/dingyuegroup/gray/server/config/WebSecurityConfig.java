@@ -58,12 +58,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                //以“/css/**”开头的和“/index”资源不需要验证，可直接访问
-                //.antMatchers("/css/**", "/index").permitAll()
-                //任何以“/db/”开头的URL都要求用户拥有“ROLE_USER”角色
-                .antMatchers("/user/**").hasRole("USER")
+                //以“/static/**”开头的和“/index”资源不需要验证，可直接访问
+                .antMatchers("/static/**", "/index").permitAll()
+                .antMatchers("/gray/api/**").permitAll()//开放对外服务接口
+                //任何以“/gray/manager/policy/”开头的URL都要求用户拥有“ROLE_USER”角色
+                .antMatchers("/gray/manager/policy/**", "/gray/manager/refresh/**", "/gray/manager/services/**").hasRole("USER")
                 //任何以“/db/”开头的URL都要求用户同时拥有“ROLE_ADMIN”和“ROLE_DBA”。由于我们使用的是hasRole表达式，因此我们不需要指定“ROLE_”前缀。
-                .antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")
+                .antMatchers("/gray/manager/rbac/**").access("hasRole('ADMIN') and hasRole('USER')")
 /*                        //确保对我们的应用程序的任何请求都要求用户进行身份验证
                         .anyRequest().authenticated()*/
                 .and()
@@ -86,13 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //异常处理会重定向到“/401”页面
                 .exceptionHandling().accessDeniedPage("/401")
-
-        //      .httpBasic()//允许用户使用HTTP基本身份验证进行身份验证
+        //.httpBasic()//允许用户使用HTTP基本身份验证进行身份验证
         ;
     }
-
-   /* @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css*//**", "/index");
-     }*/
 }

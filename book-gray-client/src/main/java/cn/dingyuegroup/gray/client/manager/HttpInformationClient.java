@@ -30,7 +30,7 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public List<GrayService> listGrayService() {
-        String url = this.baseUrl + "/gray/services/enable";
+        String url = this.baseUrl + "/gray/api/services/enable";
         ParameterizedTypeReference<List<GrayService>> typeRef = new ParameterizedTypeReference<List<GrayService>>() {
         };
         try {
@@ -71,7 +71,7 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void addGrayInstance(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/services/instance/online?serviceId={1}&instanceId={2}";
+        String url = this.baseUrl + "/gray/api/services/instance/online?serviceId={1}&instanceId={2}";
         try {
             rest.getForEntity(url, Void.class, serviceId, instanceId);
         } catch (RuntimeException e) {
@@ -88,7 +88,7 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void serviceDownline(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/services/instance/offline";
+        String url = this.baseUrl + "/gray/api/services/instance/offline";
         try {
             Map<String, String> params = new HashMap<>();
             params.put("serviceId", serviceId);

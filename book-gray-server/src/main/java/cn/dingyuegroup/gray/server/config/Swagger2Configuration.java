@@ -26,7 +26,7 @@ import java.util.List;
 @EnableSwagger2
 @ConfigurationProperties
 //@Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)
-@ComponentScan({"cn.springcloud.gray.server.resources"})
+@ComponentScan({"cn.dingyuegroup.gray.server.resources"})
 public class Swagger2Configuration extends WebMvcConfigurerAdapter {
 
 
