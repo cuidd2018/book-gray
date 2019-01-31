@@ -23,4 +23,8 @@ public interface GrayRbacUserMapper {
     int updateByUdid(GrayRbacUser record);
 
     int deleteByUdid(String udid);
+
+    int updatePasswordByUdid();
+
+    GrayRbacUser selectByAccount(String account);
 }

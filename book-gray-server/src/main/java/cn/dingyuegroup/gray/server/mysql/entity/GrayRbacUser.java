@@ -17,6 +17,10 @@ public class GrayRbacUser {
 
     private String departmentId;
 
+    private String password;
+
+    private String account;
+
     public static String genId() {
         return "USER_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     }

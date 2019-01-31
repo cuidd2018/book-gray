@@ -8,6 +8,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.dingyuegroup.gray.server.manager.DefaultGrayServiceManager,\
     cn.dingyuegroup.gray.server.manager.DefaultSendMessageManager,\
     cn.dingyuegroup.gray.server.manager.DefaultRbacManager,\
+    cn.dingyuegroup.gray.server.service.impl.RbacServiceImpl,\
     cn.dingyuegroup.gray.server.mq.callback.MQCallBack,\
     cn.dingyuegroup.gray.server.mq.config.ProducerConfig,\
     cn.dingyuegroup.gray.server.mysql.config.MysqlConfiguration,\

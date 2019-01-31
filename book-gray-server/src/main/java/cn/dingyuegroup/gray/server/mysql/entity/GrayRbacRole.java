@@ -8,5 +8,7 @@ public class GrayRbacRole {
 
     private String roleId;
 
+    private String role;
+
     private String roleName;
 }

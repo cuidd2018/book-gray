@@ -2,24 +2,25 @@ package cn.dingyuegroup.gray.server.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    public static final String ROLE_NAME = "USER";
+
+    /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
     }
@@ -30,29 +31,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         manager.createUser(User.withUsername("cralor").password(new BCryptPasswordEncoder().encode("123")).roles("USER").build());
         manager.createUser(User.withUsername("admin").password(new BCryptPasswordEncoder().encode("123")).roles("ADMIN", "USER").build());
         return manager;
-    }
+    }*/
 
     //1、@Autowired和@Qualifier结合使用
     //@Qualifier("userServiceImpl")
     //@Autowired
 
     //2、使用@Resource
-    /*@Resource
+    @Resource
     UserDetailsService userDetailsService;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
         auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-
-
-        *//* 加密（hash）过程在Test中
-        BCryptPasswordEncoder util = new BCryptPasswordEncoder();
-        for(int i = 0 ; i < 10; i ++){
-            System. out.println(util.encode("admin" ));
-        }*//*
-
-    }*/
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -62,11 +54,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/static/**", "/index").permitAll()
                 .antMatchers("/gray/api/**").permitAll()//开放对外服务接口
                 //任何以“/gray/manager/policy/”开头的URL都要求用户拥有“ROLE_USER”角色
-                .antMatchers("/gray/manager/policy/**", "/gray/manager/refresh/**", "/gray/manager/services/**").hasRole("USER")
+                .antMatchers("/gray/manager/policy/**", "/gray/manager/refresh/**", "/gray/manager/services/**", "/gray/manager/rbac/**").hasRole(ROLE_NAME)
                 //任何以“/db/”开头的URL都要求用户同时拥有“ROLE_ADMIN”和“ROLE_DBA”。由于我们使用的是hasRole表达式，因此我们不需要指定“ROLE_”前缀。
-                .antMatchers("/gray/manager/rbac/**").access("hasRole('ADMIN') and hasRole('USER')")
-/*                        //确保对我们的应用程序的任何请求都要求用户进行身份验证
-                        .anyRequest().authenticated()*/
+                //.antMatchers("/gray/manager/rbac/**").access("hasRole('ADMIN') or hasRole('USER')")
+                //确保对我们的应用程序的任何请求都要求用户进行身份验证
+                //.anyRequest().authenticated()
                 .and()
                 //允许用户使用基于表单的登录进行身份验证
                 .formLogin()
