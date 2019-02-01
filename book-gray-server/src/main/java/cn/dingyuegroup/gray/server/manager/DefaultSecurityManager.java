@@ -1,11 +1,11 @@
-package cn.dingyuegroup.gray.server.service.impl;
+package cn.dingyuegroup.gray.server.manager;
 
-import cn.dingyuegroup.gray.server.config.WebSecurityConfig;
+import cn.dingyuegroup.gray.server.config.WebSecurityConfiguration;
+import cn.dingyuegroup.gray.server.context.GrayServerContext;
 import cn.dingyuegroup.gray.server.model.vo.GrantedAuthorityVO;
 import cn.dingyuegroup.gray.server.model.vo.UserDetailsVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,21 +20,25 @@ import java.util.List;
  * Created by 170147 on 2019/1/30.
  */
 @Service
-public class RbacServiceImpl implements UserDetailsService, Serializable {
+public class DefaultSecurityManager implements UserDetailsService, Serializable {
 
+    /*
+    诡异：自动注入的字段无法序列化
+    org.springframework.data.redis.serializer.SerializationException: Cannot serialize; nested exception is org.springframework.core.serializer.support.SerializationFailedException: Failed to serialize object using DefaultSerializer; nested exception is java.io.NotSerializableException: java.lang.reflect.Method
     @Autowired
-    private GrayRbacUserMapper grayRbacUserMapper;
+    private GrayRbacUserMapper grayRbacUserMapper;*/
 
     /**
      * 校验账户
      *
-     * @param s
+     * @param username
      * @return
      * @throws UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        GrayRbacUser grayRbacUser = grayRbacUserMapper.selectByAccount(s);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        GrayRbacUserMapper grayRbacUserMapper = GrayServerContext.getGrayRbacUserMapper();
+        GrayRbacUser grayRbacUser = grayRbacUserMapper.selectByAccount(username);
         if (grayRbacUser == null
                 || StringUtils.isEmpty(grayRbacUser.getPassword())
                 || StringUtils.isEmpty(grayRbacUser.getUdid())) {
@@ -42,10 +46,10 @@ public class RbacServiceImpl implements UserDetailsService, Serializable {
         }
         List<GrantedAuthorityVO> list = new ArrayList<GrantedAuthorityVO>() {
             {
-                add(new GrantedAuthorityVO(WebSecurityConfig.ROLE_NAME));
+                add(new GrantedAuthorityVO(WebSecurityConfiguration.ROLE));
             }
         };
-        UserDetailsVO rbacUserVO = new UserDetailsVO(s, grayRbacUser.getPassword(), list);
+        UserDetailsVO rbacUserVO = new UserDetailsVO(username, grayRbacUser.getPassword(), list);
         return rbacUserVO;
     }
 

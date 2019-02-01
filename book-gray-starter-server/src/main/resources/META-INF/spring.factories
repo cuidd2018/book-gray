@@ -2,13 +2,13 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.dingyuegroup.gray.server.config.GrayServerAutoConfiguration,\
     cn.dingyuegroup.gray.server.config.GrayServiceEurekaAutoConfiguration,\
-    cn.dingyuegroup.gray.server.config.WebSecurityConfig,\
-    cn.dingyuegroup.gray.server.config.RedisSessionConfig,\
+    cn.dingyuegroup.gray.server.config.WebSecurityConfiguration,\
+    cn.dingyuegroup.gray.server.config.RedisSessionConfiguration,\
     cn.dingyuegroup.gray.server.api.impl.GrayServiceApiImpl,\
     cn.dingyuegroup.gray.server.manager.DefaultGrayServiceManager,\
     cn.dingyuegroup.gray.server.manager.DefaultSendMessageManager,\
     cn.dingyuegroup.gray.server.manager.DefaultRbacManager,\
-    cn.dingyuegroup.gray.server.service.impl.RbacServiceImpl,\
+    cn.dingyuegroup.gray.server.manager.DefaultSecurityManager,\
     cn.dingyuegroup.gray.server.mq.callback.MQCallBack,\
     cn.dingyuegroup.gray.server.mq.config.ProducerConfig,\
     cn.dingyuegroup.gray.server.mysql.config.MysqlConfiguration,\

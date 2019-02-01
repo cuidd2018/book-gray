@@ -10,5 +10,5 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @Configuration
 @ConditionalOnBean(GrayShareSessionMarkerConfiguration.GrayShareSessionMarker.class)
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 36000, redisNamespace = "book:gray:session")
-public class RedisSessionConfig {
+public class RedisSessionConfiguration {
 }
