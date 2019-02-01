@@ -10,8 +10,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrayRibbonClientsConfiguration {
 
-
+    /**
+     * 项目启动的时候不会初始化，有ribbon请求的时候才初始化
+     *
+     * @param config
+     * @return
+     */
     @Bean
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     public IRule ribbonRule(@Autowired(required = false) IClientConfig config) {
         GrayLoadBalanceRule rule = new GrayLoadBalanceRule();
         rule.initWithNiwsConfig(config);
