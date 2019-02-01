@@ -2,6 +2,7 @@ package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity;
+import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/gray/manager/policy")
-public class GrayPolicyController {
+public class GrayPolicyController extends BaseController {
 
     @Autowired
     private GrayServiceManager grayServiceManager;

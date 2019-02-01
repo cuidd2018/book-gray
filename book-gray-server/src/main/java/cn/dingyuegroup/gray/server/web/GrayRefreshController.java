@@ -2,6 +2,7 @@ package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.config.GrayMQMarkerConfiguration;
 import cn.dingyuegroup.gray.server.manager.SendMessageManager;
+import cn.dingyuegroup.gray.server.web.base.BaseController;
 import com.aliyun.openservices.shade.com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -20,7 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/gray/manager/refresh")
 @ConditionalOnBean(GrayMQMarkerConfiguration.GrayMQMarker.class)
-public class GrayRefreshController {
+public class GrayRefreshController extends BaseController {
 
     @Autowired
     private SendMessageManager sendMessageManager;

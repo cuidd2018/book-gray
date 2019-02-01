@@ -7,6 +7,7 @@ import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.vertify.VertifyRequest;
+import cn.dingyuegroup.gray.server.web.base.BaseController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/gray/manager/services")
-public class GrayServiceController {
+public class GrayServiceController extends BaseController {
     @Autowired
     private GrayServiceManager grayServiceManager;
 

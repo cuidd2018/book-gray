@@ -46,7 +46,7 @@ public class DefaultSecurityManager implements UserDetailsService, Serializable 
         }
         List<GrantedAuthorityVO> list = new ArrayList<GrantedAuthorityVO>() {
             {
-                add(new GrantedAuthorityVO(WebSecurityConfiguration.ROLE));
+                add(new GrantedAuthorityVO("ROLE_USER"));
             }
         };
         UserDetailsVO rbacUserVO = new UserDetailsVO(username, grayRbacUser.getPassword(), list);
