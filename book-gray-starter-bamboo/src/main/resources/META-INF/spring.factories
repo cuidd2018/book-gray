@@ -1,5 +1,5 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 	cn.dingyuegroup.bamboo.autoconfig.BambooAutoConfiguration,\
-  cn.dingyuegroup.bamboo.feign.config.BambooFeignConfiguration,\
-  cn.dingyuegroup.bamboo.zuul.config.BambooZuulConfiguration
+    cn.dingyuegroup.bamboo.feign.config.BambooFeignConfiguration,\
+    cn.dingyuegroup.bamboo.zuul.config.BambooZuulConfiguration

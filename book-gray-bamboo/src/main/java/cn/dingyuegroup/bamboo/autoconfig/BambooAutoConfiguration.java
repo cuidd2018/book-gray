@@ -35,6 +35,7 @@ public class BambooAutoConfiguration {
     }
 
     @Autowired
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     private SpringClientFactory springClientFactory;
     @Autowired
     private BambooProperties bambooProperties;
