@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:include="common/head"></th:block>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header th:replace="common/header :: header"></header>
+    <aside th:replace="common/leftSidebar :: aside"></aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Page Header
+                <small>Optional description</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section layout:fragment="content" class="content container-fluid">
+
+            <!--------------------------
+              | Your Page Content Here |
+              -------------------------->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer th:replace="common/footer :: footer"></footer>
+
+    <aside th:replace="common/setSidebar :: aside"></aside>
+
+    <!-- Add the sidebar's background. This div must be placed
+    immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<th:block th:include="common/foot"></th:block>
+
+</body>
+</html>

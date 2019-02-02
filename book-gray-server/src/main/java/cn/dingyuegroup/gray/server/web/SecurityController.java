@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Created by cc.
- * 2018/7/9 14:31
- **/
 @Controller
 public class SecurityController {
 
@@ -32,11 +28,6 @@ public class SecurityController {
         return "index";
     }
 
-    @RequestMapping("user/index")
-    public String userIndex() {
-        return "user/index";
-    }
-
     @RequestMapping("login")
     public String login() {
         return "login";
@@ -46,6 +37,11 @@ public class SecurityController {
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
         return "login";
+    }
+
+    @RequestMapping("user/index")
+    public String userIndex() {
+        return "user/index";
     }
 
     /**

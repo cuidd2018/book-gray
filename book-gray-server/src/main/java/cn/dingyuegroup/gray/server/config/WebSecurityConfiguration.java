@@ -1,7 +1,9 @@
 package cn.dingyuegroup.gray.server.config;
 
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -10,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 import javax.annotation.Resource;
 
@@ -80,5 +85,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedPage("/401")
         //.httpBasic()//允许用户使用HTTP基本身份验证进行身份验证
         ;
+    }
+
+    @Bean
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    public SpringTemplateEngine templateEngine(SpringResourceTemplateResolver springResourceTemplateResolver, SpringSecurityDialect sec) {
+        final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(springResourceTemplateResolver);
+        templateEngine.addDialect(sec);
+        templateEngine.addDialect(new LayoutDialect());
+        return templateEngine;
     }
 }
