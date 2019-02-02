@@ -18,8 +18,6 @@ import javax.annotation.Resource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    public static final String ROLE = "USER";
-
     /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());
@@ -55,7 +53,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/static/**", "/index").permitAll()
                 .antMatchers("/gray/api/**").permitAll()//开放对外服务接口
                 //任何以“/gray/manager/policy/”开头的URL都要求用户拥有“ROLE_USER”角色
-                .antMatchers("/gray/manager/policy/**", "/gray/manager/refresh/**", "/gray/manager/services/**", "/gray/manager/rbac/**").hasRole(ROLE)
+                .antMatchers("/gray/manager/policy/**", "/gray/manager/refresh/**", "/gray/manager/services/**", "/gray/manager/rbac/**").hasRole("USER")
                 //任何以“/db/”开头的URL都要求用户同时拥有“ROLE_ADMIN”和“ROLE_DBA”。由于我们使用的是hasRole表达式，因此我们不需要指定“ROLE_”前缀。
                 //.antMatchers("/gray/manager/rbac/**").access("hasRole('ADMIN') or hasRole('USER')")
                 //确保对我们的应用程序的任何请求都要求用户进行身份验证
