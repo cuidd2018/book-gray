@@ -21,7 +21,7 @@ public class SecurityController extends BaseController {
 
     @RequestMapping("/")
     public String root() {
-        return "redirect:/login";
+        return "redirect:/index";
     }
 
     @RequestMapping("login")
