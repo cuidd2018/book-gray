@@ -4,6 +4,7 @@ package cn.dingyuegroup.gray.server.web;
  * Created by 170147 on 2019/1/28.
  */
 
+import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -16,16 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class SecurityController {
+public class SecurityController extends BaseController {
 
     @RequestMapping("/")
     public String root() {
-        return "redirect:/index";
-    }
-
-    @RequestMapping("/index")
-    public String index() {
-        return "index";
+        return "redirect:/login";
     }
 
     @RequestMapping("login")
@@ -33,15 +29,17 @@ public class SecurityController {
         return "login";
     }
 
+    @RequestMapping("/index")
+    public String index(Model model) {
+        String username = getUsername();
+        model.addAttribute("username", username);
+        return "index";
+    }
+
     @RequestMapping("login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
         return "login";
-    }
-
-    @RequestMapping("user/index")
-    public String userIndex() {
-        return "user/index";
     }
 
     /**

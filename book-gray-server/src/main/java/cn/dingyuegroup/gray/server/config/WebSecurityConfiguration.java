@@ -55,10 +55,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 //以“/static/**”开头的和“/index”资源不需要验证，可直接访问
-                .antMatchers("/static/**", "/index").permitAll()
+                .antMatchers("/static/**").permitAll()
                 .antMatchers("/gray/api/**").permitAll()//开放对外服务接口
                 //任何以“/gray/manager/policy/”开头的URL都要求用户拥有“ROLE_USER”角色
                 .antMatchers("/gray/manager/policy/**", "/gray/manager/refresh/**", "/gray/manager/services/**", "/gray/manager/rbac/**").hasRole("USER")
+                .antMatchers("/index", "/logout").hasRole("USER")
                 //任何以“/db/”开头的URL都要求用户同时拥有“ROLE_ADMIN”和“ROLE_DBA”。由于我们使用的是hasRole表达式，因此我们不需要指定“ROLE_”前缀。
                 //.antMatchers("/gray/manager/rbac/**").access("hasRole('ADMIN') or hasRole('USER')")
                 //确保对我们的应用程序的任何请求都要求用户进行身份验证
