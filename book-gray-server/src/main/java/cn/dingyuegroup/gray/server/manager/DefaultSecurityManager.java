@@ -1,9 +1,8 @@
 package cn.dingyuegroup.gray.server.manager;
 
-import cn.dingyuegroup.gray.server.config.WebSecurityConfiguration;
 import cn.dingyuegroup.gray.server.context.GrayServerContext;
-import cn.dingyuegroup.gray.server.model.vo.GrantedAuthorityVO;
-import cn.dingyuegroup.gray.server.model.vo.UserDetailsVO;
+import cn.dingyuegroup.gray.server.model.bo.GrantedAuthorityBO;
+import cn.dingyuegroup.gray.server.model.bo.UserDetailsBO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,12 +43,12 @@ public class DefaultSecurityManager implements UserDetailsService, Serializable 
                 || StringUtils.isEmpty(grayRbacUser.getUdid())) {
             return null;
         }
-        List<GrantedAuthorityVO> list = new ArrayList<GrantedAuthorityVO>() {
+        List<GrantedAuthorityBO> list = new ArrayList<GrantedAuthorityBO>() {
             {
-                add(new GrantedAuthorityVO("ROLE_USER"));
+                add(new GrantedAuthorityBO("ROLE_USER"));
             }
         };
-        UserDetailsVO rbacUserVO = new UserDetailsVO(username, grayRbacUser.getPassword(), list);
+        UserDetailsBO rbacUserVO = new UserDetailsBO(username, grayRbacUser.getPassword(), list);
         return rbacUserVO;
     }
 

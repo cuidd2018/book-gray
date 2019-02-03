@@ -4,7 +4,10 @@ package cn.dingyuegroup.gray.server.web;
  * Created by 170147 on 2019/1/28.
  */
 
+import cn.dingyuegroup.gray.server.manager.RbacManager;
+import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -19,6 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class SecurityController extends BaseController {
 
+    @Autowired
+    private RbacManager rbacManager;
+
     @RequestMapping("/")
     public String root() {
         return "redirect:/index";
@@ -32,7 +38,8 @@ public class SecurityController extends BaseController {
     @RequestMapping("/index")
     public String index(Model model) {
         String username = getUsername();
-        model.addAttribute("username", username);
+        GrayUserVO grayUserVO = rbacManager.getDepartment(username);
+        model.addAttribute("user", grayUserVO);
         return "index";
     }
 

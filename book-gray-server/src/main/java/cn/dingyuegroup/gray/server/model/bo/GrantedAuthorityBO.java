@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.server.model.vo;
+package cn.dingyuegroup.gray.server.model.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
  */
 @Data
 @AllArgsConstructor
-public class GrantedAuthorityVO implements GrantedAuthority {
+public class GrantedAuthorityBO implements GrantedAuthority {
 
     private String name;
 

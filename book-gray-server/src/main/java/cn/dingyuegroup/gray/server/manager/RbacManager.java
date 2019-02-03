@@ -1,6 +1,8 @@
 package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment;
 
 import java.util.List;
 
@@ -44,4 +46,12 @@ public interface RbacManager {
      * @return
      */
     boolean deleteUser(String udid);
+
+    /**
+     * 获取用户所在部门信息
+     *
+     * @param username
+     * @return
+     */
+    GrayUserVO getDepartment(String username);
 }

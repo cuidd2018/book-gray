@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.server.model.vo;
+package cn.dingyuegroup.gray.server.model.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,13 +13,13 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class UserDetailsVO implements UserDetails {
+public class UserDetailsBO implements UserDetails {
 
     private String username;
 
     private String password;
 
-    private List<GrantedAuthorityVO> authorities;
+    private List<GrantedAuthorityBO> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacDepartmentMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacRoleMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Created by 170147 on 2019/1/22.
@@ -151,5 +153,45 @@ public class DefaultRbacManager implements RbacManager {
     public boolean deleteUser(String udid) {
         grayRbacUserMapper.deleteByUdid(udid);
         return true;
+    }
+
+    /**
+     * 获取用户所在部门信息
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public GrayUserVO getDepartment(String username) {
+        if (StringUtils.isEmpty(username)) {
+            return null;
+        }
+        GrayUserVO grayUserVO = new GrayUserVO();
+        grayUserVO.setUsername(username);
+        GrayRbacUser user = grayRbacUserMapper.selectByAccount(username);
+        if (user == null) {
+            return grayUserVO;
+        }
+        if (!StringUtils.isEmpty(user.getDepartmentId())) {
+            GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(user.getDepartmentId());
+            if (department != null) {
+                grayUserVO.setDepartment(department.getDepartmentName());
+            }
+        }
+        List<GrayRbacUserRole> grayRbacUserRoles = grayRbacUserRoleMapper.selectByUdid(user.getUdid());
+        if (CollectionUtils.isEmpty(grayRbacUserRoles)) {
+            return grayUserVO;
+        }
+        List<String> roleNames = grayRbacUserRoles.parallelStream().map(e -> getRoleName(e.getRoleId())).collect(Collectors.toList());
+        grayUserVO.setRoles(StringUtils.collectionToDelimitedString(roleNames, " | "));
+        return grayUserVO;
+    }
+
+    private String getRoleName(String roleId) {
+        GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(roleId);
+        if (grayRbacRole == null) {
+            return null;
+        }
+        return grayRbacRole.getRoleName();
     }
 }
