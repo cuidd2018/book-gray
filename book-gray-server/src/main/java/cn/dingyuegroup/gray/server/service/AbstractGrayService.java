@@ -37,6 +37,7 @@ public abstract class AbstractGrayService {
             GrayServiceEntity entity = grayServiceMapper.selectByServiceId(e);
             if (entity != null) {
                 grayService.setAppName(entity.getAppName());
+                grayService.setRemark(entity.getRemark());
             }
             List<GrayInstance> grayInstances = upInstances(e);
             grayService.setGrayInstances(grayInstances);

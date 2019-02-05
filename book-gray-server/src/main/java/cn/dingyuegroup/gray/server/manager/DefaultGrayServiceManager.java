@@ -96,6 +96,33 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     }
 
     /**
+     * 编辑服务
+     *
+     * @param appName
+     * @param serviceId
+     * @param remark
+     */
+    @Override
+    public void editService(String appName, String serviceId, String remark) {
+        GrayServiceEntity entity = new GrayServiceEntity();
+        entity.setAppName(appName);
+        entity.setServiceId(serviceId);
+        entity.setRemark(remark);
+        entity.setUpdateTime(new Date());
+        grayServiceMapper.updateByServiceId(entity);
+    }
+
+    /**
+     * 删除服务
+     *
+     * @param serviceId
+     */
+    @Override
+    public void deleteService(String serviceId) {
+        grayServiceMapper.deleteByServiceId(serviceId);
+    }
+
+    /**
      * 获取服务信息
      *
      * @param serviceId
@@ -116,6 +143,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
         if (entity != null) {//持久化的状态是在线，并且从eureka获取的状态也是在线
             grayService.setAppName(entity.getAppName());
+            grayService.setRemark(entity.getRemark());
         }
         List<GrayInstance> grayInstances = getInstances(serviceId);
         grayService.setGrayInstances(grayInstances);

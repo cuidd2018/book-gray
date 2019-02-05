@@ -20,6 +20,7 @@ public class GrayService {
     private String serviceId;
     private List<GrayInstance> grayInstances = new ArrayList<>();
     private boolean status;//是否在线
+    private String remark;
 
     public GrayService() {
 

@@ -29,6 +29,22 @@ public interface GrayServiceManager {
     void addService(String appName, String serviceId, String remark);
 
     /**
+     * 编辑服务
+     *
+     * @param appName
+     * @param serviceId
+     * @param remark
+     */
+    void editService(String appName, String serviceId, String remark);
+
+    /**
+     * 删除服务
+     *
+     * @param serviceId
+     */
+    void deleteService(String serviceId);
+
+    /**
      * 获取服务信息
      *
      * @param serviceId

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GrayServiceMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByServiceId(String serviceId);
 
     int insert(GrayServiceEntity record);
 
@@ -17,4 +17,6 @@ public interface GrayServiceMapper {
     int updateByPrimaryKey(GrayServiceEntity record);
 
     GrayServiceEntity selectByServiceId(String serviceId);
+
+    void updateByServiceId(GrayServiceEntity record);
 }

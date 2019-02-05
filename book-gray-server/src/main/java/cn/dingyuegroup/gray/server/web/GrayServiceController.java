@@ -3,7 +3,6 @@ package cn.dingyuegroup.gray.server.web;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
-import cn.dingyuegroup.gray.server.manager.RbacManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
@@ -12,7 +11,6 @@ import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,9 +27,6 @@ public class GrayServiceController extends BaseController {
     @Autowired
     private GrayServiceManager grayServiceManager;
 
-    @Autowired
-    private RbacManager rbacManager;
-
     @RequestMapping("/index")
     public ModelAndView index(ModelAndView model) {
         List<GrayServiceVO> list = new ArrayList<>();
@@ -41,6 +36,7 @@ public class GrayServiceController extends BaseController {
                     .appName(e.getAppName())
                     .status(e.isStatus())
                     .serviceId(e.getServiceId())
+                    .remark(e.getRemark())
                     .build();
             vo.setInstanceSize(e.getGrayInstances().size());
             vo.setHasGrayInstances(e.isOpenGray());
@@ -53,8 +49,20 @@ public class GrayServiceController extends BaseController {
     }
 
     @RequestMapping("/add")
-    public String addService(Model model, @RequestParam String appName, @RequestParam String serviceId, @RequestParam String remark) {
+    public String addService(@RequestParam String appName, @RequestParam String serviceId, @RequestParam String remark) {
         grayServiceManager.addService(appName, serviceId, remark);
+        return "redirect:/gray/manager/services/index";
+    }
+
+    @RequestMapping("/edit")
+    public String editService(@RequestParam String appName, @RequestParam String serviceId, @RequestParam String remark) {
+        grayServiceManager.editService(appName, serviceId, remark);
+        return "redirect:/gray/manager/services/index";
+    }
+
+    @RequestMapping("/delete")
+    public String deleteService(@RequestParam String serviceId) {
+        grayServiceManager.deleteService(serviceId);
         return "redirect:/gray/manager/services/index";
     }
 

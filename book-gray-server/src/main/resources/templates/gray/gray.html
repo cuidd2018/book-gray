@@ -19,8 +19,8 @@
                     <thead>
                     <tr>
                         <th style="text-align: center">序号</th>
-                        <th style="text-align: center">服务名称</th>
                         <th style="text-align: center">服务ID</th>
+                        <th style="text-align: center">服务名称</th>
                         <th style="text-align: center">服务实例数</th>
                         <th style="text-align: center">是否在线</th>
                         <th style="text-align: center">是否拥有灰度实例</th>
@@ -32,9 +32,8 @@
                     <tbody>
                     <tr th:each="item,iterStat:${list}">
                         <td th:text="${iterStat.index +1}"></td>
-                        <td th:text="${item.appName}"></td>
-                        <!--/*@thymesVar id="serviceId" type="module-info"*/-->
                         <td th:text="${item.serviceId}"></td>
+                        <td th:text="${item.appName}"></td>
                         <td>
                             <a th:text="${item.instanceSize}"
                                th:href="@{/recommend/modulePositions(id=${item.serviceId})}"></a>
@@ -79,17 +78,18 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/services/add}" method="post">
-                            <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务名称:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" name="appName">
-                                </div>
-                            </div>
+                        <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/services/add}"
+                              method="post">
                             <div class="form-group row">
                                 <label class="col-sm-4 control-label" style="padding-left:50px;">服务ID:</label>
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control" name="serviceId">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务名称:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="appName">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -150,15 +150,17 @@
                               method="post">
                             <input id="id" name="id" type="hidden">
                             <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务名称:</label>
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务ID:</label>
                                 <div class="col-sm-6">
-                                    <input id="appName" type="text" class="form-control" name="appName">
+                                    <input id="serviceId" type="text" class="form-control"
+                                           disabled="true">
+                                    <input id="serviceIdHidden" type="hidden" class="form-control" name="serviceId">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务ID:</label>
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务名称:</label>
                                 <div class="col-sm-6">
-                                    <input id="serviceId" type="text" class="form-control" name="serviceId">
+                                    <input id="appName" type="text" class="form-control" name="appName">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -203,6 +205,7 @@
                 var m = $('#myEditModal').modal('show');
                 m.find("#appName").val(appName);
                 m.find("#serviceId").val(serviceId);
+                m.find("#serviceIdHidden").val(serviceId);
                 m.find("#remark").val(remark);
                 m.modal('show');
             }
