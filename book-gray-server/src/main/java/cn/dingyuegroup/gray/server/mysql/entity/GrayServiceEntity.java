@@ -20,4 +20,6 @@ public class GrayServiceEntity {
     private Integer isDelete;
 
     private Integer sort;
+
+    private String remark;
 }

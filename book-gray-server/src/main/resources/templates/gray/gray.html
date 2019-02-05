@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html layout:decorate="~{common/layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:text-align="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-header">
+                    <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="tableData" class="table table-bordered table-hover" style="text-align: center">
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">序号</th>
+                        <th style="text-align: center">服务名称</th>
+                        <th style="text-align: center">服务ID</th>
+                        <th style="text-align: center">服务实例数</th>
+                        <th style="text-align: center">是否在线</th>
+                        <th style="text-align: center">是否拥有灰度实例</th>
+                        <th style="text-align: center">是否拥有灰度策略</th>
+                        <th style="text-align: center">服务说明</th>
+                        <th style="text-align: center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item,iterStat:${list}">
+                        <td th:text="${iterStat.index +1}"></td>
+                        <td th:text="${item.appName}"></td>
+                        <!--/*@thymesVar id="serviceId" type="module-info"*/-->
+                        <td th:text="${item.serviceId}"></td>
+                        <td>
+                            <a th:text="${item.instanceSize}"
+                               th:href="@{/recommend/modulePositions(id=${item.serviceId})}"></a>
+                        </td>
+                        <td>
+                            <span th:if="${item.status} == true">是</span>
+                            <span th:if="${item.status} == false">否</span>
+                        </td>
+                        <td>
+                            <span th:if="${item.hasGrayInstances} == true" style="color: red">是</span>
+                            <span th:if="${item.hasGrayInstances} == false">否</span>
+                        </td>
+                        <td>
+                            <span th:if="${item.hasGrayPolicies} == true">是</span>
+                            <span th:if="${item.hasGrayPolicies} == false">否</span>
+                        </td>
+                        <td th:text="${item.remark}"></td>
+                        <td style="text-align: center">
+                          <span name="edit" title="编辑"
+                                th:onclick="'javascript:showEditModule(\''+${item.appName}+'\',\''+${item.serviceId}+'\',\''+${item.remark}+'\')'"
+                                style="cursor: pointer" class="glyphicon glyphicon-edit">
+                          </span>&nbsp;&nbsp;
+                            <span name="trash" title="删除"
+                                  th:onclick="'javascript:showDeleteModule(\''+${item.serviceId}+'\')'"
+                                  style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            添加服务
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/services/add}" method="post">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务名称:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="appName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务ID:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="serviceId">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务说明:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="remark">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="hintDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- /.box -->
+
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myDeleteModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myDeleteModalLabel">
+                            删除服务
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        确认删除服务！
+                        <form class="form-horizontal" id="delete-form" th:action="@{/gray/manager/services/delete}"
+                              method="post">
+                            <input id="deleteId" name="serviceId" type="hidden">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-danger" onclick="hintDeleteDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myEditModalLabel">
+                            修改服务
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-form" class="form-horizontal" th:action="@{/gray/manager/services/edit}"
+                              method="post">
+                            <input id="id" name="id" type="hidden">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务名称:</label>
+                                <div class="col-sm-6">
+                                    <input id="appName" type="text" class="form-control" name="appName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务ID:</label>
+                                <div class="col-sm-6">
+                                    <input id="serviceId" type="text" class="form-control" name="serviceId">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">服务说明:</label>
+                                <div class="col-sm-6">
+                                    <input id="remark" type="text" class="form-control" name="remark">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="hintEditDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+        <script>
+            // 添加
+            function showModule() {
+                $('#myModal').modal('show');
+            }
+            function hintDo() {
+                $("#add-form").submit();
+                $('#myModal').modal('hide')
+            }
+            // 删除
+            function showDeleteModule(id) {
+                var m = $('#myDeleteModal');
+                m.find("#deleteId").val(id);
+                m.modal('show');
+            }
+            function hintDeleteDo() {
+                $("#delete-form").submit();
+                $('#myDeleteModal').modal('hide')
+            }
+
+            // 修改
+            function showEditModule(appName, serviceId, remark) {
+                var m = $('#myEditModal').modal('show');
+                m.find("#appName").val(appName);
+                m.find("#serviceId").val(serviceId);
+                m.find("#remark").val(remark);
+                m.modal('show');
+            }
+            function hintEditDo() {
+                $("#edit-form").submit();
+                $('#myEditModal').modal('hide')
+            }
+
+        </script>
+    </div>
+</div>
+</body>
+</html>

@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="app_name" jdbcType="VARCHAR" property="appName"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="service_id" jdbcType="VARCHAR" property="serviceId"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -11,7 +12,7 @@
         <result column="sort" jdbcType="SMALLINT" property="isDelete"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, service_id, create_time, update_time, is_delete, app_name, sort
+        id, service_id, create_time, update_time, is_delete, app_name, sort, remark
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_service
@@ -22,9 +23,9 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_service (service_id, create_time, update_time,
-        is_delete, app_name, sort)
+        is_delete, app_name, sort, remark)
         values (#{serviceId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-        #{isDelete,jdbcType=SMALLINT}, #{appName,jdbcType=VARCHAR}, #{sort,jdbcType=SMALLINT})
+        #{isDelete,jdbcType=SMALLINT}, #{appName,jdbcType=VARCHAR}, #{sort,jdbcType=SMALLINT}, #{remark,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity">
     update gray_service
@@ -33,7 +34,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       sort = #{sort,jdbcType=SMALLINT},
-      is_delete = #{isDelete,jdbcType=SMALLINT}
+      is_delete = #{isDelete,jdbcType=SMALLINT},
+      remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

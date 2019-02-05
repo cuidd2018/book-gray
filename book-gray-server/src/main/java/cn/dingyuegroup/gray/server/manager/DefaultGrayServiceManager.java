@@ -74,6 +74,28 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     }
 
     /**
+     * 添加服务
+     *
+     * @param appName
+     * @param serviceId
+     * @param remark
+     */
+    @Override
+    public void addService(String appName, String serviceId, String remark) {
+        try {
+            GrayServiceEntity entity = new GrayServiceEntity();
+            entity.setAppName(appName);
+            entity.setServiceId(serviceId);
+            entity.setRemark(remark);
+            entity.setCreateTime(new Date());
+            entity.setIsDelete(0);
+            grayServiceMapper.insert(entity);
+        } catch (Exception e) {
+            logger.error("addService:{}", e);
+        }
+    }
+
+    /**
      * 获取服务信息
      *
      * @param serviceId

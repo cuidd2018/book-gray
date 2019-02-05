@@ -1,25 +1,35 @@
 package cn.dingyuegroup.gray.server.config;
 
+import cn.dingyuegroup.gray.server.interceptor.WebInterceptor;
+import cn.dingyuegroup.gray.server.manager.RbacManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configuration
-@Import(Swagger2Configuration.class)
-public class WebConfiguration extends WebMvcConfigurationSupport {
+public class WebConfiguration implements WebMvcConfigurer {
 
+    @Autowired
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    private RbacManager rbacManager;
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new CORSFilter());
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new WebInterceptor(rbacManager)).addPathPatterns("/**");
     }
 
 

@@ -20,6 +20,15 @@ public interface GrayServiceManager {
     List<GrayService> getServices();
 
     /**
+     * 添加服务
+     *
+     * @param appName
+     * @param serviceId
+     * @param remark
+     */
+    void addService(String appName, String serviceId, String remark);
+
+    /**
      * 获取服务信息
      *
      * @param serviceId

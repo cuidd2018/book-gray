@@ -3,37 +3,37 @@ package cn.dingyuegroup.gray.server.web;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
+import cn.dingyuegroup.gray.server.manager.RbacManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.vertify.VertifyRequest;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/gray/manager/services")
 public class GrayServiceController extends BaseController {
+
     @Autowired
     private GrayServiceManager grayServiceManager;
 
+    @Autowired
+    private RbacManager rbacManager;
 
-    /**
-     * 返回所有服务
-     *
-     * @return 灰度服务VO集合
-     */
-    @RequestMapping(value = "")
-    public ResponseEntity<List<GrayServiceVO>> services() {
+    @RequestMapping("/index")
+    public ModelAndView index(ModelAndView model) {
         List<GrayServiceVO> list = new ArrayList<>();
         List<GrayService> grayServices = grayServiceManager.getServices();
         grayServices.stream().forEach(e -> {
@@ -47,8 +47,17 @@ public class GrayServiceController extends BaseController {
             vo.setHasGrayPolicies(e.hasGrayPolicy());
             list.add(vo);
         });
-        return ResponseEntity.ok(list);
+        model.addObject("list", list);
+        model.setViewName("gray/gray");
+        return model;
     }
+
+    @RequestMapping("/add")
+    public String addService(Model model, @RequestParam String appName, @RequestParam String serviceId, @RequestParam String remark) {
+        grayServiceManager.addService(appName, serviceId, remark);
+        return "redirect:/gray/manager/services/index";
+    }
+
 
     /**
      * 返回服务实例列表
@@ -57,6 +66,7 @@ public class GrayServiceController extends BaseController {
      * @return 灰度服务实例VO列表
      */
     @VertifyRequest
+    @ResponseBody
     @RequestMapping(value = "/instances", method = RequestMethod.GET)
     public ResponseEntity<List<GrayInstanceVO>> instances(@RequestParam("serviceId") String serviceId) {
         List<GrayInstanceVO> list = new ArrayList<>();
@@ -77,14 +87,13 @@ public class GrayServiceController extends BaseController {
         return ResponseEntity.ok(list);
     }
 
-
-    @ApiOperation(value = "更新实例灰度状态")
     @VertifyRequest
+    @ResponseBody
     @RequestMapping(value = "/instance/grayStatus", method = RequestMethod.GET)
     public ResponseEntity<Void> editInstanceGrayStatus(
             @RequestParam("serviceId") String serviceId,
             @RequestParam("instanceId") String instanceId,
-            @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
+            @RequestParam("status") int status) {
         boolean b = grayServiceManager.editInstanceGrayStatus(serviceId, instanceId, status);
         if (b) {
             return ResponseEntity.ok().build();
@@ -92,13 +101,13 @@ public class GrayServiceController extends BaseController {
         return ResponseEntity.badRequest().build();
     }
 
-    @ApiOperation(value = "更新实例灰度状态")
     @VertifyRequest
+    @ResponseBody
     @RequestMapping(value = "/instance/onlineStatus", method = RequestMethod.GET)
     public ResponseEntity<Void> editInstanceOnlineStatus(
             @RequestParam("serviceId") String serviceId,
             @RequestParam("instanceId") String instanceId,
-            @ApiParam("0:关闭, 1:启用") @RequestParam("status") int status) {
+            @RequestParam("status") int status) {
         boolean b = grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, status);
         if (b) {
             return ResponseEntity.ok().build();
@@ -114,6 +123,7 @@ public class GrayServiceController extends BaseController {
      * @return 灰策略组VO列表
      */
     @VertifyRequest
+    @ResponseBody
     @RequestMapping(value = "/instance/policyGroup", method = RequestMethod.GET)
     public ResponseEntity<GrayPolicyGroupVO> policyGroup(@RequestParam("serviceId") String serviceId,
                                                          @RequestParam("instanceId") String instanceId) {
@@ -134,13 +144,12 @@ public class GrayServiceController extends BaseController {
         return ResponseEntity.ok(vo);
     }
 
-
-    @ApiOperation(value = "更新实例策略组启用状态")
+    @ResponseBody
     @RequestMapping(value = "/instance/policyGroup/status", method = RequestMethod.GET)
     public ResponseEntity<Void> editPolicyGroupStatus(@RequestParam("serviceId") String serviceId,
                                                       @RequestParam("instanceId") String instanceId,
                                                       @RequestParam("groupId") String groupId,
-                                                      @ApiParam("0:关闭, 1:启用") @RequestParam("status") int enable) {
+                                                      @RequestParam("status") int enable) {
         boolean b = grayServiceManager.editPolicyGroupStatus(serviceId, instanceId, groupId, enable);
         if (b) {
             return ResponseEntity.ok().build();
@@ -156,6 +165,7 @@ public class GrayServiceController extends BaseController {
      * @return Void
      */
     @RequestMapping(value = "/instance/policyGroup/relate", method = RequestMethod.GET)
+    @ResponseBody
     public ResponseEntity<Void> addPolicyGroup(
             @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId,
             @RequestParam("groupId") String groupId) {
@@ -175,7 +185,7 @@ public class GrayServiceController extends BaseController {
      * @param policyGroupId 灰度策略组id
      * @return Void
      */
-    @ApiOperation("删除策略组")
+    @ResponseBody
     @RequestMapping(value = "/instance/policyGroup/unRelate", method = RequestMethod.GET)
     public ResponseEntity<Void> delPolicyGroup(
             @RequestParam("serviceId") String serviceId,
