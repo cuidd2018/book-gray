@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.server.interceptor;
+package cn.dingyuegroup.gray.server.web.interceptor;
 
 import cn.dingyuegroup.gray.server.manager.RbacManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;

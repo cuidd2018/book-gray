@@ -70,7 +70,7 @@ public class GrayService {
 
     public boolean hasGrayInstance() {
         for (GrayInstance grayInstance : getGrayInstances()) {
-            if (grayInstance.isStatus() && grayInstance.isOpenGray()) {//在线，且开启灰度
+            if (grayInstance.isOpenGray()) {//开启灰度
                 return true;
             }
         }

@@ -104,12 +104,16 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      */
     @Override
     public void editService(String appName, String serviceId, String remark) {
-        GrayServiceEntity entity = new GrayServiceEntity();
-        entity.setAppName(appName);
-        entity.setServiceId(serviceId);
-        entity.setRemark(remark);
-        entity.setUpdateTime(new Date());
-        grayServiceMapper.updateByServiceId(entity);
+        GrayServiceEntity entity = grayServiceMapper.selectByServiceId(serviceId);
+        if (entity == null) {
+            addService(appName, serviceId, remark);
+        } else {
+            entity.setAppName(appName);
+            entity.setServiceId(serviceId);
+            entity.setRemark(remark);
+            entity.setUpdateTime(new Date());
+            grayServiceMapper.updateByServiceId(entity);
+        }
     }
 
     /**

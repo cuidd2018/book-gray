@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.server.config;
 
-import cn.dingyuegroup.gray.server.interceptor.WebInterceptor;
+import cn.dingyuegroup.gray.server.web.interceptor.WebInterceptor;
 import cn.dingyuegroup.gray.server.manager.RbacManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
