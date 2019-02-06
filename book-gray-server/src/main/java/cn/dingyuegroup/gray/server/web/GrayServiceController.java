@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class GrayServiceController extends BaseController {
             list.add(vo);
         });
         model.addObject("list", list);
-        model.setViewName("gray/gray");
+        model.setViewName("gray/service");
         return model;
     }
 
@@ -66,17 +67,14 @@ public class GrayServiceController extends BaseController {
         return "redirect:/gray/manager/services/index";
     }
 
-
     /**
      * 返回服务实例列表
      *
      * @param serviceId 服务id
      * @return 灰度服务实例VO列表
      */
-    @VertifyRequest
-    @ResponseBody
-    @RequestMapping(value = "/instances", method = RequestMethod.GET)
-    public ResponseEntity<List<GrayInstanceVO>> instances(@RequestParam("serviceId") String serviceId) {
+    @RequestMapping(value = "/instances/index")
+    public ModelAndView instances(ModelAndView model, @RequestParam("serviceId") String serviceId) {
         List<GrayInstanceVO> list = new ArrayList<>();
         List<GrayInstance> grayInstances = grayServiceManager.getInstances(serviceId);
         grayInstances.stream().forEach(e -> {
@@ -89,10 +87,27 @@ public class GrayServiceController extends BaseController {
                     .metadata(e.getMetadata())
                     .openGray(e.isOpenGray())
                     .hasGrayPolicies(e.hasGrayPolicy())
+                    .remark(e.getRemark())
                     .build();
             list.add(vo);
         });
-        return ResponseEntity.ok(list);
+        model.addObject("list", list);
+        model.setViewName("gray/instance");
+        return model;
+    }
+
+    @RequestMapping(value = "/instances/edit")
+    public String editInstances(RedirectAttributes attr, @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId, @RequestParam("remark") String remark) {
+        grayServiceManager.editInstance(serviceId, instanceId, remark);
+        attr.addAttribute("serviceId", serviceId);
+        return "redirect:/gray/manager/services/instances/index";
+    }
+
+    @RequestMapping(value = "/instances/delete")
+    public String deleteInstances(RedirectAttributes attr, @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
+        grayServiceManager.deleteInstance(serviceId, instanceId);
+        attr.addAttribute("serviceId", serviceId);
+        return "redirect:/gray/manager/services/instances/index";
     }
 
     @VertifyRequest

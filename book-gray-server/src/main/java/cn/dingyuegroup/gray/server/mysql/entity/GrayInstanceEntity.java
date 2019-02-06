@@ -21,4 +21,6 @@ public class GrayInstanceEntity {
     private Date updateTime;
 
     private String policyGroupId;
+
+    private String remark;
 }

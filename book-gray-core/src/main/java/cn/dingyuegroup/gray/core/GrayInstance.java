@@ -24,6 +24,7 @@ public class GrayInstance {
     private boolean status = false;//是否在线
     private String url;
     private Map<String, String> metadata;
+    private String remark;
 
     public GrayInstance() {
     }

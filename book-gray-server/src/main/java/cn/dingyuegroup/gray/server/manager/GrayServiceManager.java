@@ -69,6 +69,23 @@ public interface GrayServiceManager {
     GrayInstance getGrayInstance(String serviceId, String instanceId);
 
     /**
+     * 编辑服务实例
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param remark
+     */
+    void editInstance(String serviceId, String instanceId, String remark);
+
+    /**
+     * 删除服务实例
+     *
+     * @param serviceId
+     * @param instanceId
+     */
+    void deleteInstance(String serviceId, String instanceId);
+
+    /**
      * 更新服务实例的灰度状态
      *
      * @param serviceId

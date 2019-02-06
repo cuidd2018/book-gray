@@ -209,10 +209,48 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         if (grayInstanceEntity != null) {
             grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
             grayInstance.setStatus(grayInstance.isStatus() && (grayInstanceEntity.getStatus() == 0 ? false : true));
+            grayInstance.setRemark(grayInstanceEntity.getRemark());
         }
         GrayPolicyGroup grayPolicyGroup = getGrayPolicyGroup(serviceId, instanceId);
         grayInstance.setGrayPolicyGroup(grayPolicyGroup);
         return grayInstance;
+    }
+
+    /**
+     * 编辑服务实例
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param remark
+     */
+    @Override
+    public void editInstance(String serviceId, String instanceId, String remark) {
+        GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instanceId);
+        if (entity == null) {
+            entity = new GrayInstanceEntity();
+            entity.setServiceId(serviceId);
+            entity.setInstanceId(instanceId);
+            entity.setRemark(remark);
+            entity.setCreateTime(new Date());
+            entity.setOpenGray(1);
+            entity.setStatus(0);
+            grayInstanceMapper.insert(entity);
+        } else {
+            entity.setRemark(remark);
+            entity.setUpdateTime(new Date());
+            grayInstanceMapper.updateByInstanceId(entity);
+        }
+    }
+
+    /**
+     * 删除服务实例
+     *
+     * @param serviceId
+     * @param instanceId
+     */
+    @Override
+    public void deleteInstance(String serviceId, String instanceId) {
+        grayInstanceMapper.deleteByInstanceId(instanceId);
     }
 
     /**
