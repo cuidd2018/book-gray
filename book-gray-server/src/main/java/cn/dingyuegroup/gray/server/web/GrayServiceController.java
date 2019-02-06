@@ -11,6 +11,7 @@ import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -190,15 +191,16 @@ public class GrayServiceController extends BaseController {
      * @return Void
      */
     @RequestMapping(value = "/instance/policyGroup/relate", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Void> addPolicyGroup(
-            @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId,
-            @RequestParam("groupId") String groupId) {
-        boolean b = grayServiceManager.editInstancePolicyGroup(serviceId, instanceId, groupId);
-        if (b) {
-            return ResponseEntity.ok().build();
+    public String addPolicyGroup(RedirectAttributes attr,
+                                 @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId,
+                                 @RequestParam(value = "policyGroupId", required = false) String groupId) {
+        if (StringUtils.isEmpty(groupId) || !groupId.contains("POLICY_GROUP")) {
+            grayServiceManager.delInstancePolicyGroup(serviceId, instanceId, null);
+        } else {
+            grayServiceManager.editInstancePolicyGroup(serviceId, instanceId, groupId);
         }
-        return ResponseEntity.badRequest().build();
+        attr.addAttribute("serviceId", serviceId);
+        return "redirect:/gray/manager/services/instances/index";
     }
 
 

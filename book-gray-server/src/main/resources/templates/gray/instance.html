@@ -110,7 +110,6 @@
                         <form id="edit-form" class="form-horizontal"
                               th:action="@{/gray/manager/services/instances/edit}"
                               method="post">
-                            <input id="id" name="id" type="hidden">
                             <div class="form-group row">
                                 <label class="col-sm-4 control-label" style="padding-left:50px;">服务ID:</label>
                                 <div class="col-sm-6">
@@ -160,7 +159,7 @@
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" id="policyGroup-form"
-                              th:action="@{/recommend/boyBookGenreRecommend}"
+                              th:action="@{/gray/manager/services/instance/policyGroup/relate}"
                               method="get">
                             <input name="serviceId" type="hidden" id="serviceIdSelect">
                             <input name="instanceId" type="hidden" id="instanceIdSelect">
@@ -214,6 +213,7 @@
                 m.modal('show');
             }
             function showPolicyGroup(serviceId, instanceId) {
+                initPolicyGroupList();
                 var m = $('#policyGroup');
                 m.find("#serviceIdSelect").val(serviceId);
                 m.find("#instanceIdSelect").val(instanceId);
@@ -230,6 +230,7 @@
             var policyGroupList;
             //初始化cp列表
             function initPolicyGroupList() {
+                console.log(policyGroupList)
                 if (!policyGroupList) {
                     $.ajax({
                         url: "/gray/manager/policy/group/list",
@@ -237,10 +238,11 @@
                         dataType: 'json',
                         async: false,
                         success: function (data) {
+                            console.log(data)
                             if (data.respCode == 20000) {
                                 policyGroupList = data.data;
-                                var result = '';
-                                $.each(cpList, function (i, e) {
+                                var result = '<option>无</option>';
+                                $.each(policyGroupList, function (i, e) {
                                     result += '<option value="' + e.policyGroupId + '">' + e.alias + '</option>';
                                 });
                                 $("#policyGroupId").append(result);
@@ -251,7 +253,6 @@
                     });
                 }
             }
-            //initPolicyGroupList();
         </script>
     </div>
 </div>

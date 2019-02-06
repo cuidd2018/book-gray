@@ -29,7 +29,7 @@ public class WebInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object o, ModelAndView mav)
             throws Exception {
         try {
-            if (SecurityContextHolder.getContext() == null || SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (mav == null || SecurityContextHolder.getContext() == null || SecurityContextHolder.getContext().getAuthentication() == null) {
                 return;
             }
             Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
