@@ -113,18 +113,14 @@ public class GrayServiceController extends BaseController {
         return "redirect:/gray/manager/services/instances/index";
     }
 
-    @VertifyRequest
-    @ResponseBody
-    @RequestMapping(value = "/instance/grayStatus", method = RequestMethod.GET)
-    public ResponseEntity<Void> editInstanceGrayStatus(
-            @RequestParam("serviceId") String serviceId,
-            @RequestParam("instanceId") String instanceId,
-            @RequestParam("status") int status) {
-        boolean b = grayServiceManager.editInstanceGrayStatus(serviceId, instanceId, status);
-        if (b) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
+    @RequestMapping(value = "/instance/grayStatus")
+    public String editInstanceGrayStatus(RedirectAttributes attr,
+                                         @RequestParam("serviceId") String serviceId,
+                                         @RequestParam("instanceId") String instanceId,
+                                         @RequestParam("status") int status) {
+        grayServiceManager.editInstanceGrayStatus(serviceId, instanceId, status);
+        attr.addAttribute("serviceId", serviceId);
+        return "redirect:/gray/manager/services/instances/index";
     }
 
     @RequestMapping(value = "/instance/onlineStatus")

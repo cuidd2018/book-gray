@@ -34,7 +34,6 @@
                         <td th:text="${item.serviceId}"></td>
                         <td th:text="${item.appName}"></td>
                         <td th:text="${item.instanceId}"></td>
-
                         <td>
                             <button th:if="${item.status} == true" type="button"
                                     class="btn btn-xs btn-danger editStatus"
@@ -48,8 +47,16 @@
                             </button>
                         </td>
                         <td>
-                            <span th:if="${item.openGray} == true" style="color: red">是</span>
-                            <span th:if="${item.openGray} == false">否</span>
+                            <button th:if="${item.openGray} == true" type="button"
+                                    class="btn btn-xs btn-success editStatus"
+                                    th:onclick="'javascript:showOpenGrayModule(\''+${item.serviceId}+'\',\''+${item.instanceId}+'\',\'0\')'">
+                                关闭
+                            </button>
+                            <button th:if="${item.openGray} == false" type="button"
+                                    class="btn btn-xs btn-danger editStatus"
+                                    th:onclick="'javascript:showOpenGrayModule(\''+${item.serviceId}+'\',\''+${item.instanceId}+'\',\'1\')'">
+                                开启
+                            </button>
                         </td>
                         <td>
                             <a th:if="${item.policyGroupAlias == null}" th:text="无"
@@ -215,6 +222,35 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myOpenGrayWarnModal" tabindex="-1" role="dialog"
+             aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width: 40%;left:50%;top:300px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">
+                            修改灰度状态
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center" id="openGrayShowMsg">是否关闭灰度</div>
+                        <form class="form-horizontal" id="openGray-form"
+                              th:action="@{/gray/manager/services/instance/grayStatus}"
+                              method="get">
+                            <input name="serviceId" type="hidden" id="serviceIdOpenGray">
+                            <input name="instanceId" type="hidden" id="instanceIdOpenGray">
+                            <input name="status" type="hidden" id="instanceOpenGray">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="editOpenGraySub" onclick="openGrayDo();">关闭
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
         <script>
             // 添加
             function showModule() {
@@ -281,6 +317,25 @@
             function statusDo() {
                 $("#status-form").submit();
                 $('#myWarnModal').modal('hide');
+            }
+            //修改在线状态弹窗
+            function showOpenGrayModule(serviceId, instanceId, openGray) {
+                var m = $('#myOpenGrayWarnModal');
+                if (openGray == 0) {
+                    m.find("#editOpenGraySub").text("关闭");
+                    m.find("#openGrayShowMsg").text("是否关闭灰度");
+                } else if (openGray == 1) {
+                    m.find("#editOpenGraySub").text("开启");
+                    m.find("#openGrayShowMsg").text("是否上线服务");
+                }
+                m.find("#serviceIdOpenGray").val(serviceId);
+                m.find("#instanceIdOpenGray").val(instanceId);
+                m.find("#instanceOpenGray").val(openGray);
+                m.modal('show');
+            }
+            function openGrayDo() {
+                $("#openGray-form").submit();
+                $('#myOpenGrayWarnModal').modal('hide');
             }
             var policyGroupList;
             //初始化cp列表
