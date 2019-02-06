@@ -20,7 +20,7 @@
                         <th style="text-align: center">服务ID</th>
                         <th style="text-align: center">服务名称</th>
                         <th style="text-align: center">服务实例ID</th>
-                        <th style="text-align: center">是否在线</th>
+                        <th style="text-align: center">在线操作</th>
                         <th style="text-align: center">是否开启灰度</th>
                         <th style="text-align: center">灰度策略组</th>
                         <th style="text-align: center">是否拥有灰度策略</th>
@@ -36,8 +36,16 @@
                         <td th:text="${item.instanceId}"></td>
 
                         <td>
-                            <span th:if="${item.status} == true">是</span>
-                            <span th:if="${item.status} == false">否</span>
+                            <button th:if="${item.status} == true" type="button"
+                                    class="btn btn-xs btn-danger editStatus"
+                                    th:onclick="'javascript:showStatusModule(\''+${item.serviceId}+'\',\''+${item.instanceId}+'\',\'0\')'">
+                                下线
+                            </button>
+                            <button th:if="${item.status} == false" type="button"
+                                    class="btn btn-xs btn-success editStatus"
+                                    th:onclick="'javascript:showStatusModule(\''+${item.serviceId}+'\',\''+${item.instanceId}+'\',\'1\')'">
+                                上线
+                            </button>
                         </td>
                         <td>
                             <span th:if="${item.openGray} == true" style="color: red">是</span>
@@ -174,11 +182,39 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="PolicyGroupDo();">确定</button>
+                        <button type="button" class="btn btn-primary" onclick="policyGroupDo();">确定</button>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myWarnModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width: 40%;left:50%;top:300px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">
+                            修改在线状态
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center" id="showMsg">是否下线该服务实例</div>
+                        <form class="form-horizontal" id="status-form"
+                              th:action="@{/gray/manager/services/instance/onlineStatus}"
+                              method="get">
+                            <input name="serviceId" type="hidden" id="serviceIdStatus">
+                            <input name="instanceId" type="hidden" id="instanceIdStatus">
+                            <input name="status" type="hidden" id="instanceStatus">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="editStatusSub" onclick="statusDo();">下线
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
         <script>
             // 添加
             function showModule() {
@@ -219,13 +255,32 @@
                 m.find("#instanceIdSelect").val(instanceId);
                 m.modal('show');
             }
-            function PolicyGroupDo() {
+            function policyGroupDo() {
                 $("#policyGroup-form").submit();
                 $('#policyGroup').modal('hide');
             }
             function hintEditDo() {
                 $("#edit-form").submit();
                 $('#myEditModal').modal('hide')
+            }
+            //修改在线状态弹窗
+            function showStatusModule(serviceId, instanceId, status) {
+                var m = $('#myWarnModal');
+                if (status == 0) {
+                    m.find("#editStatusSub").text("下线");
+                    m.find("#showMsg").text("是否下线该服务实例");
+                } else if (status == 1) {
+                    m.find("#editStatusSub").text("上线");
+                    m.find("#showMsg").text("是否上线该服务实例");
+                }
+                m.find("#serviceIdStatus").val(serviceId);
+                m.find("#instanceIdStatus").val(instanceId);
+                m.find("#instanceStatus").val(status);
+                m.modal('show');
+            }
+            function statusDo() {
+                $("#status-form").submit();
+                $('#myWarnModal').modal('hide');
             }
             var policyGroupList;
             //初始化cp列表
