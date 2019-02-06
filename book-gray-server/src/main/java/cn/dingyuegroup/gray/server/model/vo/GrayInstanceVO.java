@@ -18,4 +18,6 @@ public class GrayInstanceVO {
     private boolean openGray;
     private boolean status;//在线状态
     private String remark;
+    private String policyGroupId;
+    private String policyGroupAlias;
 }

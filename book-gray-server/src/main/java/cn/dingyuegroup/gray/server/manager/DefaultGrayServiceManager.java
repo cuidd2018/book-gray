@@ -6,6 +6,7 @@ import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
 import cn.dingyuegroup.gray.server.context.GrayServerContext;
+import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.mysql.dao.*;
 import cn.dingyuegroup.gray.server.mysql.entity.*;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
@@ -570,6 +571,28 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             }
         });
         return grayPolicyGroupEntity.getGrayPolicyEntities();
+    }
+
+    /**
+     * 获取所有策略组列表
+     *
+     * @return
+     */
+    @Override
+    public List<GrayPolicyGroupVO> listAllGrayPolicyGroup() {
+        List<GrayPolicyGroupEntity> list = grayPolicyGroupMapper.selectAll();
+        if (CollectionUtils.isEmpty(list)) {
+            list = new ArrayList<>();
+        }
+        List<GrayPolicyGroupVO> grayPolicyGroups = new ArrayList<>();
+        list.forEach(e -> {
+            GrayPolicyGroupVO group = new GrayPolicyGroupVO();
+            group.setAlias(e.getAlias());
+            group.setPolicyGroupId(e.getPolicyGroupId());
+            group.setEnable(e.getEnable() == 0 ? false : true);
+            grayPolicyGroups.add(group);
+        });
+        return grayPolicyGroups;
     }
 
     /**

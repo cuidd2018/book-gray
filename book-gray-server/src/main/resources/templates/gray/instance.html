@@ -22,6 +22,7 @@
                         <th style="text-align: center">服务实例ID</th>
                         <th style="text-align: center">是否在线</th>
                         <th style="text-align: center">是否开启灰度</th>
+                        <th style="text-align: center">灰度策略组</th>
                         <th style="text-align: center">是否拥有灰度策略</th>
                         <th style="text-align: center">备注</th>
                         <th style="text-align: center">操作</th>
@@ -41,6 +42,12 @@
                         <td>
                             <span th:if="${item.openGray} == true" style="color: red">是</span>
                             <span th:if="${item.openGray} == false">否</span>
+                        </td>
+                        <td>
+                            <a th:if="${item.policyGroupAlias == null}" th:text="无"
+                               th:href="'javascript:showPolicyGroup(\''+${item.serviceId}+'\',\''+${item.instanceId}+'\')'"></a>
+                            <a th:else th:text="${item.policyGroupAlias}"
+                               th:href="'javascript:showPolicyGroup(\''+${item.serviceId}+'\',\''+${item.instanceId}+'\')'"></a>
                         </td>
                         <td>
                             <span th:if="${item.hasGrayPolicies} == true">是</span>
@@ -141,7 +148,38 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
+        <!-- sortedBookList -->
+        <div class="modal fade" id="policyGroup" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">
+                            灰度策略组
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="policyGroup-form"
+                              th:action="@{/recommend/boyBookGenreRecommend}"
+                              method="get">
+                            <input name="serviceId" type="hidden" id="serviceIdSelect">
+                            <input name="instanceId" type="hidden" id="instanceIdSelect">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">选择策略组:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="policyGroupId" id="policyGroupId">
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="PolicyGroupDo();">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             // 添加
             function showModule() {
@@ -175,10 +213,45 @@
                 m.find("#remark").val(remark);
                 m.modal('show');
             }
+            function showPolicyGroup(serviceId, instanceId) {
+                var m = $('#policyGroup');
+                m.find("#serviceIdSelect").val(serviceId);
+                m.find("#instanceIdSelect").val(instanceId);
+                m.modal('show');
+            }
+            function PolicyGroupDo() {
+                $("#policyGroup-form").submit();
+                $('#policyGroup').modal('hide');
+            }
             function hintEditDo() {
                 $("#edit-form").submit();
                 $('#myEditModal').modal('hide')
             }
+            var policyGroupList;
+            //初始化cp列表
+            function initPolicyGroupList() {
+                if (!policyGroupList) {
+                    $.ajax({
+                        url: "/gray/manager/policy/group/list",
+                        type: 'get',
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            if (data.respCode == 20000) {
+                                policyGroupList = data.data;
+                                var result = '';
+                                $.each(cpList, function (i, e) {
+                                    result += '<option value="' + e.policyGroupId + '">' + e.alias + '</option>';
+                                });
+                                $("#policyGroupId").append(result);
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    });
+                }
+            }
+            //initPolicyGroupList();
         </script>
     </div>
 </div>

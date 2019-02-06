@@ -88,6 +88,8 @@ public class GrayServiceController extends BaseController {
                     .openGray(e.isOpenGray())
                     .hasGrayPolicies(e.hasGrayPolicy())
                     .remark(e.getRemark())
+                    .policyGroupId(e.getGrayPolicyGroup() == null ? null : e.getGrayPolicyGroup().getPolicyGroupId())
+                    .policyGroupAlias(e.getGrayPolicyGroup() == null ? null : e.getGrayPolicyGroup().getAlias())
                     .build();
             list.add(vo);
         });

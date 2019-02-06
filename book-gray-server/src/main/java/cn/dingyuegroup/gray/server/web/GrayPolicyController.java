@@ -1,6 +1,8 @@
 package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
+import cn.dingyuegroup.gray.server.model.resp.RespMsg;
+import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,12 @@ public class GrayPolicyController extends BaseController {
     public ResponseEntity<List<GrayPolicyEntity>> listPolicy(@RequestParam String groupId) {
         List<GrayPolicyEntity> list = grayServiceManager.listGrayPolicyByGroup(groupId);
         return ResponseEntity.ok(list);
+    }
+
+    @RequestMapping(value = "/group/list", method = RequestMethod.GET)
+    public RespMsg listPolicyGroup() {
+        List<GrayPolicyGroupVO> list = grayServiceManager.listAllGrayPolicyGroup();
+        return RespMsg.success(list);
     }
 
     @RequestMapping(value = "/group/add", method = RequestMethod.GET)
