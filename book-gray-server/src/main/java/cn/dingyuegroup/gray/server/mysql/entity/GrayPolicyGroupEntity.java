@@ -19,5 +19,7 @@ public class GrayPolicyGroupEntity {
 
     private String groupType;
 
+    private String remark;
+
     private List<GrayPolicyEntity> grayPolicyEntities = new ArrayList<>();
 }

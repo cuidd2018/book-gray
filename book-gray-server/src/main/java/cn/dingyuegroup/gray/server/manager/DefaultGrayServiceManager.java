@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -334,7 +336,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             return false;
         }
         entity.setEnable(enable);
-        grayPolicyGroupMapper.updateByByPolicyGroupId(entity);
+        grayPolicyGroupMapper.updateByPolicyGroupId(entity);
         return true;
     }
 
@@ -346,12 +348,13 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicyGroup(String alias, Integer enable, String groupType) {
+    public boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark) {
         GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
         entity.setPolicyGroupId(GrayPolicyGroup.genId());
         entity.setEnable(enable);
         entity.setAlias(alias);
         entity.setGroupType(groupType == null ? GrayPolicyGroup.TYPE.AND.name() : groupType);
+        entity.setRemark(remark);
         grayPolicyGroupMapper.insert(entity);
         return true;
     }
@@ -363,8 +366,10 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean delPolicyGroup(String groupId) {
         grayPolicyGroupMapper.deleteByGroupId(groupId);
+        grayPolicyGroupPolicyMapper.deleteByGroupId(groupId);
         return true;
     }
 
@@ -373,18 +378,17 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      *
      * @param groupId
      * @param alias
-     * @param enable
      * @return
      */
     @Override
-    public boolean editPolicyGroup(String groupId, String alias, Integer enable, String groupType) {
+    public boolean editPolicyGroup(String groupId, String alias, String groupType, String remark) {
         GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
         entity.setPolicyGroupId(groupId);
-        entity.setEnable(enable);
         entity.setAlias(alias);
         entity.setGroupType(groupType);
-        grayPolicyGroupMapper.editByByPolicyGroupId(entity);
-        return false;
+        entity.setRemark(remark);
+        grayPolicyGroupMapper.editByPolicyGroupId(entity);
+        return true;
     }
 
     /**
@@ -590,6 +594,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             group.setAlias(e.getAlias());
             group.setPolicyGroupId(e.getPolicyGroupId());
             group.setEnable(e.getEnable() == 0 ? false : true);
+            group.setGroupType(e.getGroupType());
+            group.setRemark(e.getRemark());
             grayPolicyGroups.add(group);
         });
         return grayPolicyGroups;

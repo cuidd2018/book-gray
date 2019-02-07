@@ -19,9 +19,9 @@ public interface GrayPolicyGroupMapper {
 
     GrayPolicyGroupEntity selectByPolicyGroupId(String groupPolicyId);
 
-    int updateByByPolicyGroupId(GrayPolicyGroupEntity record);
+    int updateByPolicyGroupId(GrayPolicyGroupEntity record);
 
     int deleteByGroupId(String groupPolicyId);
 
-    int editByByPolicyGroupId(GrayPolicyGroupEntity record);
+    int editByPolicyGroupId(GrayPolicyGroupEntity record);
 }

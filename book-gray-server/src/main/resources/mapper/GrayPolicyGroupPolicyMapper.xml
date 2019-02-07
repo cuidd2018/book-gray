@@ -53,4 +53,8 @@
         delete from gray_policy_group_policy
         where policy_group_id=#{policyGroupId,jdbcType=VARCHAR} and policy_id = #{policyId,jdbcType=VARCHAR}
     </delete>
+    <delete id="deleteByGroupId" parameterType="java.lang.String">
+        delete from gray_policy_group_policy
+        where policy_group_id=#{policyGroupId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html layout:decorate="~{common/layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:text-align="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="box-header">
+                    <div class="box-header">
+                        策略组管理&nbsp;&nbsp;>&nbsp;&nbsp;<a th:href="@{/gray/manager/services/index}">策略管理</a>
+                    </div>
+                    <div class="box-header">
+                        <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
+                    </div>
+                </div>
+                <table id="tableData" class="table table-bordered table-hover" style="text-align: center">
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">序号</th>
+                        <th style="text-align: center">策略组ID</th>
+                        <th style="text-align: center">策略组名称</th>
+                        <th style="text-align: center">策略组类型</th>
+                        <th style="text-align: center">灰度操作</th>
+                        <th style="text-align: center">策略</th>
+                        <th style="text-align: center">备注</th>
+                        <th style="text-align: center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item,iterStat:${list}">
+                        <td th:text="${iterStat.index +1}"></td>
+                        <td th:text="${item.policyGroupId}"></td>
+                        <td th:text="${item.alias}"></td>
+                        <td>
+                            <span th:if="${item.groupType} == 'OR'">或</span>
+                            <span th:if="${item.groupType} == 'AND'">与</span>
+                        </td>
+                        <td>
+                            <button th:if="${item.enable} == true" type="button"
+                                    class="btn btn-xs btn-danger editStatus"
+                                    th:onclick="'javascript:showOpenGrayModule(\''+${item.policyGroupId}+'\',\'0\')'">
+                                关闭
+                            </button>
+                            <button th:if="${item.enable} == false" type="button"
+                                    class="btn btn-xs btn-success editStatus"
+                                    th:onclick="'javascript:showOpenGrayModule(\''+${item.policyGroupId}+'\',\'1\')'">
+                                开启
+                            </button>
+                        </td>
+                        <td>
+                            <a th:href="@{/gray/manager/services/instances/index(serviceId=${item.policyGroupId})}">策略管理</a>
+                        </td>
+                        <td th:text="${item.remark}"></td>
+                        <td style="text-align: center">
+                            <span name="edit" title="编辑"
+                                  th:onclick="'javascript:showEditModule(\''+${item.policyGroupId}+'\',\''+${item.alias}+'\',\''+${item.groupType}+'\',\''+${item.remark}+'\')'"
+                                  style="cursor: pointer" class="glyphicon glyphicon-edit">
+                          </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span name="trash" title="删除"
+                                  th:onclick="'javascript:showDeleteModule(\''+${item.policyGroupId}+'\')'"
+                                  style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            添加策略组
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/policy/group/add}"
+                              method="post">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组名称:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="alias">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组类型:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="groupType">
+                                        <option value="OR">或</option>
+                                        <option value="AND">与</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">状态:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="enable">
+                                        <option value="0">关闭</option>
+                                        <option value="1">开启</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">备注:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="remark">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="hintDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myDeleteModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myDeleteModalLabel">
+                            删除策略组
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        确认删除策略组！
+                        <form class="form-horizontal" id="delete-form"
+                              th:action="@{/gray/manager/policy/group/delete}"
+                              method="post">
+                            <input id="deletePolicyGroupId" name="policyGroupId" type="hidden">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-danger" onclick="hintDeleteDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myEditModalLabel">
+                            修改策略组
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-form" class="form-horizontal"
+                              th:action="@{/gray/manager/policy/group/edit}"
+                              method="post">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组ID:</label>
+                                <div class="col-sm-6">
+                                    <input id="policyGroupId" type="text" class="form-control"
+                                           disabled="true">
+                                    <input id="policyGroupIdHidden" type="hidden" class="form-control"
+                                           name="policyGroupId">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组名称:</label>
+                                <div class="col-sm-6">
+                                    <input id="alias" type="text" class="form-control" name="alias">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组类型:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="groupType" id="groupType">
+                                        <option value="AND">与</option>
+                                        <option value="OR">或</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">备注:</label>
+                                <div class="col-sm-6">
+                                    <input id="remark" type="text" class="form-control" name="remark">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="hintEditDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myOpenGrayWarnModal" tabindex="-1" role="dialog"
+             aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width: 40%;left:50%;top:300px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">
+                            修改状态
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center" id="openGrayShowMsg">是否关闭策略组</div>
+                        <form class="form-horizontal" id="openGray-form"
+                              th:action="@{/gray/manager/policy/group/status}"
+                              method="get">
+                            <input name="policyGroupId" type="hidden" id="policyGroupIdOpenGray">
+                            <input name="status" type="hidden" id="instanceOpenGray">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="editOpenGraySub" onclick="openGrayDo();">关闭
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <script>
+            // 添加
+            function showModule() {
+                $('#myModal').modal('show');
+            }
+            function hintDo() {
+                $("#add-form").submit();
+                $('#myModal').modal('hide')
+            }
+            // 删除
+            function showDeleteModule(policyGroupId) {
+                var m = $('#myDeleteModal');
+                m.find("#deletePolicyGroupId").val(policyGroupId);
+                m.modal('show');
+            }
+            function hintDeleteDo() {
+                $("#delete-form").submit();
+                $('#myDeleteModal').modal('hide')
+            }
+
+            // 修改
+            function showEditModule(policyGroupId, alias, groupType, remark) {
+                var m = $('#myEditModal').modal('show');
+                m.find("#policyGroupId").val(policyGroupId);
+                m.find("#policyGroupIdHidden").val(policyGroupId);
+                m.find("#alias").val(alias);
+                m.find("#groupType").val(groupType);
+                m.find("#remark").val(remark);
+                m.modal('show');
+            }
+            function hintEditDo() {
+                $("#edit-form").submit();
+                $('#myEditModal').modal('hide')
+            }
+            //修改在线状态弹窗
+            function showOpenGrayModule(policyGroupId, openGray) {
+                var m = $('#myOpenGrayWarnModal');
+                if (openGray == 0) {
+                    m.find("#editOpenGraySub").text("关闭");
+                    m.find("#openGrayShowMsg").text("是否关闭灰度");
+                } else if (openGray == 1) {
+                    m.find("#editOpenGraySub").text("开启");
+                    m.find("#openGrayShowMsg").text("是否开启灰度");
+                }
+                m.find("#policyGroupIdOpenGray").val(policyGroupId);
+                m.find("#instanceOpenGray").val(openGray);
+                m.modal('show');
+            }
+            function openGrayDo() {
+                $("#openGray-form").submit();
+                $('#myOpenGrayWarnModal').modal('hide');
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

@@ -16,4 +16,6 @@ public class GrayPolicyGroupVO {
     private String alias;
     private List<GrayPolicy> policies;
     private boolean enable;
+    private String groupType;
+    private String remark;
 }

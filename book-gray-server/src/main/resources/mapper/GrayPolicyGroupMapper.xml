@@ -8,9 +8,10 @@
         <result column="enable" jdbcType="SMALLINT" property="enable"/>
         <result column="group_type" jdbcType="VARCHAR" property="groupType"/>
         <result column="is_delete" jdbcType="SMALLINT" property="isDelete"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, policy_group_id, alias, enable, is_delete, group_type
+        id, policy_group_id, alias, enable, is_delete, group_type, remark
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_policy_group
@@ -21,9 +22,9 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_policy_group (policy_group_id, alias, enable,
-        is_delete, group_type)
+        is_delete, group_type, remark)
         values (#{policyGroupId,jdbcType=VARCHAR}, #{alias,jdbcType=VARCHAR}, #{enable,jdbcType=SMALLINT},
-        #{isDelete,jdbcType=SMALLINT}, #{groupType,jdbcType=VARCHAR})
+        #{isDelete,jdbcType=SMALLINT}, #{groupType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
     update gray_policy_group
@@ -31,7 +32,8 @@
       alias = #{alias,jdbcType=VARCHAR},
       enable = #{enable,jdbcType=SMALLINT},
       group_type = #{groupType,jdbcType=VARCHAR},
-      is_delete = #{isDelete,jdbcType=SMALLINT}
+      is_delete = #{isDelete,jdbcType=SMALLINT},
+      remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -58,20 +60,20 @@
         select
         <include refid="Base_Column_List"/>
         from gray_policy_group
-        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
     </select>
-    <update id="updateByByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
+    <update id="updateByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
         update gray_policy_group
         set enable = #{enable,jdbcType=SMALLINT}
-        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
     </update>
     <delete id="deleteByGroupId" parameterType="java.lang.String">
         delete from gray_policy_group
         where policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
     </delete>
-    <update id="editByByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
+    <update id="editByPolicyGroupId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
         update gray_policy_group
-        set alias = #{alias,jdbcType=VARCHAR}, enable = #{enable,jdbcType=SMALLINT}, group_type = #{groupType,jdbcType=VARCHAR}
-        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR} and is_delete=0
+        set alias = #{alias,jdbcType=VARCHAR}, group_type = #{groupType,jdbcType=VARCHAR},remark=#{remark,jdbcType=VARCHAR}
+        where policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
     </update>
 </mapper>
