@@ -6,7 +6,6 @@ import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,27 +27,35 @@ public class GrayPolicyController extends BaseController {
     @Autowired
     private GrayServiceManager grayServiceManager;
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Void> addPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey
-            , @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType) {
-        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType);
-        return ResponseEntity.ok().build();
+    @RequestMapping("/index")
+    public ModelAndView index(ModelAndView model) {
+        List<GrayPolicyVO> list = grayServiceManager.listAllGrayPolicy();
+        model.addObject("list", list);
+        model.setViewName("gray/allPolicy");
+        return model;
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Void> editPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey
-            , @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType, @RequestParam String policyId) {
-        grayServiceManager.editPolicy(policyId, policyType, policyKey, policyValue, policyMatchType);
-        return ResponseEntity.ok().build();
+    @RequestMapping(value = "/add")
+    public String addPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey,
+                            @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType,
+                            @RequestParam("policyName") String policyName, @RequestParam("remark") String remark) {
+        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType, policyName, remark);
+        return "redirect:/gray/manager/policy/index";
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Void> deletePolicy(@RequestParam String policyId) {
+    @RequestMapping(value = "/edit")
+    public String editPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey,
+                             @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType,
+                             @RequestParam("policyName") String policyName, @RequestParam("remark") String remark,
+                             @RequestParam String policyId) {
+        grayServiceManager.editPolicy(policyId, policyType, policyKey, policyValue, policyMatchType, policyName, remark);
+        return "redirect:/gray/manager/policy/index";
+    }
+
+    @RequestMapping(value = "/delete")
+    public String deletePolicy(@RequestParam String policyId) {
         grayServiceManager.delPolicy(policyId);
-        return ResponseEntity.ok().build();
+        return "redirect:/gray/manager/policy/index";
     }
 
     @RequestMapping("/group/index")
@@ -91,11 +98,11 @@ public class GrayPolicyController extends BaseController {
     }
 
     @RequestMapping("/group/relate/index")
-    public ModelAndView index(ModelAndView model, @RequestParam String policyGroupId) {
+    public ModelAndView relateIndex(ModelAndView model, @RequestParam String policyGroupId) {
         List<GrayPolicyVO> list = grayServiceManager.listGrayPolicyByGroup(policyGroupId);
         model.addObject("list", list);
         model.addObject("policyGroupId", policyGroupId);
-        model.setViewName("gray/policy");
+        model.setViewName("gray/relatePolicy");
         return model;
     }
 

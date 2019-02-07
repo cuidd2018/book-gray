@@ -147,7 +147,7 @@ public interface GrayServiceManager {
      *
      * @return
      */
-    boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType);
+    boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark);
 
     /**
      * 编辑策略
@@ -156,7 +156,7 @@ public interface GrayServiceManager {
      * @param policyType
      * @return
      */
-    boolean editPolicy(String policyId, String policyType, String policyKey, String policyValue, String policyMatchType);
+    boolean editPolicy(String policyId, String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark);
 
     /**
      * 删除策略组

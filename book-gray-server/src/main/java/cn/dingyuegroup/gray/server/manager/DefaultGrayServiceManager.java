@@ -399,7 +399,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType) {
+    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark) {
         GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
         grayPolicyEntity.setPolicyId(GrayPolicy.genId());
         grayPolicyEntity.setPolicyKey(policyKey);
@@ -407,6 +407,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayPolicyEntity.setPolicyMatchType(policyMatchType);
         grayPolicyEntity.setCreateTime(new Date());
         grayPolicyEntity.setPolicyType(policyType);
+        grayPolicyEntity.setPolicyName(policyName);
+        grayPolicyEntity.setRemark(remark);
         grayPolicyMapper.insert(grayPolicyEntity);
         return true;
     }
@@ -419,7 +421,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean editPolicy(String policyId, String policyType, String policyKey, String policyValue, String policyMatchType) {
+    public boolean editPolicy(String policyId, String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark) {
         GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
         grayPolicyEntity.setPolicyId(policyId);
         grayPolicyEntity.setPolicyKey(policyKey);
@@ -427,6 +429,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayPolicyEntity.setPolicyMatchType(policyMatchType);
         grayPolicyEntity.setUpdateTime(new Date());
         grayPolicyEntity.setPolicyType(policyType);
+        grayPolicyEntity.setRemark(remark);
+        grayPolicyEntity.setPolicyName(policyName);
         grayPolicyMapper.updateByPolicyId(grayPolicyEntity);
         return true;
     }
@@ -609,6 +613,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             grayPolicyVO.setPolicyMatchType(e.getPolicyMatchType());
             grayPolicyVO.setPolicyType(e.getPolicyType());
             grayPolicyVO.setPolicyValue(e.getPolicyValue());
+            grayPolicyVO.setPolicyName(e.getPolicyName());
             grayPolicyVOS.add(grayPolicyVO);
         });
         return grayPolicyVOS;
