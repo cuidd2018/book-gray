@@ -4,7 +4,7 @@ import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity;
+import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
 
 import java.util.List;
 
@@ -207,7 +207,14 @@ public interface GrayServiceManager {
      * @param groupId
      * @return
      */
-    List<GrayPolicyEntity> listGrayPolicyByGroup(String groupId);
+    List<GrayPolicyVO> listGrayPolicyByGroup(String groupId);
+
+    /**
+     * 获取所有灰度策略
+     *
+     * @return
+     */
+    List<GrayPolicyVO> listAllGrayPolicy();
 
     /**
      * 获取所有策略组列表

@@ -23,4 +23,8 @@ public class GrayPolicyEntity {
     private String policyValue;
 
     private String policyMatchType;
+
+    private String remark;
+
+    private String policyName;
 }

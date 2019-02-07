@@ -7,6 +7,7 @@ import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
 import cn.dingyuegroup.gray.server.context.GrayServerContext;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
 import cn.dingyuegroup.gray.server.mysql.dao.*;
 import cn.dingyuegroup.gray.server.mysql.entity.*;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
@@ -557,7 +558,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public List<GrayPolicyEntity> listGrayPolicyByGroup(String groupId) {
+    public List<GrayPolicyVO> listGrayPolicyByGroup(String groupId) {
         GrayPolicyGroupEntity grayPolicyGroupEntity = grayPolicyGroupMapper.selectByPolicyGroupId(groupId);
         if (grayPolicyGroupEntity == null) {
             return new ArrayList<>();
@@ -567,14 +568,50 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         if (grayPolicyGroupPolicies == null) {
             grayPolicyGroupPolicies = new ArrayList<>();
         }
+        List<GrayPolicyVO> list = new ArrayList<>();
         grayPolicyGroupPolicies.stream().forEach(f -> {
             //获取每个策略的具体信息
             GrayPolicyEntity grayPolicyEntity = grayPolicyMapper.selectByPolicyId(f.getPolicyId());
             if (grayPolicyEntity != null) {
-                grayPolicyGroupEntity.getGrayPolicyEntities().add(grayPolicyEntity);
+                GrayPolicyVO grayPolicyVO = new GrayPolicyVO();
+                grayPolicyVO.setPolicyGroupId(groupId);
+                grayPolicyVO.setGroupType(grayPolicyGroupEntity.getGroupType());
+                grayPolicyVO.setAlias(grayPolicyGroupEntity.getAlias());
+                grayPolicyVO.setPolicyId(grayPolicyEntity.getPolicyId());
+                grayPolicyVO.setRemark(grayPolicyEntity.getRemark());
+                grayPolicyVO.setPolicyKey(grayPolicyEntity.getPolicyKey());
+                grayPolicyVO.setPolicyMatchType(grayPolicyEntity.getPolicyMatchType());
+                grayPolicyVO.setPolicyType(grayPolicyEntity.getPolicyType());
+                grayPolicyVO.setPolicyValue(grayPolicyEntity.getPolicyValue());
+                list.add(grayPolicyVO);
             }
         });
-        return grayPolicyGroupEntity.getGrayPolicyEntities();
+        return list;
+    }
+
+    /**
+     * 获取所有灰度策略
+     *
+     * @return
+     */
+    @Override
+    public List<GrayPolicyVO> listAllGrayPolicy() {
+        List<GrayPolicyEntity> list = grayPolicyMapper.selectAll();
+        if (CollectionUtils.isEmpty(list)) {
+            return new ArrayList<>();
+        }
+        List<GrayPolicyVO> grayPolicyVOS = new ArrayList<>();
+        list.forEach(e -> {
+            GrayPolicyVO grayPolicyVO = new GrayPolicyVO();
+            grayPolicyVO.setPolicyId(e.getPolicyId());
+            grayPolicyVO.setRemark(e.getRemark());
+            grayPolicyVO.setPolicyKey(e.getPolicyKey());
+            grayPolicyVO.setPolicyMatchType(e.getPolicyMatchType());
+            grayPolicyVO.setPolicyType(e.getPolicyType());
+            grayPolicyVO.setPolicyValue(e.getPolicyValue());
+            grayPolicyVOS.add(grayPolicyVO);
+        });
+        return grayPolicyVOS;
     }
 
     /**
@@ -619,8 +656,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         if (grayPolicyGroupEntity == null) {
             return null;
         }
-        List<GrayPolicyEntity> grayPolicyEntities = listGrayPolicyByGroup(grayInstanceEntity.getPolicyGroupId());
-        grayPolicyGroupEntity.setGrayPolicyEntities(grayPolicyEntities);
+        List<GrayPolicyVO> grayPolicyEntities = listGrayPolicyByGroup(grayInstanceEntity.getPolicyGroupId());
         //封装
         GrayPolicyGroup grayPolicyGroup = new GrayPolicyGroup();
         grayPolicyGroup.setPolicyGroupId(grayPolicyGroupEntity.getPolicyGroupId());
@@ -628,7 +664,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayPolicyGroup.setEnable(grayPolicyGroupEntity.getEnable() == 0 ? false : true);
         grayPolicyGroup.setGroupType(grayPolicyGroupEntity.getGroupType());//策略类型，与和或
         //获取策略组下的策略集合
-        grayPolicyGroupEntity.getGrayPolicyEntities().stream().forEach(m -> {
+        grayPolicyEntities.stream().forEach(m -> {
             GrayPolicy grayPolicy = new GrayPolicy();
             grayPolicy.setPolicyId(m.getPolicyId());
             grayPolicy.setPolicyType(m.getPolicyType());

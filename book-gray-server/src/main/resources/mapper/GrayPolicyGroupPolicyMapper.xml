@@ -45,8 +45,7 @@
     <select id="countByGroupIdAndPolicyId"
             parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupPolicy"
             resultType="java.lang.Integer">
-        select COUNT (id)
-        from gray_policy_group_policy WHERE policy_group_id=#{policyGroupId,jdbcType=VARCHAR} and policy_id = #{policyId,jdbcType=VARCHAR}
+        select count(*) from gray_policy_group_policy WHERE policy_group_id=#{policyGroupId,jdbcType=VARCHAR} and policy_id = #{policyId,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByGroupIdAndPolicyId"
             parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupPolicy">

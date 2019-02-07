@@ -10,7 +10,7 @@
             <div class="box-body">
                 <div class="box-header">
                     <div class="box-header">
-                        策略组管理&nbsp;&nbsp;>&nbsp;&nbsp;<a th:href="@{/gray/manager/services/index}">策略管理</a>
+                        <a th:href="@{/gray/manager/policy/group/index}">策略组管理</a>&nbsp;&nbsp;>&nbsp;&nbsp;策略管理
                     </div>
                     <div class="box-header">
                         <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
@@ -23,8 +23,12 @@
                         <th style="text-align: center">策略组ID</th>
                         <th style="text-align: center">策略组名称</th>
                         <th style="text-align: center">策略组类型</th>
-                        <th style="text-align: center">灰度操作</th>
-                        <th style="text-align: center">策略</th>
+                        <th style="text-align: center">策略ID</th>
+                        <th style="text-align: center">策略名称</th>
+                        <th style="text-align: center">策略类型</th>
+                        <th style="text-align: center">策略参数名</th>
+                        <th style="text-align: center">策略参数值</th>
+                        <th style="text-align: center">策略匹配方式</th>
                         <th style="text-align: center">备注</th>
                         <th style="text-align: center">操作</th>
                     </tr>
@@ -38,29 +42,21 @@
                             <span th:if="${item.groupType} == 'OR'">或</span>
                             <span th:if="${item.groupType} == 'AND'">与</span>
                         </td>
+                        <td th:text="${item.policyId}"></td>
+                        <td th:text="${item.policyName}"></td>
                         <td>
-                            <button th:if="${item.enable} == true" type="button"
-                                    class="btn btn-xs btn-danger editStatus"
-                                    th:onclick="'javascript:showOpenGrayModule(\''+${item.policyGroupId}+'\',\'0\')'">
-                                关闭
-                            </button>
-                            <button th:if="${item.enable} == false" type="button"
-                                    class="btn btn-xs btn-success editStatus"
-                                    th:onclick="'javascript:showOpenGrayModule(\''+${item.policyGroupId}+'\',\'1\')'">
-                                开启
-                            </button>
+                            <span th:if="${item.policyType} == 'REQUEST_PARAMETER'">请求参数</span>
                         </td>
+                        <td th:text="${item.policyKey}"></td>
+                        <td th:text="${item.policyValue}"></td>
                         <td>
-                            <a th:href="@{/gray/manager/policy/group/relate/index(policyGroupId=${item.policyGroupId})}">策略管理</a>
+                            <span th:if="${item.policyMatchType} == 'EQUAL'">完全匹配</span>
+                            <span th:if="${item.policyMatchType} == 'REGEX'">正则匹配</span>
                         </td>
                         <td th:text="${item.remark}"></td>
                         <td style="text-align: center">
-                            <span name="edit" title="编辑"
-                                  th:onclick="'javascript:showEditModule(\''+${item.policyGroupId}+'\',\''+${item.alias}+'\',\''+${item.groupType}+'\',\''+${item.remark}+'\')'"
-                                  style="cursor: pointer" class="glyphicon glyphicon-edit">
-                          </span>&nbsp;&nbsp;&nbsp;&nbsp;
                             <span name="trash" title="删除"
-                                  th:onclick="'javascript:showDeleteModule(\''+${item.policyGroupId}+'\')'"
+                                  th:onclick="'javascript:showDeleteModule(\''+${item.policyId}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                         </td>
                     </tr>
@@ -75,40 +71,20 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h4 class="modal-title" id="myModalLabel">
-                            添加策略组
+                            添加策略
                         </h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/policy/group/add}"
-                              method="post">
+                        <form class="form-horizontal" id="add-form"
+                              th:action="@{/gray/manager/policy/group/relate}"
+                              method="get">
+                            <input name="policyGroupId" type="hidden" id="policyGroupIdSelect"
+                                   th:value="${policyGroupId}">
                             <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组名称:</label>
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">选择策略:</label>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" name="alias">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组类型:</label>
-                                <div class="col-sm-6">
-                                    <select class="form-control" name="groupType">
-                                        <option value="OR">或</option>
-                                        <option value="AND">与</option>
+                                    <select class="form-control" name="policyId" id="policySelect">
                                     </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">状态:</label>
-                                <div class="col-sm-6">
-                                    <select class="form-control" name="enable">
-                                        <option value="0">关闭</option>
-                                        <option value="1">开启</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">备注:</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" name="remark">
                                 </div>
                             </div>
                         </form>
@@ -128,15 +104,16 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h4 class="modal-title" id="myDeleteModalLabel">
-                            删除策略组
+                            删除策略
                         </h4>
                     </div>
                     <div class="modal-body">
-                        确认删除策略组！
+                        确认删除策略！
                         <form class="form-horizontal" id="delete-form"
-                              th:action="@{/gray/manager/policy/group/delete}"
+                              th:action="@{/gray/manager/policy/group/unRelate}"
                               method="post">
-                            <input id="deletePolicyGroupId" name="policyGroupId" type="hidden">
+                            <input name="policyGroupId" type="hidden" th:value="${policyGroupId}">
+                            <input id="deletePolicyId" name="policyId" type="hidden">
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -162,26 +139,45 @@
                               th:action="@{/gray/manager/policy/group/edit}"
                               method="post">
                             <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组ID:</label>
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略ID:</label>
                                 <div class="col-sm-6">
-                                    <input id="policyGroupId" type="text" class="form-control"
-                                           disabled="true">
-                                    <input id="policyGroupIdHidden" type="hidden" class="form-control"
-                                           name="policyGroupId">
+                                    <input id="policyId" type="text" class="form-control" disabled="true">
+                                    <input id="policyIdHidden" type="hidden" class="form-control"
+                                           name="policyId">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组名称:</label>
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略名称:</label>
                                 <div class="col-sm-6">
-                                    <input id="alias" type="text" class="form-control" name="alias">
+                                    <input id="policyName" type="text" class="form-control" name="policyName">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略组类型:</label>
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略类型:</label>
                                 <div class="col-sm-6">
-                                    <select class="form-control" name="groupType" id="groupType">
-                                        <option value="AND">与</option>
-                                        <option value="OR">或</option>
+                                    <select class="form-control" name="policyType" id="policyType">
+                                        <option value="REQUEST_PARAMETER">请求参数</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略参数名:</label>
+                                <div class="col-sm-6">
+                                    <input id="policyKey" type="text" class="form-control" name="policyKey">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略参数值:</label>
+                                <div class="col-sm-6">
+                                    <input id="policyValue" type="text" class="form-control" name="policyValue">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">策略匹配方式:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="policyMatchType" id="policyMatchType">
+                                        <option value="EQUAL">完全匹配</option>
+                                        <option value="REGEX">正则匹配</option>
                                     </select>
                                 </div>
                             </div>
@@ -200,37 +196,10 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <!-- 模态框（Modal） -->
-        <div class="modal fade" id="myOpenGrayWarnModal" tabindex="-1" role="dialog"
-             aria-labelledby="mySmallModalLabel">
-            <div class="modal-dialog">
-                <div class="modal-content" style="width: 40%;left:50%;top:300px;">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title">
-                            修改状态
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div style="text-align: center" id="openGrayShowMsg">是否关闭策略组</div>
-                        <form class="form-horizontal" id="openGray-form"
-                              th:action="@{/gray/manager/policy/group/status}"
-                              method="get">
-                            <input name="policyGroupId" type="hidden" id="policyGroupIdOpenGray">
-                            <input name="status" type="hidden" id="instanceOpenGray">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="editOpenGraySub" onclick="openGrayDo();">关闭
-                        </button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
         <script>
             // 添加
             function showModule() {
+                initPolicyList();
                 $('#myModal').modal('show');
             }
             function hintDo() {
@@ -238,9 +207,9 @@
                 $('#myModal').modal('hide')
             }
             // 删除
-            function showDeleteModule(policyGroupId) {
+            function showDeleteModule(policyId) {
                 var m = $('#myDeleteModal');
-                m.find("#deletePolicyGroupId").val(policyGroupId);
+                m.find("#deletePolicyId").val(policyId);
                 m.modal('show');
             }
             function hintDeleteDo() {
@@ -249,36 +218,48 @@
             }
 
             // 修改
-            function showEditModule(policyGroupId, alias, groupType, remark) {
+            function showEditModule(policyId, policyType, policyKey, policyValue, policyMatchType, remark, policyName) {
                 var m = $('#myEditModal').modal('show');
-                m.find("#policyGroupId").val(policyGroupId);
-                m.find("#policyGroupIdHidden").val(policyGroupId);
-                m.find("#alias").val(alias);
-                m.find("#groupType").val(groupType);
+                m.find("#policyId").val(policyId);
+                m.find("#policyIdHidden").val(policyId);
+                m.find("#policyType").val(policyType);
+                m.find("#policyKey").val(policyKey);
+                m.find("#policyValue").val(policyValue);
+                m.find("#policyMatchType").val(policyMatchType);
                 m.find("#remark").val(remark);
+                m.find("#policyName").val(policyName);
                 m.modal('show');
             }
             function hintEditDo() {
                 $("#edit-form").submit();
                 $('#myEditModal').modal('hide')
             }
-            //修改在线状态弹窗
-            function showOpenGrayModule(policyGroupId, openGray) {
-                var m = $('#myOpenGrayWarnModal');
-                if (openGray == 0) {
-                    m.find("#editOpenGraySub").text("关闭");
-                    m.find("#openGrayShowMsg").text("是否关闭灰度");
-                } else if (openGray == 1) {
-                    m.find("#editOpenGraySub").text("开启");
-                    m.find("#openGrayShowMsg").text("是否开启灰度");
+            var policyList;
+            //初始化cp列表
+            function initPolicyList() {
+                var param = {};
+                param.policyGroupId = $("#policyGroupIdSelect").val();
+                if (!policyList) {
+                    $.ajax({
+                        url: "/gray/manager/policy/group/relate/list",
+                        type: 'get',
+                        dataType: 'json',
+                        data: param,
+                        async: false,
+                        success: function (data) {
+                            if (data.respCode == 20000) {
+                                policyList = data.data;
+                                var result = '<option>无</option>';
+                                $.each(policyList, function (i, e) {
+                                    result += '<option value="' + e.policyId + '">' + e.policyName + '</option>';
+                                });
+                                $("#policySelect").append(result);
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    });
                 }
-                m.find("#policyGroupIdOpenGray").val(policyGroupId);
-                m.find("#instanceOpenGray").val(openGray);
-                m.modal('show');
-            }
-            function openGrayDo() {
-                $("#openGray-form").submit();
-                $('#myOpenGrayWarnModal').modal('hide');
             }
         </script>
     </div>

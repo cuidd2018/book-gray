@@ -11,9 +11,11 @@
         <result column="is_delete" jdbcType="SMALLINT" property="isDelete"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="policy_name" jdbcType="VARCHAR" property="policyName"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, policy_id, policy_type, policy_key, is_delete, create_time, update_time, policy_value, policy_match_type
+        id, policy_id, policy_type, policy_key, is_delete, create_time, update_time, policy_value, policy_match_type, remark, policy_name
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_policy
@@ -24,11 +26,12 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_policy (policy_id, policy_type, policy_key,
-        is_delete, create_time, update_time, policy_value, policy_match_type
+        is_delete, create_time, update_time, policy_value, policy_match_type, remark, policy_name
         )
         values (#{policyId,jdbcType=VARCHAR}, #{policyType,jdbcType=VARCHAR}, #{policyKey,jdbcType=VARCHAR},
         #{isDelete,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-        #{policyValue,jdbcType=VARCHAR}, #{policyMatchType,jdbcType=VARCHAR}
+        #{policyValue,jdbcType=VARCHAR}, #{policyMatchType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+        #{policyName,jdbcType=VARCHAR}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
@@ -40,7 +43,9 @@
       policy_match_type = #{policyMatchType,jdbcType=VARCHAR},
       is_delete = #{isDelete,jdbcType=SMALLINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      policy_name = #{policyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -66,7 +71,7 @@
     <select id="selectByPolicyId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from gray_policy WHERE policy_id=#{policyId,jdbcType=VARCHAR} and is_delete=0
+        from gray_policy WHERE policy_id=#{policyId,jdbcType=VARCHAR}
     </select>
     <update id="updateByPolicyId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
         update gray_policy
@@ -74,8 +79,10 @@
         policy_key = #{policyKey,jdbcType=VARCHAR},
         policy_value = #{policyValue,jdbcType=VARCHAR},
         policy_match_type = #{policyMatchType,jdbcType=VARCHAR},
-        update_time = #{updateTime,jdbcType=TIMESTAMP}
-        where policy_id=#{policyId,jdbcType=VARCHAR} and is_delete=0
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        remark = #{remark,jdbcType=VARCHAR},
+        policy_name = #{policyName,jdbcType=VARCHAR}
+        where policy_id=#{policyId,jdbcType=VARCHAR}
     </update>
     <delete id="deleteByPolicyId" parameterType="java.lang.String">
         delete from gray_policy

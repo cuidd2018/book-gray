@@ -3,7 +3,7 @@ package cn.dingyuegroup.gray.server.web;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.resp.RespMsg;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity;
+import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by 170147 on 2019/1/8.
@@ -49,15 +51,8 @@ public class GrayPolicyController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<List<GrayPolicyEntity>> listPolicy(@RequestParam String groupId) {
-        List<GrayPolicyEntity> list = grayServiceManager.listGrayPolicyByGroup(groupId);
-        return ResponseEntity.ok(list);
-    }
-
     @RequestMapping("/group/index")
-    public ModelAndView index(ModelAndView model) {
+    public ModelAndView groupIndex(ModelAndView model) {
         List<GrayPolicyGroupVO> list = grayServiceManager.listAllGrayPolicyGroup();
         model.addObject("list", list);
         model.setViewName("gray/policyGroup");
@@ -95,17 +90,37 @@ public class GrayPolicyController extends BaseController {
         return "redirect:/gray/manager/policy/group/index";
     }
 
-    @RequestMapping(value = "/group/relate", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Void> relateGroup(@RequestParam String groupId, @RequestParam String policyId) {
-        grayServiceManager.addPolicyGroupPolicy(groupId, policyId);
-        return ResponseEntity.ok().build();
+    @RequestMapping("/group/relate/index")
+    public ModelAndView index(ModelAndView model, @RequestParam String policyGroupId) {
+        List<GrayPolicyVO> list = grayServiceManager.listGrayPolicyByGroup(policyGroupId);
+        model.addObject("list", list);
+        model.addObject("policyGroupId", policyGroupId);
+        model.setViewName("gray/policy");
+        return model;
     }
 
-    @RequestMapping(value = "/group/unRelate", method = RequestMethod.GET)
+    @RequestMapping(value = "/group/relate/list")
     @ResponseBody
-    public ResponseEntity<Void> unRelateGroup(@RequestParam String groupId, @RequestParam String policyId) {
-        grayServiceManager.delPolicyGroupPolicy(groupId, policyId);
-        return ResponseEntity.ok().build();
+    public RespMsg relatePolicys(RedirectAttributes attr, @RequestParam String policyGroupId) {
+        List<GrayPolicyVO> includs = grayServiceManager.listGrayPolicyByGroup(policyGroupId);
+        List<GrayPolicyVO> all = grayServiceManager.listAllGrayPolicy();
+        List<String> policyIds = includs.stream().map(GrayPolicyVO::getPolicyId).collect(Collectors.toList());
+        all = all.stream().filter(e -> !policyIds.contains(e.getPolicyId())).collect(Collectors.toList());
+        attr.addAttribute("policyGroupId", policyGroupId);
+        return RespMsg.success(all);
+    }
+
+    @RequestMapping(value = "/group/relate")
+    public String relateGroup(RedirectAttributes attr, @RequestParam String policyGroupId, @RequestParam String policyId) {
+        grayServiceManager.addPolicyGroupPolicy(policyGroupId, policyId);
+        attr.addAttribute("policyGroupId", policyGroupId);
+        return "redirect:/gray/manager/policy/group/relate/index";
+    }
+
+    @RequestMapping(value = "/group/unRelate")
+    public String unRelateGroup(RedirectAttributes attr, @RequestParam String policyGroupId, @RequestParam String policyId) {
+        grayServiceManager.delPolicyGroupPolicy(policyGroupId, policyId);
+        attr.addAttribute("policyGroupId", policyGroupId);
+        return "redirect:/gray/manager/policy/group/relate/index";
     }
 }
