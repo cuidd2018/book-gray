@@ -17,5 +17,5 @@ public interface GrayRbacRoleResourceMapper {
 
     GrayRbacRoleResource selectByResourceId(String resourceId);
 
-    GrayRbacRoleResource selectByRoleId(String roleId);
+    List<GrayRbacRoleResource> selectByRoleId(String roleId);
 }

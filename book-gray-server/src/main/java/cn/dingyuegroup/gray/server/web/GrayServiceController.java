@@ -6,11 +6,13 @@ import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources;
 import cn.dingyuegroup.gray.server.vertify.VertifyRequest;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/gray/manager/services")
@@ -32,8 +36,10 @@ public class GrayServiceController extends BaseController {
     @RequestMapping("/index")
     public ModelAndView index(ModelAndView model) {
         List<GrayServiceVO> list = new ArrayList<>();
-        List<GrayService> grayServices = grayServiceManager.getServices();
-        grayServices.stream().forEach(e -> {
+        List<GrayService> allservices = grayServiceManager.getServices();
+        List<GrayRbacResources> grayRbacResources = getResources();
+        allservices = allservices.stream().filter(e -> hasAuth(e, grayRbacResources)).collect(Collectors.toList());
+        allservices.stream().forEach(e -> {
             GrayServiceVO vo = GrayServiceVO.builder()
                     .appName(e.getAppName())
                     .status(e.isStatus())
@@ -77,8 +83,13 @@ public class GrayServiceController extends BaseController {
     @RequestMapping(value = "/instances/index")
     public ModelAndView instances(ModelAndView model, @RequestParam("serviceId") String serviceId) {
         List<GrayInstanceVO> list = new ArrayList<>();
-        List<GrayInstance> grayInstances = grayServiceManager.getInstances(serviceId);
-        grayInstances.stream().forEach(e -> {
+        List<GrayInstance> allInstances = grayServiceManager.getInstances(serviceId);
+        List<GrayRbacResources> grayRbacResources = getResources();
+        List<String> resources = grayRbacResources.stream().map(GrayRbacResources::getResource).collect(Collectors.toList());
+        allInstances.stream().forEach(e -> {
+            if (!resources.contains(e.getEnv())) {
+                return;
+            }
             GrayInstanceVO vo = GrayInstanceVO.builder()
                     .serviceId(serviceId)
                     .instanceId(e.getInstanceId())
@@ -216,5 +227,17 @@ public class GrayServiceController extends BaseController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    private boolean hasAuth(GrayService grayService, List<GrayRbacResources> resourceList) {
+        if (grayService == null || CollectionUtils.isEmpty(grayService.getGrayInstances()) || CollectionUtils.isEmpty(resourceList)) {
+            return false;
+        }
+        List<String> resources = resourceList.stream().map(GrayRbacResources::getResource).collect(Collectors.toList());
+        Optional<GrayInstance> optional = grayService.getGrayInstances().parallelStream().filter(e -> resources.contains(e.getEnv())).findAny();
+        if (optional.isPresent()) {
+            return true;
+        }
+        return false;
     }
 }
