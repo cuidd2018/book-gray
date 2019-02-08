@@ -29,7 +29,8 @@
         insert into gray_rbac_user (udid, nickname, remark,
         department_id, password, account, creator)
         values (#{udid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
-        #{departmentId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, , #{creator,jdbcType=VARCHAR})
+        #{departmentId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, ,
+        #{creator,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
     update gray_rbac_user
@@ -70,6 +71,12 @@
         <include refid="Base_Column_List"/>
         from gray_rbac_user
         where department_id = #{departmentId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByCreator" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_user
+        where creator = #{creator,jdbcType=VARCHAR} or account=#{account,jdbcType=VARCHAR}
     </select>
     <update id="updateByUdid" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
         update gray_rbac_user

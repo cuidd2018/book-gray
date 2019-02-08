@@ -42,6 +42,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     @Autowired
     private GrayPolicyGroupPolicyMapper grayPolicyGroupPolicyMapper;
     @Autowired
+    private GrayRbacResourcesMapper grayRbacResourcesMapper;
+    @Autowired
     private GrayServerConfig serverConfig;
     @Autowired
     private AbstractGrayService abstractGrayService;
@@ -212,6 +214,13 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
             grayInstance.setStatus(grayInstance.isStatus() && (grayInstanceEntity.getStatus() == 0 ? false : true));
             grayInstance.setRemark(grayInstanceEntity.getRemark());
+            if (!StringUtils.isEmpty(grayInstanceEntity.getEnv())) {
+                grayInstance.setEnv(grayInstanceEntity.getEnv());
+                GrayRbacResources resources = grayRbacResourcesMapper.selectByResource(grayInstanceEntity.getEnv());
+                if (resources != null) {
+                    grayInstance.setEnvName(resources.getResourceName());
+                }
+            }
         }
         GrayPolicyGroup grayPolicyGroup = getGrayPolicyGroup(serviceId, instanceId);
         grayInstance.setGrayPolicyGroup(grayPolicyGroup);

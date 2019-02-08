@@ -45,4 +45,10 @@
         from gray_rbac_resources
         where resource_id = #{resourceId,jdbcType=VARCHAR}
     </select>
+    <select id="selectByResource" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_resources
+        where resource = #{resource,jdbcType=VARCHAR} limit 1
+    </select>
 </mapper>

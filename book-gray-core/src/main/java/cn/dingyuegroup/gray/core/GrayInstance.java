@@ -25,6 +25,8 @@ public class GrayInstance {
     private String url;
     private Map<String, String> metadata;
     private String remark;
+    private String env;
+    private String envName;
 
     public GrayInstance() {
     }

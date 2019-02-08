@@ -16,4 +16,6 @@ public interface GrayRbacResourcesMapper {
     int updateByPrimaryKey(GrayRbacResources record);
 
     GrayRbacResources selectByResourceId(String resourceId);
+
+    GrayRbacResources selectByResource(String resource);
 }

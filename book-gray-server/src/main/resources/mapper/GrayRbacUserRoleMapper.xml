@@ -45,7 +45,7 @@
         select
         <include refid="Base_Column_List"/>
         from gray_rbac_user_role
-        where udid = #{udid,jdbcType=VARCHAR}
+        where udid = #{udid,jdbcType=VARCHAR} limit 1
     </select>
     <select id="selectByRoleId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -55,8 +55,7 @@
     </select>
     <update id="updateByUdidAndRoleId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUserRole">
         update gray_rbac_user_role
-        set udid = #{udid,jdbcType=VARCHAR},
-        role_id = #{roleId,jdbcType=VARCHAR}
-        where udid = #{udid,jdbcType=VARCHAR} AND role_id = #{roleId,jdbcType=VARCHAR}
+        set role_id = #{roleId,jdbcType=VARCHAR}
+        where udid = #{udid,jdbcType=VARCHAR} AND role_id = #{oldRoleId,jdbcType=VARCHAR}
     </update>
 </mapper>

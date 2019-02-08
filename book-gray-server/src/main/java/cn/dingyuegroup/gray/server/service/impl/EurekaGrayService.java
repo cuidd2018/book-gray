@@ -4,8 +4,10 @@ import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayPolicyGroup;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayInstanceMapper;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacResourcesMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayServiceMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayServiceEntity;
 import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import com.netflix.appinfo.InstanceInfo;
@@ -13,6 +15,7 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +30,17 @@ public class EurekaGrayService extends AbstractGrayService {
     private final GrayServiceMapper grayServiceMapper;
     private final GrayInstanceMapper grayInstanceMapper;
     private final GrayServiceManager grayServiceManager;
+    private final GrayRbacResourcesMapper grayRbacResourcesMapper;
 
     public EurekaGrayService(EurekaClient eurekaClient, DiscoveryClient discoveryClient,
                              GrayServiceMapper grayServiceMapper, GrayInstanceMapper grayInstanceMapper,
-                             GrayServiceManager grayServiceManager) {
+                             GrayServiceManager grayServiceManager, GrayRbacResourcesMapper grayRbacResourcesMapper) {
         super(discoveryClient, grayServiceMapper);
         this.eurekaClient = eurekaClient;
         this.grayServiceMapper = grayServiceMapper;
         this.grayInstanceMapper = grayInstanceMapper;
         this.grayServiceManager = grayServiceManager;
+        this.grayRbacResourcesMapper = grayRbacResourcesMapper;
     }
 
     @Override
@@ -83,6 +88,13 @@ public class EurekaGrayService extends AbstractGrayService {
                 //eureka在线，并且持久化状态也是在线
                 grayInstance.setStatus(grayInstance.isStatus() && (grayInstanceEntity.getStatus() == 0 ? false : true));
                 grayInstance.setRemark(grayInstanceEntity.getRemark());
+                if (!StringUtils.isEmpty(grayInstanceEntity.getEnv())) {
+                    grayInstance.setEnv(grayInstanceEntity.getEnv());
+                    GrayRbacResources resources = grayRbacResourcesMapper.selectByResource(grayInstanceEntity.getEnv());
+                    if (resources != null) {
+                        grayInstance.setEnvName(resources.getResourceName());
+                    }
+                }
             }
             //获取服务实例下的灰度策略组
             GrayPolicyGroup grayPolicyGroup = grayServiceManager.getGrayPolicyGroup(serviceId, e.getInstanceId());

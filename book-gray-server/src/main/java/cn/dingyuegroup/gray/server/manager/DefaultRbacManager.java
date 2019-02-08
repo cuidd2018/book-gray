@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 /**
  * Created by 170147 on 2019/1/22.
@@ -70,18 +69,55 @@ public class DefaultRbacManager implements RbacManager {
             vo.setRemark(e.getRemark());
             vo.setUdid(e.getUdid());
             vo.setAccount(e.getAccount());
-            List<GrayRbacUserRole> grayRbacUserRoles = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
-            if (CollectionUtils.isEmpty(grayRbacUserRoles)) {
+            GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
+            if (grayRbacUserRole == null) {
                 return;
             }
-            grayRbacUserRoles.forEach(f -> {
-                GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(f.getRoleId());
-                if (StringUtils.isEmpty(vo.getRoleName())) {
-                    vo.setRoleName(grayRbacRole.getRoleName());
-                } else {
-                    vo.setRoleName(vo.getRoleName() + "," + grayRbacRole.getRoleName());
-                }
-            });
+            GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
+            if (grayRbacRole != null) {
+                vo.setRoleName(grayRbacRole.getRoleName());
+            }
+            list.add(vo);
+        });
+        return list;
+    }
+
+    /**
+     * 获取自己创建的用户
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public List<GrayRbacUserVO> listByCreator(String username) {
+        if (StringUtils.isEmpty(username)) {
+            return new ArrayList<>();
+        }
+        GrayRbacUser user = grayRbacUserMapper.selectByAccount(username);
+        GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(user.getDepartmentId());
+        if (department == null) {
+            return new ArrayList<>();
+        }
+        GrayRbacUser grayRbacUser = new GrayRbacUser();
+        grayRbacUser.setAccount(username);
+        grayRbacUser.setCreator(username);
+        List<GrayRbacUser> grayRbacUsers = grayRbacUserMapper.selectByCreator(grayRbacUser);
+        List<GrayRbacUserVO> list = new ArrayList<>();
+        grayRbacUsers.forEach(e -> {
+            GrayRbacUserVO vo = new GrayRbacUserVO();
+            vo.setDepartmentName(department.getDepartmentName());
+            vo.setNickname(e.getNickname());
+            vo.setRemark(e.getRemark());
+            vo.setUdid(e.getUdid());
+            vo.setAccount(e.getAccount());
+            GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
+            if (grayRbacUserRole == null) {
+                return;
+            }
+            GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
+            if (grayRbacRole != null) {
+                vo.setRoleName(grayRbacRole.getRoleName());
+            }
             list.add(vo);
         });
         return list;
@@ -98,7 +134,7 @@ public class DefaultRbacManager implements RbacManager {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public boolean addUser(String departmentId, String roleId, String nickName, String remark) {
+    public boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator) {
         GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(departmentId);
         if (department == null) {
             return false;
@@ -114,6 +150,7 @@ public class DefaultRbacManager implements RbacManager {
             user.setRemark(remark);
             user.setDepartmentId(departmentId);
             user.setNickname(nickName);
+            user.setCreator(creator);
             grayRbacUserMapper.insert(user);
             GrayRbacUserRole grayRbacUserRole = new GrayRbacUserRole();
             grayRbacUserRole.setUdid(user.getUdid());
@@ -136,7 +173,8 @@ public class DefaultRbacManager implements RbacManager {
      * @return
      */
     @Override
-    public boolean editUser(String udid, String account, String nickName, String remark) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public boolean editUser(String udid, String account, String nickName, String remark, String roleId) {
         GrayRbacUser user = grayRbacUserMapper.selectByUdid(udid);
         if (user == null) {
             return false;
@@ -145,6 +183,17 @@ public class DefaultRbacManager implements RbacManager {
         user.setNickname(nickName);
         user.setAccount(account);
         grayRbacUserMapper.updateByUdid(user);
+        GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(udid);
+        if (grayRbacUserRole == null) {
+            grayRbacUserRole = new GrayRbacUserRole();
+            grayRbacUserRole.setUdid(user.getUdid());
+            grayRbacUserRole.setRoleId(roleId);
+            grayRbacUserRoleMapper.insert(grayRbacUserRole);
+        } else {
+            grayRbacUserRole.setRoleId(roleId);
+            grayRbacUserRole.setOldRoleId(grayRbacUserRole.getRoleId());
+            grayRbacUserRoleMapper.updateByUdidAndRoleId(grayRbacUserRole);
+        }
         return true;
     }
 
@@ -185,20 +234,15 @@ public class DefaultRbacManager implements RbacManager {
                 grayUserVO.setDepartment(department.getDepartmentName());
             }
         }
-        List<GrayRbacUserRole> grayRbacUserRoles = grayRbacUserRoleMapper.selectByUdid(user.getUdid());
-        if (CollectionUtils.isEmpty(grayRbacUserRoles)) {
+        GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(user.getUdid());
+        if (grayRbacUserRole == null || StringUtils.isEmpty(grayRbacUserRole.getRoleId())) {
             return grayUserVO;
         }
-        List<String> roleNames = grayRbacUserRoles.parallelStream().map(e -> getRoleName(e.getRoleId())).collect(Collectors.toList());
-        grayUserVO.setRoles(StringUtils.collectionToDelimitedString(roleNames, " | "));
-        return grayUserVO;
-    }
-
-    private String getRoleName(String roleId) {
-        GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(roleId);
+        GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
         if (grayRbacRole == null) {
-            return null;
+            return grayUserVO;
         }
-        return grayRbacRole.getRoleName();
+        grayUserVO.setRoles(grayRbacRole.getRoleName());
+        return grayUserVO;
     }
 }

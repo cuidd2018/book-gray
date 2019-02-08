@@ -9,4 +9,7 @@ public class GrayRbacUserRole {
     private String udid;
 
     private String roleId;
+
+    //非数据表字段
+    private String oldRoleId;
 }

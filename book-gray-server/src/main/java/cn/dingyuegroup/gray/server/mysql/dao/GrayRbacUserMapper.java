@@ -27,4 +27,6 @@ public interface GrayRbacUserMapper {
     int updatePasswordByUdid();
 
     GrayRbacUser selectByAccount(String account);
+
+    List<GrayRbacUser> selectByCreator(GrayRbacUser record);
 }

@@ -20,4 +20,5 @@ public class GrayInstanceVO {
     private String remark;
     private String policyGroupId;
     private String policyGroupAlias;
+    private String envName;//资源环境
 }

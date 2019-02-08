@@ -21,6 +21,8 @@ public class GrayRbacUser {
 
     private String account;
 
+    private String creator;
+
     public static String genId() {
         return "USER_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
     }

@@ -16,7 +16,7 @@ public interface GrayRbacUserRoleMapper {
 
     int updateByPrimaryKey(GrayRbacUserRole record);
 
-    List<GrayRbacUserRole> selectByUdid(String udid);
+    GrayRbacUserRole selectByUdid(String udid);
 
     List<GrayRbacUserRole> selectByRoleId(String roleId);
 

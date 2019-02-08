@@ -18,6 +18,14 @@ public interface RbacManager {
     List<GrayRbacUserVO> list(String departmentId);
 
     /**
+     * 获取自己创建的用户
+     *
+     * @param username
+     * @return
+     */
+    List<GrayRbacUserVO> listByCreator(String username);
+
+    /**
      * 添加人员
      *
      * @param departmentId
@@ -26,7 +34,7 @@ public interface RbacManager {
      * @param remark
      * @return
      */
-    boolean addUser(String departmentId, String roleId, String nickName, String remark);
+    boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator);
 
     /**
      * 编辑用户
@@ -36,7 +44,7 @@ public interface RbacManager {
      * @param remark
      * @return
      */
-    boolean editUser(String udid, String account, String nickName, String remark);
+    boolean editUser(String udid, String account, String nickName, String remark, String roleId);
 
     /**
      * 删除用户

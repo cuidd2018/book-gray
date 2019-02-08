@@ -24,6 +24,7 @@
                         <th style="text-align: center">灰度操作</th>
                         <th style="text-align: center">灰度策略组</th>
                         <th style="text-align: center">是否拥有灰度策略</th>
+                        <th style="text-align: center">资源环境</th>
                         <th style="text-align: center">备注</th>
                         <th style="text-align: center">操作</th>
                     </tr>
@@ -68,6 +69,7 @@
                             <span th:if="${item.hasGrayPolicies} == true">是</span>
                             <span th:if="${item.hasGrayPolicies} == false">否</span>
                         </td>
+                        <td th:text="${item.envName}"></td>
                         <td th:text="${item.remark}"></td>
                         <td style="text-align: center">
                             <span name="edit" title="编辑"
