@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public interface RbacManager {
      * @param remark
      * @return
      */
-    boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator);
+    boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator, String account);
 
     /**
      * 编辑用户
@@ -61,4 +62,12 @@ public interface RbacManager {
      * @return
      */
     GrayUserVO getDepartment(String username);
+
+    /**
+     * 获取部门下的角色信息
+     *
+     * @param departmentId
+     * @return
+     */
+    List<GrayRoleVO> listRoles(String departmentId);
 }

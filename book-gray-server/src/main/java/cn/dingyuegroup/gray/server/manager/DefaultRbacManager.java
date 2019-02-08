@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacDepartmentMapper;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacRoleMapper;
@@ -114,6 +115,7 @@ public class DefaultRbacManager implements RbacManager {
             if (grayRbacUserRole == null) {
                 return;
             }
+            vo.setRoleId(grayRbacUserRole.getRoleId());
             GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
             if (grayRbacRole != null) {
                 vo.setRoleName(grayRbacRole.getRoleName());
@@ -134,7 +136,7 @@ public class DefaultRbacManager implements RbacManager {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator) {
+    public boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator, String account) {
         GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(departmentId);
         if (department == null) {
             return false;
@@ -151,6 +153,7 @@ public class DefaultRbacManager implements RbacManager {
             user.setDepartmentId(departmentId);
             user.setNickname(nickName);
             user.setCreator(creator);
+            user.setAccount(account);
             grayRbacUserMapper.insert(user);
             GrayRbacUserRole grayRbacUserRole = new GrayRbacUserRole();
             grayRbacUserRole.setUdid(user.getUdid());
@@ -244,5 +247,30 @@ public class DefaultRbacManager implements RbacManager {
         }
         grayUserVO.setRoles(grayRbacRole.getRoleName());
         return grayUserVO;
+    }
+
+    /**
+     * 获取部门下的角色信息
+     *
+     * @param departmentId
+     * @return
+     */
+    @Override
+    public List<GrayRoleVO> listRoles(String departmentId) {
+        if (StringUtils.isEmpty(departmentId)) {
+            return new ArrayList<>();
+        }
+        List<GrayRbacRole> grayRbacRoles = grayRbacRoleMapper.selectByDepartmentId(departmentId);
+        if (CollectionUtils.isEmpty(grayRbacRoles)) {
+            return new ArrayList<>();
+        }
+        List<GrayRoleVO> list = new ArrayList<>();
+        grayRbacRoles.forEach(e -> {
+            GrayRoleVO grayRoleVO = new GrayRoleVO();
+            grayRoleVO.setRoleId(e.getRoleId());
+            grayRoleVO.setRoleName(e.getRoleName());
+            list.add(grayRoleVO);
+        });
+        return list;
     }
 }

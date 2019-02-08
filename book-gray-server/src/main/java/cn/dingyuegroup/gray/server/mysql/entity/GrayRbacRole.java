@@ -11,4 +11,6 @@ public class GrayRbacRole {
     private String role;
 
     private String roleName;
+
+    private String departmentId;
 }

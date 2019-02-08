@@ -29,7 +29,7 @@
         insert into gray_rbac_user (udid, nickname, remark,
         department_id, password, account, creator)
         values (#{udid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
-        #{departmentId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, ,
+        #{departmentId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR},
         #{creator,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">

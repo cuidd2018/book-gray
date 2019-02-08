@@ -1,7 +1,10 @@
 package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.manager.RbacManager;
+import cn.dingyuegroup.gray.server.model.resp.ErrorCode;
+import cn.dingyuegroup.gray.server.model.resp.RespMsg;
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -39,8 +43,19 @@ public class GrayRbacController extends BaseController {
         if (StringUtils.isEmpty(departmentId)) {
             return "redirect:/401";
         }
-        rbacManager.addUser(departmentId, roleId, nickname, remark, username);
+        rbacManager.addUser(departmentId, roleId, nickname, remark, username, account);
         return "redirect:/gray/manager/rbac/user/index";
+    }
+
+    @RequestMapping(value = "/role/list")
+    @ResponseBody
+    public RespMsg listRoles() {
+        String departmentId = getDepartmentId();
+        if (StringUtils.isEmpty(departmentId)) {
+            return RespMsg.error(ErrorCode.SYSTEM_ERROR, "用户信息不完善，缺少部门信息！");
+        }
+        List<GrayRoleVO> list = rbacManager.listRoles(departmentId);
+        return RespMsg.success(list);
     }
 
     @RequestMapping(value = "/user/edit")

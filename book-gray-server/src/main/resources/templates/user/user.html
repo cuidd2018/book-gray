@@ -40,10 +40,10 @@
                         <td th:text="${item.remark}"></td>
                         <td style="text-align: center">
                             <span name="edit" title="编辑"
-                                  th:onclick="'javascript:showEditModule(\''+${item.udid}+'\',\''+${item.nickname}+'\',\''+${item.account}+'\',\''+${item.remark}+'\')'"
+                                  th:onclick="'javascript:showEditModule(\''+${item.udid}+'\',\''+${item.nickname}+'\',\''+${item.account}+'\',\''+${item.remark}+'\',\''+${item.roleId}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-edit">
                           </span>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span name="trash" title="删除"
+                            <span th:if="${user.username != item.account}" name="trash" title="删除"
                                   th:onclick="'javascript:showDeleteModule(\''+${item.udid}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                         </td>
@@ -75,6 +75,13 @@
                                 <label class="col-sm-4 control-label" style="padding-left:50px;">账户:</label>
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control" name="account" required="required">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">角色:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="roleId" id="roleIdadd">
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -153,6 +160,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">角色:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="roleId" id="roleIdedit">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-sm-4 control-label" style="padding-left:50px;">备注:</label>
                                 <div class="col-sm-6">
                                     <input id="remark" type="text" class="form-control" name="remark">
@@ -170,6 +184,7 @@
         <script>
             // 添加
             function showModule() {
+                initRoleList();
                 $('#myModal').modal('show');
             }
             function hintDo() {
@@ -188,18 +203,47 @@
             }
 
             // 修改
-            function showEditModule(udid, nickname, account, remark) {
+            function showEditModule(udid, nickname, account, remark, roleId) {
+                initRoleList();
                 var m = $('#myEditModal').modal('show');
                 m.find("#udid").val(udid);
                 m.find("#udidHidden").val(udid);
                 m.find("#nickname").val(nickname);
                 m.find("#account").val(account);
                 m.find("#remark").val(remark);
+                m.find("#roleIdedit").val(roleId);
                 m.modal('show');
             }
             function hintEditDo() {
                 $("#edit-form").submit();
                 $('#myEditModal').modal('hide')
+            }
+            var roleList;
+            //初始化cp列表
+            function initRoleList() {
+                console.log(roleList)
+                if (!roleList) {
+                    $.ajax({
+                        url: "/gray/manager/rbac/role/list",
+                        type: 'get',
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            console.log(data)
+                            if (data.respCode == 20000) {
+                                roleList = data.data;
+                                var result = '';
+                                $.each(roleList, function (i, e) {
+                                    result += '<option value="' + e.roleId + '">' + e.roleName + '</option>';
+                                });
+                                $("#roleIdadd").append(result);
+                                $("#roleIdedit").append(result);
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    });
+                }
             }
         </script>
     </div>
