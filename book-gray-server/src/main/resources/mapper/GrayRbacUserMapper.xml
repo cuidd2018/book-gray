@@ -9,9 +9,10 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="department_id" jdbcType="VARCHAR" property="departmentId"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, udid, nickname, remark, department_id, password, account
+        id, udid, nickname, remark, department_id, password, account, creator
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_rbac_user
@@ -26,9 +27,9 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_rbac_user (udid, nickname, remark,
-        department_id, password, account)
+        department_id, password, account, creator)
         values (#{udid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
-        #{departmentId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, , #{account,jdbcType=VARCHAR})
+        #{departmentId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, , #{creator,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser">
     update gray_rbac_user
@@ -37,7 +38,8 @@
       remark = #{remark,jdbcType=VARCHAR},
       department_id = #{departmentId,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
-      account = #{account,jdbcType=VARCHAR}
+      account = #{account,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

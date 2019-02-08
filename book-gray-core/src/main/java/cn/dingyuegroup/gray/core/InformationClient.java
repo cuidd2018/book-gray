@@ -59,4 +59,7 @@ public interface InformationClient {
      */
     void serviceDownline(String serviceId, String instanceId);
 
+
+    Boolean uploadInstanceLocalInfo();
+
 }

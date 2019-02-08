@@ -17,4 +17,6 @@ public class GrayRbacUserVO {
     private String departmentName;
 
     private String roleName;
+
+    private String account;
 }

@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.client.config;
+package cn.dingyuegroup.gray.server.config;
 
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import com.netflix.discovery.EurekaClient;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnBean(EurekaClient.class)
 @AutoConfigureAfter(EurekaClientAutoConfiguration.class)
-public class GrayClientEurekaAutoConfiguration {
+public class GrayServerEurekaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean

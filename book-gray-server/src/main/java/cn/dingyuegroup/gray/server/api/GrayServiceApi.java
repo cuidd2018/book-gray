@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.api;
 
 import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,4 +20,7 @@ public interface GrayServiceApi {
 
     @RequestMapping(value = "/services/instance/online", method = RequestMethod.GET)
     ResponseEntity<Void> onlineInstance(@RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId);
+
+    @RequestMapping(value = "/services/uploadInstanceInfo", method = RequestMethod.GET)
+    ResponseEntity<Void> uploadInstanceInfo(InstanceLocalInfo instanceLocalInfo);
 }

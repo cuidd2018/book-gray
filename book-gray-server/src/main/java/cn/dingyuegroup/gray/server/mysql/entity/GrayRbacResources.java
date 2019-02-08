@@ -9,4 +9,6 @@ public class GrayRbacResources {
     private String resourceId;
 
     private String resourceName;
+
+    private String resource;
 }

@@ -1,8 +1,9 @@
 package cn.dingyuegroup.gray.server.context;
 
+import cn.dingyuegroup.gray.core.InstanceLocalInfo;
+import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;
-import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -18,6 +19,8 @@ public class GrayServerInitializingBean implements InitializingBean, Application
         GrayServerContext.setGrayServiceManager(cxt.getBean(GrayServiceManager.class));
         GrayServerContext.setGrayServerEvictor(cxt.getBean(GrayServerEvictor.class));
         GrayServerContext.setGrayRbacUserMapper(cxt.getBean(GrayRbacUserMapper.class));
+        GrayServerContext.setEnvironment(cxt.getEnvironment());
+        GrayServerContext.setInstanceLocalInfo(cxt.getBean(InstanceLocalInfo.class));
         initToWork();
     }
 

@@ -5,9 +5,10 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="resource_id" jdbcType="VARCHAR" property="resourceId"/>
         <result column="resource_name" jdbcType="VARCHAR" property="resourceName"/>
+        <result column="resource" jdbcType="VARCHAR" property="resource"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, resource_id, resource_name
+        id, resource_id, resource_name, resource
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_rbac_resources
@@ -17,13 +18,14 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into gray_rbac_resources (resource_id, resource_name)
-        values (#{resourceId,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR})
+        insert into gray_rbac_resources (resource_id, resource_name, resource)
+        values (#{resourceId,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, #{resource,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
     update gray_rbac_resources
     set resource_id = #{resourceId,jdbcType=VARCHAR},
-      resource_name = #{resourceName,jdbcType=VARCHAR}
+      resource_name = #{resourceName,jdbcType=VARCHAR},
+      resource = #{resource,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

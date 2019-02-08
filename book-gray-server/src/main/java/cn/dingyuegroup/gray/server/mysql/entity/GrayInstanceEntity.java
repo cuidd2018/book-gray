@@ -23,4 +23,6 @@ public class GrayInstanceEntity {
     private String policyGroupId;
 
     private String remark;
+
+    private String env;
 }

@@ -11,9 +11,10 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="env" jdbcType="VARCHAR" property="env"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, instance_id, service_id, open_gray, status, create_time, update_time, policy_group_id, remark
+        id, instance_id, service_id, open_gray, status, create_time, update_time, policy_group_id, remark, env
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_instance
@@ -27,11 +28,12 @@
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into gray_instance (instance_id, service_id, open_gray, status, create_time, update_time, policy_group_id, remark
+        insert into gray_instance (instance_id, service_id, open_gray, status, create_time, update_time,
+        policy_group_id, remark, env
         )
         values (#{instanceId,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR}, #{openGray,jdbcType=SMALLINT},
         #{status,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-        #{policyGroupId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+        #{policyGroupId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{env,jdbcType=VARCHAR}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
@@ -43,7 +45,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       open_gray = #{openGray,jdbcType=SMALLINT},
       policy_group_id = #{policyGroupId,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR}
+      remark = #{remark,jdbcType=VARCHAR},
+      env = #{env,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -92,6 +95,12 @@
             parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
         update gray_instance
         set remark = #{remark,jdbcType=VARCHAR},update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where instance_id = #{instanceId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateEnvByInstanceId"
+            parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayInstanceEntity">
+        update gray_instance
+        set env = #{env,jdbcType=VARCHAR},update_time = #{updateTime,jdbcType=TIMESTAMP}
         where instance_id = #{instanceId,jdbcType=VARCHAR}
     </update>
 </mapper>

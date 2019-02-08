@@ -13,6 +13,10 @@
     delete from gray_rbac_user_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
+    <delete id="deleteByUdid" parameterType="java.lang.String">
+        delete from gray_rbac_user_role
+        where udid = #{udid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUserRole">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()

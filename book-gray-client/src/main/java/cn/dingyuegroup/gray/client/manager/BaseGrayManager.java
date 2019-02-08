@@ -3,9 +3,9 @@ package cn.dingyuegroup.gray.client.manager;
 import cn.dingyuegroup.gray.client.config.properties.GrayClientConfig;
 import cn.dingyuegroup.gray.client.config.properties.GrayOptionalArgs;
 import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
-import cn.dingyuegroup.gray.client.context.InstanceLocalInfo;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +43,12 @@ public class BaseGrayManager extends AbstractGrayManager {
 
     @Override
     public void updateCache() {
+        try {
+            log.info("*****************更新本地服务资源*****************");
+            client.uploadInstanceLocalInfo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             log.debug("更新灰度服务列表...");
             updateGrayServices(client.listGrayService());

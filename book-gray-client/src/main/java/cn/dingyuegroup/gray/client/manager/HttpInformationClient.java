@@ -1,16 +1,17 @@
 package cn.dingyuegroup.gray.client.manager;
 
 import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
-import cn.dingyuegroup.gray.client.context.InstanceLocalInfo;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.core.InformationClient;
+import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -41,6 +42,27 @@ public class HttpInformationClient implements InformationClient {
             log.error("获取灰度服务列表失败", e);
             throw e;
         }
+    }
+
+    @Override
+    public Boolean uploadInstanceLocalInfo() {
+        String url = this.baseUrl + "/gray/api/services/uploadInstanceInfo?serviceId={1}&instanceId={2}&env={3}";
+        try {
+            InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
+            if (localInfo == null || StringUtils.isEmpty(localInfo.getServiceId()) || StringUtils.isEmpty(localInfo.getInstanceId())) {
+                log.error("上传资源环境出错，数据不全:{}", localInfo);
+                return false;
+            }
+            if (GrayClientAppContext.getEnvironment() == null || GrayClientAppContext.getEnvironment().getActiveProfiles().length == 0) {
+                log.error("上传资源环境出错，资源数据不全");
+                return false;
+            }
+            rest.getForEntity(url, Void.class, localInfo.getServiceId(), localInfo.getInstanceId(), GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
+        } catch (RuntimeException e) {
+            log.error("上传资源环境出错", e);
+            throw e;
+        }
+        return false;
     }
 
     @Override

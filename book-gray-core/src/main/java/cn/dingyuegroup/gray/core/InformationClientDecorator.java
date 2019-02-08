@@ -14,7 +14,8 @@ public abstract class InformationClientDecorator implements InformationClient {
         ServiceDownline,
         GetGrayInstance,
         GetGrayService,
-        ListGrayServices
+        ListGrayServices,
+        uploadInstanceLocalInfo
     }
 
 
@@ -123,4 +124,20 @@ public abstract class InformationClientDecorator implements InformationClient {
             }
         });
     }
+
+    @Override
+    public Boolean uploadInstanceLocalInfo() {
+        return execute(new RequestExecutor<Boolean>() {
+            @Override
+            public Boolean execute(InformationClient delegate) {
+                return delegate.uploadInstanceLocalInfo();
+            }
+
+            @Override
+            public RequestType getRequestType() {
+                return RequestType.ListGrayServices;
+            }
+        });
+    }
+
 }

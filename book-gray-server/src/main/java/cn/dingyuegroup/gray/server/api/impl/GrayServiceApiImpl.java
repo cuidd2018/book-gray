@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.api.impl;
 
 import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import cn.dingyuegroup.gray.server.api.GrayServiceApi;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,12 @@ public class GrayServiceApiImpl implements GrayServiceApi {
     @Override
     public ResponseEntity<Void> onlineInstance(@RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
         grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 1);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> uploadInstanceInfo(InstanceLocalInfo instanceLocalInfo) {
+        grayServiceManager.updateInstanceEnv(instanceLocalInfo.getServiceId(), instanceLocalInfo.getInstanceId(), instanceLocalInfo.getEnv());
         return ResponseEntity.ok().build();
     }
 }

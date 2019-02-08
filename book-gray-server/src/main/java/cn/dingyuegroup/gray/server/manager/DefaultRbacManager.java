@@ -52,12 +52,15 @@ public class DefaultRbacManager implements RbacManager {
     @Override
     public List<GrayRbacUserVO> list(String departmentId) {
         List<GrayRbacUserVO> list = new ArrayList<>();
+        if (StringUtils.isEmpty(departmentId)) {
+            return list;
+        }
         GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(departmentId);
         if (department == null) {
             return list;
         }
         List<GrayRbacUser> grayRbacUsers = grayRbacUserMapper.selectByDepartmentId(departmentId);
-        if (!CollectionUtils.isEmpty(grayRbacUsers)) {
+        if (CollectionUtils.isEmpty(grayRbacUsers)) {
             return list;
         }
         grayRbacUsers.forEach(e -> {
@@ -66,6 +69,7 @@ public class DefaultRbacManager implements RbacManager {
             vo.setNickname(e.getNickname());
             vo.setRemark(e.getRemark());
             vo.setUdid(e.getUdid());
+            vo.setAccount(e.getAccount());
             List<GrayRbacUserRole> grayRbacUserRoles = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
             if (CollectionUtils.isEmpty(grayRbacUserRoles)) {
                 return;
@@ -132,13 +136,14 @@ public class DefaultRbacManager implements RbacManager {
      * @return
      */
     @Override
-    public boolean editUser(String udid, String nickName, String remark) {
+    public boolean editUser(String udid, String account, String nickName, String remark) {
         GrayRbacUser user = grayRbacUserMapper.selectByUdid(udid);
         if (user == null) {
             return false;
         }
         user.setRemark(remark);
         user.setNickname(nickName);
+        user.setAccount(account);
         grayRbacUserMapper.updateByUdid(user);
         return true;
     }
@@ -150,8 +155,10 @@ public class DefaultRbacManager implements RbacManager {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean deleteUser(String udid) {
         grayRbacUserMapper.deleteByUdid(udid);
+        grayRbacUserRoleMapper.deleteByUdid(udid);
         return true;
     }
 

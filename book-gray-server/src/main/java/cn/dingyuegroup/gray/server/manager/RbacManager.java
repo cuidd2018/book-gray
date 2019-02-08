@@ -2,7 +2,6 @@ package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public interface RbacManager {
      * @param remark
      * @return
      */
-    boolean editUser(String udid, String nickName, String remark);
+    boolean editUser(String udid, String account, String nickName, String remark);
 
     /**
      * 删除用户

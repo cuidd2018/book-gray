@@ -4,6 +4,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.dingyuegroup.gray.server.config.GrayServiceEurekaAutoConfiguration,\
     cn.dingyuegroup.gray.server.config.WebSecurityConfiguration,\
     cn.dingyuegroup.gray.server.config.RedisSessionConfiguration,\
+    cn.dingyuegroup.gray.server.config.GrayServerEurekaAutoConfiguration,\
     cn.dingyuegroup.gray.server.api.impl.GrayServiceApiImpl,\
     cn.dingyuegroup.gray.server.manager.DefaultGrayServiceManager,\
     cn.dingyuegroup.gray.server.manager.DefaultSendMessageManager,\

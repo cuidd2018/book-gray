@@ -107,6 +107,16 @@ public interface GrayServiceManager {
     boolean editInstanceOnlineStatus(String serviceId, String instanceId, int status);
 
     /**
+     * 更新服务实例的资源环境
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param env
+     * @return
+     */
+    boolean updateInstanceEnv(String serviceId, String instanceId, String env);
+
+    /**
      * 更新策略组的状态
      *
      * @param serviceId

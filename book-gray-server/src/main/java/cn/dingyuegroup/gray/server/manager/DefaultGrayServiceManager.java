@@ -1,9 +1,6 @@
 package cn.dingyuegroup.gray.server.manager;
 
-import cn.dingyuegroup.gray.core.GrayInstance;
-import cn.dingyuegroup.gray.core.GrayPolicy;
-import cn.dingyuegroup.gray.core.GrayPolicyGroup;
-import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.core.*;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
 import cn.dingyuegroup.gray.server.context.GrayServerContext;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
@@ -14,6 +11,7 @@ import cn.dingyuegroup.gray.server.service.AbstractGrayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -276,6 +274,9 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setServiceId(serviceId);
                 entity.setOpenGray(status);
                 entity.setCreateTime(new Date());
+                entity.setOpenGray(1);
+                entity.setStatus(0);
+                entity.setRemark("系统自动添加");
                 grayInstanceMapper.insert(entity);
             } else {
                 entity.setUpdateTime(new Date());
@@ -308,6 +309,9 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setServiceId(serviceId);
                 entity.setStatus(status);
                 entity.setCreateTime(new Date());
+                entity.setOpenGray(1);
+                entity.setStatus(0);
+                entity.setRemark("系统自动添加");
                 grayInstanceMapper.insert(entity);
             } else {
                 entity.setStatus(status);
@@ -317,6 +321,42 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             logger.info("更新服务实例灰度状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
         } finally {
             lock.unlock();
+        }
+        return true;
+    }
+
+    /**
+     * 更新服务实例的资源环境
+     *
+     * @param serviceId
+     * @param instanceId
+     * @param env
+     * @return
+     */
+    @Override
+    public boolean updateInstanceEnv(String serviceId, String instanceId, String env) {
+        if (StringUtils.isEmpty(serviceId) || StringUtils.isEmpty(instanceId) || StringUtils.isEmpty(env)) {
+            return false;
+        }
+        GrayInstanceEntity entity = grayInstanceMapper.selectByInstanceId(instanceId);
+        if (entity == null) {
+            entity = new GrayInstanceEntity();
+            entity.setServiceId(serviceId);
+            entity.setInstanceId(instanceId);
+            entity.setEnv(env);
+            entity.setRemark("系统自动添加");
+            entity.setCreateTime(new Date());
+            entity.setOpenGray(1);
+            entity.setStatus(0);
+            GrayInstance grayInstance = getGrayInstance(serviceId, instanceId);
+            if (grayInstance != null) {
+                entity.setOpenGray(grayInstance.hasGrayPolicy() ? 1 : 0);
+                entity.setStatus(grayInstance.isStatus() ? 1 : 0);
+            }
+            grayInstanceMapper.insert(entity);
+        } else if (!env.equals(entity.getEnv())) {//当前资源环境更换
+            entity.setEnv(env);
+            grayInstanceMapper.updateEnvByInstanceId(entity);
         }
         return true;
     }
@@ -524,6 +564,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 grayInstanceEntity.setInstanceId(instanceId);
                 grayInstanceEntity.setPolicyGroupId(groupId);
                 grayInstanceEntity.setCreateTime(new Date());
+                grayInstanceEntity.setOpenGray(1);
+                grayInstanceEntity.setStatus(0);
                 grayInstanceMapper.insert(grayInstanceEntity);
             } else {
                 grayInstanceEntity.setPolicyGroupId(groupId);
@@ -688,6 +730,15 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      */
     @Override
     public void openForWork() {
+        try {//更新本地资源环境
+            InstanceLocalInfo localInfo = GrayServerContext.getInstanceLocalInfo();
+            Environment environment = GrayServerContext.getEnvironment();
+            if (localInfo != null && environment != null) {
+                updateInstanceEnv(localInfo.getServiceId(), localInfo.getInstanceId(), environment.getActiveProfiles()[0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         evictionTimer.schedule(new EvictionTask(),
                 serverConfig.getEvictionIntervalTimerInMs(),
                 serverConfig.getEvictionIntervalTimerInMs());
