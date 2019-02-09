@@ -398,13 +398,14 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark) {
+    public boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark, String creator) {
         GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
         entity.setPolicyGroupId(GrayPolicyGroup.genId());
         entity.setEnable(enable);
         entity.setAlias(alias);
         entity.setGroupType(groupType == null ? GrayPolicyGroup.TYPE.AND.name() : groupType);
         entity.setRemark(remark);
+        entity.setCreator(creator);
         grayPolicyGroupMapper.insert(entity);
         return true;
     }
@@ -448,7 +449,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark) {
+    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark, String creator) {
         GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
         grayPolicyEntity.setPolicyId(GrayPolicy.genId());
         grayPolicyEntity.setPolicyKey(policyKey);
@@ -458,6 +459,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayPolicyEntity.setPolicyType(policyType);
         grayPolicyEntity.setPolicyName(policyName);
         grayPolicyEntity.setRemark(remark);
+        grayPolicyEntity.setCreator(creator);
         grayPolicyMapper.insert(grayPolicyEntity);
         return true;
     }
@@ -665,6 +667,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             grayPolicyVO.setPolicyType(e.getPolicyType());
             grayPolicyVO.setPolicyValue(e.getPolicyValue());
             grayPolicyVO.setPolicyName(e.getPolicyName());
+            grayPolicyVO.setCreator(e.getCreator());
+            grayPolicyVO.setCreator(e.getCreator());
             grayPolicyVOS.add(grayPolicyVO);
         });
         return grayPolicyVOS;
@@ -689,6 +693,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             group.setEnable(e.getEnable() == 0 ? false : true);
             group.setGroupType(e.getGroupType());
             group.setRemark(e.getRemark());
+            group.setCreator(e.getCreator());
             grayPolicyGroups.add(group);
         });
         return grayPolicyGroups;

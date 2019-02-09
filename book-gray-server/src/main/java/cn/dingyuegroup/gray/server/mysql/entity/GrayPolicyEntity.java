@@ -27,4 +27,6 @@ public class GrayPolicyEntity {
     private String remark;
 
     private String policyName;
+
+    private String creator;
 }

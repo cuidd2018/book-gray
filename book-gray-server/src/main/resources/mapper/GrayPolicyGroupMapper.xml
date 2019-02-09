@@ -9,9 +9,10 @@
         <result column="group_type" jdbcType="VARCHAR" property="groupType"/>
         <result column="is_delete" jdbcType="SMALLINT" property="isDelete"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, policy_group_id, alias, enable, is_delete, group_type, remark
+        id, policy_group_id, alias, enable, is_delete, group_type, remark, creator
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_policy_group
@@ -22,9 +23,9 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_policy_group (policy_group_id, alias, enable,
-        is_delete, group_type, remark)
+        is_delete, group_type, remark, creator)
         values (#{policyGroupId,jdbcType=VARCHAR}, #{alias,jdbcType=VARCHAR}, #{enable,jdbcType=SMALLINT},
-        #{isDelete,jdbcType=SMALLINT}, #{groupType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+        #{isDelete,jdbcType=SMALLINT}, #{groupType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity">
     update gray_policy_group

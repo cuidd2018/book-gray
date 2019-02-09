@@ -11,3 +11,8 @@ p.error {
 div.logout {
     float: right;
 }
+
+.btn-gray {
+    background-color: gray;
+    border-color: gray;
+}

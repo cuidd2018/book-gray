@@ -7,6 +7,7 @@ import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 import cn.dingyuegroup.gray.server.mysql.dao.*;
 import cn.dingyuegroup.gray.server.mysql.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,22 +90,22 @@ public class DefaultRbacManager implements RbacManager {
     /**
      * 获取自己创建的用户
      *
-     * @param username
+     * @param creator
      * @return
      */
     @Override
-    public List<GrayRbacUserVO> listByCreator(String username) {
-        if (StringUtils.isEmpty(username)) {
+    public List<GrayRbacUserVO> listByCreator(String creator) {
+        if (StringUtils.isEmpty(creator)) {
             return new ArrayList<>();
         }
-        GrayRbacUser user = grayRbacUserMapper.selectByAccount(username);
+        GrayRbacUser user = grayRbacUserMapper.selectByUdid(creator);
         GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(user.getDepartmentId());
         if (department == null) {
             return new ArrayList<>();
         }
         GrayRbacUser grayRbacUser = new GrayRbacUser();
-        grayRbacUser.setAccount(username);
-        grayRbacUser.setCreator(username);
+        grayRbacUser.setAccount(user.getAccount());
+        grayRbacUser.setCreator(creator);
         List<GrayRbacUser> grayRbacUsers = grayRbacUserMapper.selectByCreator(grayRbacUser);
         List<GrayRbacUserVO> list = new ArrayList<>();
         grayRbacUsers.forEach(e -> {
@@ -140,6 +141,9 @@ public class DefaultRbacManager implements RbacManager {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator, String account) {
+        if (StringUtils.isEmpty(departmentId) || StringUtils.isEmpty(roleId) || StringUtils.isEmpty(account)) {
+            return false;
+        }
         GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(departmentId);
         if (department == null) {
             return false;
@@ -157,6 +161,7 @@ public class DefaultRbacManager implements RbacManager {
             user.setNickname(nickName);
             user.setCreator(creator);
             user.setAccount(account);
+            user.setPassword(new BCryptPasswordEncoder().encode("123456"));
             grayRbacUserMapper.insert(user);
             GrayRbacUserRole grayRbacUserRole = new GrayRbacUserRole();
             grayRbacUserRole.setUdid(user.getUdid());
@@ -234,6 +239,7 @@ public class DefaultRbacManager implements RbacManager {
         if (user == null) {
             return grayUserVO;
         }
+        grayUserVO.setUdid(user.getUdid());
         if (!StringUtils.isEmpty(user.getDepartmentId())) {
             GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(user.getDepartmentId());
             if (department != null) {
@@ -274,6 +280,9 @@ public class DefaultRbacManager implements RbacManager {
         }
         List<GrayRoleVO> list = new ArrayList<>();
         grayRbacRoles.forEach(e -> {
+            if (e.getIsDepartmentAdmin() == 1) {//排除管理员角色
+                return;
+            }
             GrayRoleVO grayRoleVO = new GrayRoleVO();
             grayRoleVO.setRoleId(e.getRoleId());
             grayRoleVO.setRoleName(e.getRoleName());

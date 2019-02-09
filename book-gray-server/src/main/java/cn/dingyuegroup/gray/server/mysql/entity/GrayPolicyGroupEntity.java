@@ -21,5 +21,7 @@ public class GrayPolicyGroupEntity {
 
     private String remark;
 
+    private String creator;
+
     private List<GrayPolicyEntity> grayPolicyEntities = new ArrayList<>();
 }

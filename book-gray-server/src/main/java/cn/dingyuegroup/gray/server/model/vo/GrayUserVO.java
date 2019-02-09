@@ -11,4 +11,5 @@ public class GrayUserVO {
     private String department;
     private String roles;
     private boolean departmentAdmin;
+    private String udid;
 }

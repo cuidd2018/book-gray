@@ -12,7 +12,7 @@
                     <div class="box-header">
                         <a th:href="@{/gray/manager/policy/group/index}">策略组管理</a>&nbsp;&nbsp;>&nbsp;&nbsp;策略管理
                     </div>
-                    <div class="box-header">
+                    <div th:if="${creator == user.udid || user.departmentAdmin}" class="box-header">
                         <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                             <span th:if="${item.policyMatchType} == 'REGEX'">正则匹配</span>
                         </td>
                         <td th:text="${item.remark}"></td>
-                        <td style="text-align: center">
+                        <td th:if="${user.udid == item.creator || user.departmentAdmin}" style="text-align: center">
                             <span name="trash" title="删除"
                                   th:onclick="'javascript:showDeleteModule(\''+${item.policyId}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-trash"></span>

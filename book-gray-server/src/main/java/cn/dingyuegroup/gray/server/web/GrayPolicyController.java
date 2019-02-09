@@ -4,6 +4,8 @@ import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.model.resp.RespMsg;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
+import cn.dingyuegroup.gray.server.mysql.dao.GrayPolicyGroupMapper;
+import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,9 @@ public class GrayPolicyController extends BaseController {
     @Autowired
     private GrayServiceManager grayServiceManager;
 
+    @Autowired
+    private GrayPolicyGroupMapper grayPolicyGroupMapper;
+
     @RequestMapping("/index")
     public ModelAndView index(ModelAndView model) {
         List<GrayPolicyVO> list = grayServiceManager.listAllGrayPolicy();
@@ -39,7 +44,8 @@ public class GrayPolicyController extends BaseController {
     public String addPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey,
                             @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType,
                             @RequestParam("policyName") String policyName, @RequestParam("remark") String remark) {
-        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType, policyName, remark);
+        String creator = getUdid();
+        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType, policyName, remark, creator);
         return "redirect:/gray/manager/policy/index";
     }
 
@@ -75,7 +81,8 @@ public class GrayPolicyController extends BaseController {
 
     @RequestMapping(value = "/group/add")
     public String addGroup(@RequestParam String alias, @RequestParam Integer enable, @RequestParam String groupType, @RequestParam String remark) {
-        grayServiceManager.addPolicyGroup(alias, enable, groupType, remark);
+        String creator = getUdid();
+        grayServiceManager.addPolicyGroup(alias, enable, groupType, remark, creator);
         return "redirect:/gray/manager/policy/group/index";
     }
 
@@ -102,6 +109,8 @@ public class GrayPolicyController extends BaseController {
         List<GrayPolicyVO> list = grayServiceManager.listGrayPolicyByGroup(policyGroupId);
         model.addObject("list", list);
         model.addObject("policyGroupId", policyGroupId);
+        GrayPolicyGroupEntity entity = grayPolicyGroupMapper.selectByPolicyGroupId(policyGroupId);
+        model.addObject("creator", entity.getCreator());
         model.setViewName("gray/relatePolicy");
         return model;
     }

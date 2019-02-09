@@ -134,7 +134,7 @@ public interface GrayServiceManager {
      * @param enable
      * @return
      */
-    boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark);
+    boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark, String creator);
 
     /**
      * 删除策略组
@@ -157,7 +157,7 @@ public interface GrayServiceManager {
      *
      * @return
      */
-    boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark);
+    boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark, String creator);
 
     /**
      * 编辑策略

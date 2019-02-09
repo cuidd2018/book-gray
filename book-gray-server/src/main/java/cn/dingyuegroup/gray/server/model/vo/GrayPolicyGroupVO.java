@@ -18,4 +18,5 @@ public class GrayPolicyGroupVO {
     private boolean enable;
     private String groupType;
     private String remark;
+    private String creator;
 }

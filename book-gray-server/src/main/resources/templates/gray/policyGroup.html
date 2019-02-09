@@ -38,7 +38,7 @@
                             <span th:if="${item.groupType} == 'OR'">或</span>
                             <span th:if="${item.groupType} == 'AND'">与</span>
                         </td>
-                        <td>
+                        <td th:if="${user.udid == item.creator || user.departmentAdmin}">
                             <button th:if="${item.enable} == true" type="button"
                                     class="btn btn-xs btn-success editStatus"
                                     th:onclick="'javascript:showOpenGrayModule(\''+${item.policyGroupId}+'\',\'0\')'">
@@ -50,11 +50,21 @@
                                 开启
                             </button>
                         </td>
+                        <td th:if="${user.udid != item.creator && !user.departmentAdmin}">
+                            <button th:if="${item.enable} == true" type="button"
+                                    class="btn btn-xs btn-gray editStatus">
+                                关闭
+                            </button>
+                            <button th:if="${item.enable} == false" type="button"
+                                    class="btn btn-xs btn-gray editStatus">
+                                开启
+                            </button>
+                        </td>
                         <td>
                             <a th:href="@{/gray/manager/policy/group/relate/index(policyGroupId=${item.policyGroupId})}">策略管理</a>
                         </td>
                         <td th:text="${item.remark}"></td>
-                        <td style="text-align: center">
+                        <td th:if="${user.udid == item.creator || user.departmentAdmin}" style="text-align: center">
                             <span name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.policyGroupId}+'\',\''+${item.alias}+'\',\''+${item.groupType}+'\',\''+${item.remark}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-edit">

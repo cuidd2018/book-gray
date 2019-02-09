@@ -25,4 +25,6 @@ public class GrayPolicyVO {
     private String remark;
 
     private String policyName;
+
+    private String creator;
 }

@@ -30,8 +30,8 @@ public class GrayRbacController extends BaseController {
 
     @RequestMapping(value = "/user/index", method = RequestMethod.GET)
     public ModelAndView listUser(ModelAndView model) {
-        String username = getUsername();
-        List<GrayRbacUserVO> list = rbacManager.listByCreator(username);
+        String creator = getUdid();
+        List<GrayRbacUserVO> list = rbacManager.listByCreator(creator);
         model.addObject("list", list);
         model.setViewName("user/user");
         return model;
@@ -39,12 +39,12 @@ public class GrayRbacController extends BaseController {
 
     @RequestMapping(value = "/user/add")
     public String addUser(@RequestParam String account, @RequestParam String nickname, @RequestParam String remark, @RequestParam String roleId) {
-        String username = getUsername();
+        String udid = getUdid();
         String departmentId = getDepartmentId();
         if (StringUtils.isEmpty(departmentId)) {
             return "redirect:/401";
         }
-        rbacManager.addUser(departmentId, roleId, nickname, remark, username, account);
+        rbacManager.addUser(departmentId, roleId, nickname, remark, udid, account);
         return "redirect:/gray/manager/rbac/user/index";
     }
 
@@ -83,8 +83,8 @@ public class GrayRbacController extends BaseController {
     @RequestMapping(value = "/role/add")
     public String addRole(@RequestParam String roleName) {
         String departmentId = getDepartmentId();
-        String username = getUsername();
-        rbacManager.addRole(departmentId, roleName, 0, username);
+        String udid = getUdid();
+        rbacManager.addRole(departmentId, roleName, 0, udid);
         return "redirect:/gray/manager/rbac/role/index";
     }
 
