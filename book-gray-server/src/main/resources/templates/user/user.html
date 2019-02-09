@@ -39,7 +39,7 @@
                         <td th:text="${item.departmentName}"></td>
                         <td th:text="${item.remark}"></td>
                         <td style="text-align: center">
-                            <span name="edit" title="编辑"
+                            <span th:if="${user.username != item.account}" name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.udid}+'\',\''+${item.nickname}+'\',\''+${item.account}+'\',\''+${item.remark}+'\',\''+${item.roleId}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-edit">
                           </span>&nbsp;&nbsp;&nbsp;&nbsp;

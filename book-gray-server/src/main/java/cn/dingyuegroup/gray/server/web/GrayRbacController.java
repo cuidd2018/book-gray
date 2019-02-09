@@ -47,6 +47,18 @@ public class GrayRbacController extends BaseController {
         return "redirect:/gray/manager/rbac/user/index";
     }
 
+    @RequestMapping(value = "/user/edit")
+    public String editUser(@RequestParam String udid, @RequestParam String account, @RequestParam String nickname, @RequestParam String remark, @RequestParam String roleId) {
+        rbacManager.editUser(udid, account, nickname, remark, roleId);
+        return "redirect:/gray/manager/rbac/user/index";
+    }
+
+    @RequestMapping(value = "/user/delete")
+    public String deleteUser(@RequestParam String udid) {
+        rbacManager.deleteUser(udid);
+        return "redirect:/gray/manager/rbac/user/index";
+    }
+
     @RequestMapping(value = "/role/list")
     @ResponseBody
     public RespMsg listRoles() {
@@ -58,15 +70,34 @@ public class GrayRbacController extends BaseController {
         return RespMsg.success(list);
     }
 
-    @RequestMapping(value = "/user/edit")
-    public String editUser(@RequestParam String udid, @RequestParam String account, @RequestParam String nickname, @RequestParam String remark, @RequestParam String roleId) {
-        rbacManager.editUser(udid, account, nickname, remark, roleId);
-        return "redirect:/gray/manager/rbac/user/index";
+    @RequestMapping(value = "/role/index")
+    public ModelAndView roleIndex(ModelAndView model) {
+        String departmentId = getDepartmentId();
+        List<GrayRoleVO> list = rbacManager.listRoles(departmentId);
+        model.addObject("list", list);
+        model.setViewName("role/role");
+        return model;
     }
 
-    @RequestMapping(value = "/user/delete")
-    public String deleteUser(@RequestParam String udid) {
-        rbacManager.deleteUser(udid);
-        return "redirect:/gray/manager/rbac/user/index";
+    @RequestMapping(value = "/role/add")
+    public String addRole(@RequestParam String roleName) {
+        String departmentId = getDepartmentId();
+        String username = getUsername();
+        rbacManager.addRole(departmentId, roleName, 0, username);
+        return "redirect:/gray/manager/rbac/role/index";
+    }
+
+    @RequestMapping(value = "/role/edit")
+    public String editRole(@RequestParam String roleId, @RequestParam String roleName) {
+        String departmentId = getDepartmentId();
+        rbacManager.editRole(roleId, roleName);
+        return "redirect:/gray/manager/rbac/role/index";
+    }
+
+    @RequestMapping(value = "/role/delete")
+    public String deleteRole(@RequestParam String roleId) {
+        String departmentId = getDepartmentId();
+        rbacManager.deleteRole(roleId);
+        return "redirect:/gray/manager/rbac/role/index";
     }
 }

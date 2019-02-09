@@ -3,10 +3,7 @@ package cn.dingyuegroup.gray.server.manager;
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacDepartmentMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacRoleMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserRoleMapper;
+import cn.dingyuegroup.gray.server.mysql.dao.*;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacRole;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser;
@@ -42,6 +39,9 @@ public class DefaultRbacManager implements RbacManager {
 
     @Autowired
     private GrayRbacUserRoleMapper grayRbacUserRoleMapper;
+
+    @Autowired
+    private GrayRbacRoleResourceMapper grayRbacRoleResourceMapper;
 
     /**
      * 获取部门下的人员名单
@@ -221,7 +221,7 @@ public class DefaultRbacManager implements RbacManager {
      * @return
      */
     @Override
-    public GrayUserVO getDepartment(String username) {
+    public GrayUserVO userInfo(String username) {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
@@ -245,6 +245,7 @@ public class DefaultRbacManager implements RbacManager {
         if (grayRbacRole == null) {
             return grayUserVO;
         }
+        grayUserVO.setDepartmentAdmin(grayRbacRole.getIsDepartmentAdmin() == 1 ? true : false);
         grayUserVO.setRoles(grayRbacRole.getRoleName());
         return grayUserVO;
     }
@@ -260,6 +261,10 @@ public class DefaultRbacManager implements RbacManager {
         if (StringUtils.isEmpty(departmentId)) {
             return new ArrayList<>();
         }
+        GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(departmentId);
+        if (department == null) {
+            return new ArrayList<>();
+        }
         List<GrayRbacRole> grayRbacRoles = grayRbacRoleMapper.selectByDepartmentId(departmentId);
         if (CollectionUtils.isEmpty(grayRbacRoles)) {
             return new ArrayList<>();
@@ -269,8 +274,53 @@ public class DefaultRbacManager implements RbacManager {
             GrayRoleVO grayRoleVO = new GrayRoleVO();
             grayRoleVO.setRoleId(e.getRoleId());
             grayRoleVO.setRoleName(e.getRoleName());
+            grayRoleVO.setDepartmentAdmin(e.getIsDepartmentAdmin() == 1 ? true : false);
+            grayRoleVO.setDepartment(department.getDepartmentName());
             list.add(grayRoleVO);
         });
         return list;
+    }
+
+    @Override
+    public boolean addRole(String departmentId, String roleName, Integer isDepartmentAdmin, String creator) {
+        GrayRbacRole role = new GrayRbacRole();
+        role.setRoleName(roleName);
+        role.setDepartmentId(departmentId);
+        role.setRoleId(GrayRbacRole.genId());
+        role.setCreator(creator);
+        role.setIsDepartmentAdmin(isDepartmentAdmin == null ? 0 : isDepartmentAdmin);
+        grayRbacRoleMapper.insert(role);
+        return true;
+    }
+
+    /**
+     * 编辑角色
+     *
+     * @param roleId
+     * @param roleName
+     * @return
+     */
+    @Override
+    public boolean editRole(String roleId, String roleName) {
+        GrayRbacRole role = new GrayRbacRole();
+        role.setRoleId(roleId);
+        role.setRoleName(roleName);
+        grayRbacRoleMapper.editByRoleId(role);
+        return true;
+    }
+
+    /**
+     * 删除角色
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public boolean deleteRole(String roleId) {
+        grayRbacRoleMapper.deleteByRoleId(roleId);
+        grayRbacUserRoleMapper.deleteByRoleId(roleId);
+        grayRbacRoleResourceMapper.deleteByRoleId(roleId);
+        return true;
     }
 }

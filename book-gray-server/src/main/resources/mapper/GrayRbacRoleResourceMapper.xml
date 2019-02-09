@@ -10,9 +10,13 @@
         id, resource_id, role_id
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from gray_rbac_role_resource
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+        delete from gray_rbac_role_resource
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByRoleId" parameterType="java.lang.String">
+        delete from gray_rbac_role_resource
+        where role_id = #{roleId,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacRoleResource">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()

@@ -61,7 +61,7 @@ public interface RbacManager {
      * @param username
      * @return
      */
-    GrayUserVO getDepartment(String username);
+    GrayUserVO userInfo(String username);
 
     /**
      * 获取部门下的角色信息
@@ -70,4 +70,31 @@ public interface RbacManager {
      * @return
      */
     List<GrayRoleVO> listRoles(String departmentId);
+
+    /**
+     * 添加角色
+     *
+     * @param departmentId
+     * @param roleName
+     * @param isDepartmentAdmin
+     * @param creator
+     * @return
+     */
+    boolean addRole(String departmentId, String roleName, Integer isDepartmentAdmin, String creator);
+
+    /**
+     * 编辑角色
+     *
+     * @param roleId
+     * @param roleName
+     * @return
+     */
+    boolean editRole(String roleId, String roleName);
+
+    /**
+     * 删除角色
+     * @param roleId
+     * @return
+     */
+    boolean deleteRole(String roleId);
 }

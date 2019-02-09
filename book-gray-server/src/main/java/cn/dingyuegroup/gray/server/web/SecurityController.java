@@ -5,7 +5,6 @@ package cn.dingyuegroup.gray.server.web;
  */
 
 import cn.dingyuegroup.gray.server.manager.RbacManager;
-import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -36,10 +35,7 @@ public class SecurityController extends BaseController {
     }
 
     @RequestMapping("/index")
-    public String index(Model model) {
-        String username = getUsername();
-        GrayUserVO grayUserVO = rbacManager.getDepartment(username);
-        model.addAttribute("user", grayUserVO);
+    public String index() {
         return "index";
     }
 

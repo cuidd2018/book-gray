@@ -1,13 +1,7 @@
 package cn.dingyuegroup.gray.server.web.base;
 
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacResourcesMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacRoleResourceMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
-import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserRoleMapper;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacRoleResource;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUserRole;
+import cn.dingyuegroup.gray.server.mysql.dao.*;
+import cn.dingyuegroup.gray.server.mysql.entity.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +27,8 @@ public abstract class BaseController {
     private GrayRbacRoleResourceMapper grayRbacRoleResourceMapper;
     @Autowired
     private GrayRbacResourcesMapper grayRbacResourcesMapper;
+    @Autowired
+    private GrayRbacRoleMapper grayRbacRoleMapper;
 
     /**
      * 取登录用户名
@@ -89,6 +85,26 @@ public abstract class BaseController {
             return null;
         }
         return grayRbacUserRole.getRoleId();
+    }
+
+    public boolean isDepartmentAdmin() {
+        String username = getUsername();
+        if (StringUtils.isEmpty(username)) {
+            return false;
+        }
+        String udid = getUdid();
+        if (StringUtils.isEmpty(udid)) {
+            return false;
+        }
+        GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(udid);
+        if (grayRbacUserRole == null) {
+            return false;
+        }
+        GrayRbacRole role = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
+        if (role == null) {
+            return false;
+        }
+        return role.getIsDepartmentAdmin() == 1 ? true : false;
     }
 
     public List<GrayRbacResources> getResources() {
