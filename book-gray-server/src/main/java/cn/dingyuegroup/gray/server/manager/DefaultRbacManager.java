@@ -116,13 +116,12 @@ public class DefaultRbacManager implements RbacManager {
             vo.setUdid(e.getUdid());
             vo.setAccount(e.getAccount());
             GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
-            if (grayRbacUserRole == null) {
-                return;
-            }
-            vo.setRoleId(grayRbacUserRole.getRoleId());
-            GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
-            if (grayRbacRole != null) {
-                vo.setRoleName(grayRbacRole.getRoleName());
+            if (grayRbacUserRole != null) {
+                vo.setRoleId(grayRbacUserRole.getRoleId());
+                GrayRbacRole grayRbacRole = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
+                if (grayRbacRole != null) {
+                    vo.setRoleName(grayRbacRole.getRoleName());
+                }
             }
             list.add(vo);
         });
@@ -225,21 +224,22 @@ public class DefaultRbacManager implements RbacManager {
     /**
      * 获取用户所在部门信息
      *
-     * @param username
+     * @param account
      * @return
      */
     @Override
-    public GrayUserVO userInfo(String username) {
-        if (StringUtils.isEmpty(username)) {
+    public GrayUserVO userInfo(String account) {
+        if (StringUtils.isEmpty(account)) {
             return null;
         }
         GrayUserVO grayUserVO = new GrayUserVO();
-        grayUserVO.setUsername(username);
-        GrayRbacUser user = grayRbacUserMapper.selectByAccount(username);
+        grayUserVO.setAccount(account);
+        GrayRbacUser user = grayRbacUserMapper.selectByAccount(account);
         if (user == null) {
             return grayUserVO;
         }
         grayUserVO.setUdid(user.getUdid());
+        grayUserVO.setUsername(user.getNickname());
         if (!StringUtils.isEmpty(user.getDepartmentId())) {
             GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(user.getDepartmentId());
             if (department != null) {
@@ -280,9 +280,6 @@ public class DefaultRbacManager implements RbacManager {
         }
         List<GrayRoleVO> list = new ArrayList<>();
         grayRbacRoles.forEach(e -> {
-            if (e.getIsDepartmentAdmin() == 1) {//排除管理员角色
-                return;
-            }
             GrayRoleVO grayRoleVO = new GrayRoleVO();
             grayRoleVO.setRoleId(e.getRoleId());
             grayRoleVO.setRoleName(e.getRoleName());
@@ -305,8 +302,18 @@ public class DefaultRbacManager implements RbacManager {
             }
             List<String> resourceIds = grayResourceVOS.parallelStream().map(GrayResourceVO::getResourceId).collect(Collectors.toList());
             List<String> resourceNames = grayResourceVOS.parallelStream().map(GrayResourceVO::getResourceName).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(resourceNames)) {
+                resourceNames.add("无");
+            }
             grayRoleVO.setResourceIds(StringUtils.collectionToDelimitedString(resourceIds, ","));
             grayRoleVO.setResourceNames(StringUtils.collectionToDelimitedString(resourceNames, ","));
+            grayRoleVO.setCreator(e.getCreator());
+            if (!StringUtils.isEmpty(e.getCreator())) {
+                GrayRbacUser user = grayRbacUserMapper.selectByUdid(e.getCreator());
+                if (user != null) {
+                    grayRoleVO.setCreatorName(user.getNickname());
+                }
+            }
             list.add(grayRoleVO);
         });
         return list;

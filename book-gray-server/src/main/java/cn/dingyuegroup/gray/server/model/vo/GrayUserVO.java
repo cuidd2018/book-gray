@@ -7,9 +7,10 @@ import lombok.Data;
  */
 @Data
 public class GrayUserVO {
-    private String username;
+    private String username;//用户名称
     private String department;
     private String roles;
     private boolean departmentAdmin;
     private String udid;
+    private String account;//账户
 }

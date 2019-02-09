@@ -19,4 +19,8 @@ public class GrayRoleVO {
     private String resourceIds;
 
     private String resourceNames;
+
+    private String creator;//创建者udid
+
+    private String creatorName;//创建者名称nickname
 }

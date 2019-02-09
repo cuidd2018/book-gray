@@ -26,6 +26,7 @@
                         <th style="text-align: center">灰度操作</th>
                         <th style="text-align: center">策略</th>
                         <th style="text-align: center">备注</th>
+                        <th style="text-align: center">创建者</th>
                         <th style="text-align: center">操作</th>
                     </tr>
                     </thead>
@@ -64,6 +65,7 @@
                             <a th:href="@{/gray/manager/policy/group/relate/index(policyGroupId=${item.policyGroupId})}">策略管理</a>
                         </td>
                         <td th:text="${item.remark}"></td>
+                        <td th:text="${item.creatorName}"></td>
                         <td th:if="${user.udid == item.creator || user.departmentAdmin}" style="text-align: center">
                             <span name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.policyGroupId}+'\',\''+${item.alias}+'\',\''+${item.groupType}+'\',\''+${item.remark}+'\')'"

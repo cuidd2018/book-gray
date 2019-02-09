@@ -19,4 +19,5 @@ public class GrayPolicyGroupVO {
     private String groupType;
     private String remark;
     private String creator;
+    private String creatorName;//创建者名称nickname
 }

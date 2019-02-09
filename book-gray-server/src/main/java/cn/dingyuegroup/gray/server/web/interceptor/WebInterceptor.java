@@ -35,8 +35,8 @@ public class WebInterceptor extends HandlerInterceptorAdapter {
             Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (object != null && object instanceof UserDetails) {
                 UserDetails userDetails = (UserDetails) object;
-                String username = userDetails.getUsername();
-                GrayUserVO grayUserVO = rbacManager.userInfo(username);
+                String account = userDetails.getUsername();
+                GrayUserVO grayUserVO = rbacManager.userInfo(account);
                 mav.getModel().put("user", grayUserVO);
             }
         } catch (Exception e) {

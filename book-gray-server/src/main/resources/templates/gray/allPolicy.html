@@ -27,6 +27,7 @@
                         <th style="text-align: center">策略参数值</th>
                         <th style="text-align: center">策略匹配方式</th>
                         <th style="text-align: center">备注</th>
+                        <th style="text-align: center">创建者</th>
                         <th style="text-align: center">操作</th>
                     </tr>
                     </thead>
@@ -45,6 +46,7 @@
                             <span th:if="${item.policyMatchType} == 'REGEX'">正则匹配</span>
                         </td>
                         <td th:text="${item.remark}"></td>
+                        <td th:text="${item.creatorName}"></td>
                         <td th:if="${user.udid == item.creator || user.departmentAdmin}" style="text-align: center">
                             <span name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.policyId}+'\',\''+${item.policyName}+'\',\''+${item.policyType}+'\',\''+${item.policyKey}+'\',\''+${item.policyValue}+'\',\''+${item.policyMatchType}+'\',\''+${item.remark}+'\')'"

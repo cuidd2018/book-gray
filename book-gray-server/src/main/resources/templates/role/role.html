@@ -25,6 +25,7 @@
                         <th style="text-align: center">所属部门</th>
                         <th style="text-align: center">是否部门管理员</th>
                         <th style="text-align: center">资源</th>
+                        <th style="text-align: center">创建者</th>
                         <th style="text-align: center">操作</th>
                     </tr>
                     </thead>
@@ -44,6 +45,7 @@
                                th:text="${item.resourceNames}"></a>
                             <span th:if="${item.departmentAdmin == true}" th:text="${item.resourceNames}"></span>
                         </td>
+                        <td th:text="${item.creatorName}"></td>
                         <td th:if="${item.departmentAdmin == false}" style="text-align: center">
                             <span name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.roleId}+'\',\''+${item.roleName}+'\')'"
@@ -98,7 +100,7 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        确认删除策略！
+                        确认删除角色！
                         <form class="form-horizontal" id="delete-form"
                               th:action="@{/gray/manager/rbac/role/delete}"
                               method="post">

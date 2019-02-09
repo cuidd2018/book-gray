@@ -27,4 +27,6 @@ public class GrayPolicyVO {
     private String policyName;
 
     private String creator;
+
+    private String creatorName;//创建者名称nickname
 }

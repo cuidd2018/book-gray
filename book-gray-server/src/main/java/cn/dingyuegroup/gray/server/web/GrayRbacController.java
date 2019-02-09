@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by 170147 on 2019/1/22.
@@ -68,6 +69,7 @@ public class GrayRbacController extends BaseController {
             return RespMsg.error(ErrorCode.SYSTEM_ERROR, "用户信息不完善，缺少部门信息！");
         }
         List<GrayRoleVO> list = rbacManager.listRoles(departmentId);
+        list = list.stream().filter(e->!e.isDepartmentAdmin()).collect(Collectors.toList());//排除管理员角色，管理员不能创建管理员角色
         return RespMsg.success(list);
     }
 

@@ -47,6 +47,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     private GrayServerConfig serverConfig;
     @Autowired
     private AbstractGrayService abstractGrayService;
+    @Autowired
+    private GrayRbacUserMapper grayRbacUserMapper;
 
     private Lock lock = new ReentrantLock();
 
@@ -640,6 +642,13 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 grayPolicyVO.setPolicyMatchType(grayPolicyEntity.getPolicyMatchType());
                 grayPolicyVO.setPolicyType(grayPolicyEntity.getPolicyType());
                 grayPolicyVO.setPolicyValue(grayPolicyEntity.getPolicyValue());
+                grayPolicyVO.setCreator(grayPolicyEntity.getCreator());
+                if (!StringUtils.isEmpty(grayPolicyEntity.getCreator())) {
+                    GrayRbacUser user = grayRbacUserMapper.selectByUdid(grayPolicyEntity.getCreator());
+                    if (user != null) {
+                        grayPolicyVO.setCreatorName(user.getNickname());
+                    }
+                }
                 list.add(grayPolicyVO);
             }
         });
@@ -668,7 +677,12 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             grayPolicyVO.setPolicyValue(e.getPolicyValue());
             grayPolicyVO.setPolicyName(e.getPolicyName());
             grayPolicyVO.setCreator(e.getCreator());
-            grayPolicyVO.setCreator(e.getCreator());
+            if (!StringUtils.isEmpty(e.getCreator())) {
+                GrayRbacUser user = grayRbacUserMapper.selectByUdid(e.getCreator());
+                if (user != null) {
+                    grayPolicyVO.setCreatorName(user.getNickname());
+                }
+            }
             grayPolicyVOS.add(grayPolicyVO);
         });
         return grayPolicyVOS;
@@ -694,6 +708,12 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
             group.setGroupType(e.getGroupType());
             group.setRemark(e.getRemark());
             group.setCreator(e.getCreator());
+            if (!StringUtils.isEmpty(e.getCreator())) {
+                GrayRbacUser user = grayRbacUserMapper.selectByUdid(e.getCreator());
+                if (user != null) {
+                    group.setCreatorName(user.getNickname());
+                }
+            }
             grayPolicyGroups.add(group);
         });
         return grayPolicyGroups;
@@ -744,15 +764,6 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      */
     @Override
     public void openForWork() {
-        try {//更新本地资源环境
-            InstanceLocalInfo localInfo = GrayServerContext.getInstanceLocalInfo();
-            Environment environment = GrayServerContext.getEnvironment();
-            if (localInfo != null && environment != null) {
-                updateInstanceEnv(localInfo.getServiceId(), localInfo.getInstanceId(), environment.getActiveProfiles()[0]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         evictionTimer.schedule(new EvictionTask(),
                 serverConfig.getEvictionIntervalTimerInMs(),
                 serverConfig.getEvictionIntervalTimerInMs());
@@ -764,6 +775,15 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     }
 
     protected void evict() {
+        try {//更新本地资源环境
+            InstanceLocalInfo localInfo = GrayServerContext.getInstanceLocalInfo();
+            Environment environment = GrayServerContext.getEnvironment();
+            if (localInfo != null && environment != null) {
+                updateInstanceEnv(localInfo.getServiceId(), localInfo.getInstanceId(), environment.getActiveProfiles()[0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         GrayServerContext.getGrayServerEvictor().evict(this);
     }
 
