@@ -4,6 +4,7 @@ import cn.dingyuegroup.gray.server.manager.RbacManager;
 import cn.dingyuegroup.gray.server.model.resp.ErrorCode;
 import cn.dingyuegroup.gray.server.model.resp.RespMsg;
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayResourceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,15 +90,31 @@ public class GrayRbacController extends BaseController {
 
     @RequestMapping(value = "/role/edit")
     public String editRole(@RequestParam String roleId, @RequestParam String roleName) {
-        String departmentId = getDepartmentId();
         rbacManager.editRole(roleId, roleName);
         return "redirect:/gray/manager/rbac/role/index";
     }
 
     @RequestMapping(value = "/role/delete")
     public String deleteRole(@RequestParam String roleId) {
-        String departmentId = getDepartmentId();
         rbacManager.deleteRole(roleId);
         return "redirect:/gray/manager/rbac/role/index";
     }
+
+    @RequestMapping(value = "/resources")
+    @ResponseBody
+    public RespMsg listResources() {
+        String roleId = getRoleId();
+        if (StringUtils.isEmpty(roleId)) {
+            return RespMsg.error(ErrorCode.SYSTEM_ERROR, "用户信息不完善，缺少角色信息！");
+        }
+        List<GrayResourceVO> list = rbacManager.listResources(roleId);
+        return RespMsg.success(list);
+    }
+
+    @RequestMapping(value = "/resources/edit")
+    public String editResources(@RequestParam String roleId, @RequestParam String resourceId) {
+        rbacManager.editResources(roleId, resourceId);
+        return "redirect:/gray/manager/rbac/role/index";
+    }
+
 }

@@ -1,13 +1,11 @@
 package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayResourceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 import cn.dingyuegroup.gray.server.mysql.dao.*;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacRole;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUser;
-import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacUserRole;
+import cn.dingyuegroup.gray.server.mysql.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -42,6 +41,9 @@ public class DefaultRbacManager implements RbacManager {
 
     @Autowired
     private GrayRbacRoleResourceMapper grayRbacRoleResourceMapper;
+
+    @Autowired
+    private GrayRbacResourcesMapper grayRbacResourcesMapper;
 
     /**
      * 获取部门下的人员名单
@@ -276,6 +278,22 @@ public class DefaultRbacManager implements RbacManager {
             grayRoleVO.setRoleName(e.getRoleName());
             grayRoleVO.setDepartmentAdmin(e.getIsDepartmentAdmin() == 1 ? true : false);
             grayRoleVO.setDepartment(department.getDepartmentName());
+            List<GrayRbacRoleResource> grayRbacRoleResources = grayRbacRoleResourceMapper.selectByRoleId(e.getRoleId());
+            List<GrayResourceVO> grayResourceVOS = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(grayRbacRoleResources)) {
+                grayRbacRoleResources.forEach(f -> {
+                            GrayRbacResources grayRbacResources = grayRbacResourcesMapper.selectByResourceId(f.getResourceId());
+                            if (grayRbacResources == null) {
+                                return;
+                            }
+                            GrayResourceVO grayResourceVO = new GrayResourceVO();
+                            grayResourceVO.setResourceId(grayRbacResources.getResourceId());
+                            grayResourceVO.setResourceName(grayRbacResources.getResourceName());
+                            grayResourceVOS.add(grayResourceVO);
+                        }
+                );
+            }
+            grayRoleVO.setResourceS(grayResourceVOS);
             list.add(grayRoleVO);
         });
         return list;
@@ -321,6 +339,51 @@ public class DefaultRbacManager implements RbacManager {
         grayRbacRoleMapper.deleteByRoleId(roleId);
         grayRbacUserRoleMapper.deleteByRoleId(roleId);
         grayRbacRoleResourceMapper.deleteByRoleId(roleId);
+        return true;
+    }
+
+    @Override
+    public List<GrayResourceVO> listResources(String roleId) {
+        List<GrayRbacRoleResource> list = grayRbacRoleResourceMapper.selectByRoleId(roleId);
+        if (CollectionUtils.isEmpty(list)) {
+            return new ArrayList<>();
+        }
+        List<GrayResourceVO> grayResourceVOS = new ArrayList<>();
+        list.forEach(e -> {
+            GrayRbacResources grayRbacResources = grayRbacResourcesMapper.selectByResourceId(e.getResourceId());
+            if (grayRbacResources == null) {
+                return;
+            }
+            GrayResourceVO grayResourceVO = new GrayResourceVO();
+            grayResourceVO.setResourceName(grayRbacResources.getResourceName());
+            grayResourceVO.setResourceId(grayRbacResources.getResourceId());
+            grayResourceVOS.add(grayResourceVO);
+        });
+        return grayResourceVOS;
+    }
+
+    /**
+     * 更新角色资源配置
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public boolean editResources(String roleId, String resourceId) {
+        if (StringUtils.isEmpty(roleId)) {
+            return false;
+        }
+        grayRbacRoleResourceMapper.deleteByRoleId(roleId);
+        if (StringUtils.isEmpty(resourceId)) {
+            return true;
+        }
+        List<String> resourceIds = Arrays.asList(resourceId.split(","));
+        resourceIds.forEach(e -> {
+            GrayRbacRoleResource grayRbacRoleResource = new GrayRbacRoleResource();
+            grayRbacRoleResource.setResourceId(e);
+            grayRbacRoleResource.setRoleId(roleId);
+            grayRbacRoleResourceMapper.insert(grayRbacRoleResource);
+        });
         return true;
     }
 }

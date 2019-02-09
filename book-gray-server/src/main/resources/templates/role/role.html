@@ -24,6 +24,7 @@
                         <th style="text-align: center">角色名称</th>
                         <th style="text-align: center">所属部门</th>
                         <th style="text-align: center">是否部门管理员</th>
+                        <th style="text-align: center">资源</th>
                         <th style="text-align: center">操作</th>
                     </tr>
                     </thead>
@@ -36,6 +37,9 @@
                         <td>
                             <span th:if="${item.departmentAdmin == true}">是</span>
                             <span th:if="${item.departmentAdmin == false}">否</span>
+                        </td>
+                        <td>
+                            <a th:if="${item.departmentAdmin == false}" th:href="'javascript:showResources(\''+${item.resourceS}+'\',\''+${item.roleId}+'\')'">资源管理</a>
                         </td>
                         <td th:if="${item.departmentAdmin == false}" style="text-align: center">
                             <span name="edit" title="编辑"
@@ -142,6 +146,37 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+        <!-- sortedBookList -->
+        <div class="modal fade" id="resourceSetting" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">
+                            资源配置
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="resource-form"
+                              th:action="@{/gray/manager/rbac/resources/edit}"
+                              method="get">
+                            <input name="roleId" type="hidden" id="roleIdSelect">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">选择资源:</label>
+                                <div class="col-sm-6" style="margin-top: 0.5em;" id="resourceCheckbox">
+                                    <!--<input type="checkbox" class="radio22" name="resourceId" value="1" checked>开发环境
+                                    <input type="checkbox" class="radio22" name="resourceId" value="0">测试环境-->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="resourcesDo();">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             // 添加
             function showModule() {
@@ -173,6 +208,42 @@
             function hintEditDo() {
                 $("#edit-form").submit();
                 $('#myEditModal').modal('hide')
+            }
+            function showResources(resources, roleId) {
+                initPolicyGroupList();
+                var m = $('#resourceSetting');
+                m.find("#roleIdSelect").val(roleId);
+                m.modal('show');
+            }
+            function resourcesDo() {
+                $("#resource-form").submit();
+                $('#resourceSetting').modal('hide');
+            }
+            var policyGroupList;
+            //初始化cp列表
+            function initPolicyGroupList() {
+                console.log(policyGroupList)
+                if (!policyGroupList) {
+                    $.ajax({
+                        url: "/gray/manager/rbac/resources",
+                        type: 'get',
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            console.log(data)
+                            if (data.respCode == 20000) {
+                                policyGroupList = data.data;
+                                var result = '';
+                                $.each(policyGroupList, function (i, e) {
+                                    result += '<input type="checkbox" class="radio22" name="resourceId" value="' + e.resourceId + '">' + e.resourceName + '</input></br>';
+                                });
+                                $("#resourceCheckbox").append(result);
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    });
+                }
             }
         </script>
     </div>

@@ -1,6 +1,7 @@
 package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
+import cn.dingyuegroup.gray.server.model.vo.GrayResourceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
 
@@ -93,8 +94,19 @@ public interface RbacManager {
 
     /**
      * 删除角色
+     *
      * @param roleId
      * @return
      */
     boolean deleteRole(String roleId);
+
+    List<GrayResourceVO> listResources(String roleId);
+
+    /**
+     * 更新角色资源配置
+     *
+     * @param roleId
+     * @return
+     */
+    boolean editResources(String roleId, String resourceId);
 }
