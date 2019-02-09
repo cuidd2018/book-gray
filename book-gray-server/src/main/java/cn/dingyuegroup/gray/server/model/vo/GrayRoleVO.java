@@ -2,8 +2,6 @@ package cn.dingyuegroup.gray.server.model.vo;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * Created by 170147 on 2019/2/8.
  */
@@ -18,5 +16,7 @@ public class GrayRoleVO {
 
     private boolean departmentAdmin;
 
-    private List<GrayResourceVO> resourceS;
+    private String resourceIds;
+
+    private String resourceNames;
 }

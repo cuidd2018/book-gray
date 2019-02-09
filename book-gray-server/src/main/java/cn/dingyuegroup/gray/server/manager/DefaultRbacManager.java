@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Created by 170147 on 2019/1/22.
@@ -293,7 +294,10 @@ public class DefaultRbacManager implements RbacManager {
                         }
                 );
             }
-            grayRoleVO.setResourceS(grayResourceVOS);
+            List<String> resourceIds = grayResourceVOS.parallelStream().map(GrayResourceVO::getResourceId).collect(Collectors.toList());
+            List<String> resourceNames = grayResourceVOS.parallelStream().map(GrayResourceVO::getResourceName).collect(Collectors.toList());
+            grayRoleVO.setResourceIds(StringUtils.collectionToDelimitedString(resourceIds, ","));
+            grayRoleVO.setResourceNames(StringUtils.collectionToDelimitedString(resourceNames, ","));
             list.add(grayRoleVO);
         });
         return list;

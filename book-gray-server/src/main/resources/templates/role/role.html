@@ -39,7 +39,10 @@
                             <span th:if="${item.departmentAdmin == false}">否</span>
                         </td>
                         <td>
-                            <a th:if="${item.departmentAdmin == false}" th:href="'javascript:showResources(\''+${item.resourceS}+'\',\''+${item.roleId}+'\')'">资源管理</a>
+                            <a th:if="${item.departmentAdmin == false}"
+                               th:href="'javascript:showResources(\''+${item.resourceIds}+'\',\''+${item.roleId}+'\')'"
+                               th:text="${item.resourceNames}"></a>
+                            <span th:if="${item.departmentAdmin == true}" th:text="${item.resourceNames}"></span>
                         </td>
                         <td th:if="${item.departmentAdmin == false}" style="text-align: center">
                             <span name="edit" title="编辑"
@@ -213,6 +216,15 @@
                 initPolicyGroupList();
                 var m = $('#resourceSetting');
                 m.find("#roleIdSelect").val(roleId);
+                var resourceCheckbox = m.find("#resourceCheckbox input");
+                if (resourceCheckbox != null && resourceCheckbox.length > 0) {
+                    for (var index in resourceCheckbox) {
+                        var item = resourceCheckbox[index].value;
+                        if (resources.indexOf(item) != -1) {
+                            resourceCheckbox[index].checked = true;
+                        }
+                    }
+                }
                 m.modal('show');
             }
             function resourcesDo() {
