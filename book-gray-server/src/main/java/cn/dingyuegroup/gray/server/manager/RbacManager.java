@@ -49,6 +49,15 @@ public interface RbacManager {
     boolean editUser(String udid, String account, String nickName, String remark, String roleId);
 
     /**
+     * 重置密码
+     *
+     * @param udid
+     * @param password
+     * @return
+     */
+    boolean resetPassword(String udid, String password);
+
+    /**
      * 删除用户
      *
      * @param udid

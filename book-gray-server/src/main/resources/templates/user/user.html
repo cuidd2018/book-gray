@@ -12,7 +12,7 @@
                     <div class="box-header">
                         人员管理
                     </div>
-                    <div class="box-header">
+                    <div th:if="${user.departmentAdmin}" class="box-header">
                         <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
                     </div>
                 </div>
@@ -26,6 +26,7 @@
                         <th style="text-align: center">角色</th>
                         <th style="text-align: center">部门</th>
                         <th style="text-align: center">备注</th>
+                        <th style="text-align: center">密码管理</th>
                         <th style="text-align: center">操作</th>
                     </tr>
                     </thead>
@@ -38,6 +39,9 @@
                         <td th:text="${item.roleName}"></td>
                         <td th:text="${item.departmentName}"></td>
                         <td th:text="${item.remark}"></td>
+                        <td>
+                            <a th:href="'javascript:showPassword(\''+${item.udid}+'\')'">重置密码</a>
+                        </td>
                         <td style="text-align: center">
                             <span th:if="${user.udid != item.udid}" name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.udid}+'\',\''+${item.nickname}+'\',\''+${item.account}+'\',\''+${item.remark}+'\',\''+${item.roleId}+'\')'"
@@ -181,6 +185,36 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+        <!-- sortedBookList -->
+        <div class="modal fade" id="passwordSetting" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">
+                            重置密码
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="password-form"
+                              th:action="@{/gray/manager/rbac/user/password}"
+                              method="get">
+                            <input name="udid" type="hidden" id="udidPassword">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">新密码:</label>
+                                <div class="col-sm-6" style="margin-top: 0.5em;" id="resourceCheckbox">
+                                    <input id="password" type="password" class="form-control" name="password">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="passwordDo();">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             // 添加
             function showModule() {
@@ -217,6 +251,15 @@
             function hintEditDo() {
                 $("#edit-form").submit();
                 $('#myEditModal').modal('hide')
+            }
+            function showPassword(udid) {
+                var m = $('#passwordSetting');
+                m.find("#udidPassword").val(udid);
+                m.modal('show');
+            }
+            function passwordDo() {
+                $("#password-form").submit();
+                $('#passwordSetting').modal('hide');
             }
             var roleList;
             //初始化cp列表

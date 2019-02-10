@@ -21,4 +21,8 @@ public class GrayRbacUserVO {
     private String account;
 
     private String roleId;
+
+    private String creator;
+
+    private String creatorName;
 }

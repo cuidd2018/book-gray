@@ -55,6 +55,12 @@ public class GrayRbacController extends BaseController {
         return "redirect:/gray/manager/rbac/user/index";
     }
 
+    @RequestMapping(value = "/user/password")
+    public String resetPassword(@RequestParam String udid, @RequestParam String password) {
+        rbacManager.resetPassword(udid, password);
+        return "redirect:/gray/manager/rbac/user/index";
+    }
+
     @RequestMapping(value = "/user/delete")
     public String deleteUser(@RequestParam String udid) {
         rbacManager.deleteUser(udid);
@@ -69,7 +75,7 @@ public class GrayRbacController extends BaseController {
             return RespMsg.error(ErrorCode.SYSTEM_ERROR, "用户信息不完善，缺少部门信息！");
         }
         List<GrayRoleVO> list = rbacManager.listRoles(departmentId);
-        list = list.stream().filter(e->!e.isDepartmentAdmin()).collect(Collectors.toList());//排除管理员角色，管理员不能创建管理员角色
+        list = list.stream().filter(e -> !e.isDepartmentAdmin()).collect(Collectors.toList());//排除管理员角色，管理员不能创建管理员角色
         return RespMsg.success(list);
     }
 

@@ -74,6 +74,13 @@ public class DefaultRbacManager implements RbacManager {
             vo.setRemark(e.getRemark());
             vo.setUdid(e.getUdid());
             vo.setAccount(e.getAccount());
+            vo.setCreator(e.getCreator());
+            if (!StringUtils.isEmpty(e.getCreator())) {
+                GrayRbacUser createUser = grayRbacUserMapper.selectByUdid(e.getCreator());
+                if (createUser != null) {
+                    vo.setCreatorName(createUser.getNickname());
+                }
+            }
             GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
             if (grayRbacUserRole == null) {
                 return;
@@ -115,6 +122,13 @@ public class DefaultRbacManager implements RbacManager {
             vo.setRemark(e.getRemark());
             vo.setUdid(e.getUdid());
             vo.setAccount(e.getAccount());
+            vo.setCreator(e.getCreator());
+            if (!StringUtils.isEmpty(e.getCreator())) {
+                GrayRbacUser createUser = grayRbacUserMapper.selectByUdid(e.getCreator());
+                if (createUser != null) {
+                    vo.setCreatorName(createUser.getNickname());
+                }
+            }
             GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(e.getUdid());
             if (grayRbacUserRole != null) {
                 vo.setRoleId(grayRbacUserRole.getRoleId());
@@ -200,10 +214,29 @@ public class DefaultRbacManager implements RbacManager {
             grayRbacUserRole.setRoleId(roleId);
             grayRbacUserRoleMapper.insert(grayRbacUserRole);
         } else {
-            grayRbacUserRole.setRoleId(roleId);
             grayRbacUserRole.setOldRoleId(grayRbacUserRole.getRoleId());
+            grayRbacUserRole.setRoleId(roleId);
             grayRbacUserRoleMapper.updateByUdidAndRoleId(grayRbacUserRole);
         }
+        return true;
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param udid
+     * @param password
+     * @return
+     */
+    @Override
+    public boolean resetPassword(String udid, String password) {
+        if (StringUtils.isEmpty(udid) || StringUtils.isEmpty(password)) {
+            return false;
+        }
+        GrayRbacUser user = new GrayRbacUser();
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setUdid(udid);
+        grayRbacUserMapper.updatePasswordByUdid(user);
         return true;
     }
 
