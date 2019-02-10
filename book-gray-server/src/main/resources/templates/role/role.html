@@ -72,7 +72,7 @@
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/rbac/role/add}"
-                              method="get">
+                              method="post">
                             <div class="form-group row">
                                 <label class="col-sm-4 control-label" style="padding-left:50px;">角色名称:</label>
                                 <div class="col-sm-6">
@@ -164,7 +164,7 @@
                     <div class="modal-body">
                         <form class="form-horizontal" id="resource-form"
                               th:action="@{/gray/manager/rbac/resources/edit}"
-                              method="get">
+                              method="post">
                             <input name="roleId" type="hidden" id="roleIdSelect">
                             <div class="form-group row">
                                 <label class="col-sm-4 control-label" style="padding-left:50px;">选择资源:</label>

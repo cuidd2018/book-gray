@@ -177,7 +177,7 @@
                     <div class="modal-body">
                         <form class="form-horizontal" id="policyGroup-form"
                               th:action="@{/gray/manager/services/instance/policyGroup/relate}"
-                              method="get">
+                              method="post">
                             <input name="serviceId" type="hidden" id="serviceIdSelect">
                             <input name="instanceId" type="hidden" id="instanceIdSelect">
                             <div class="form-group row">
@@ -210,7 +210,7 @@
                         <div style="text-align: center" id="showMsg">是否下线该服务实例</div>
                         <form class="form-horizontal" id="status-form"
                               th:action="@{/gray/manager/services/instance/onlineStatus}"
-                              method="get">
+                              method="post">
                             <input name="serviceId" type="hidden" id="serviceIdStatus">
                             <input name="instanceId" type="hidden" id="instanceIdStatus">
                             <input name="status" type="hidden" id="instanceStatus">
@@ -239,7 +239,7 @@
                         <div style="text-align: center" id="openGrayShowMsg">是否关闭灰度</div>
                         <form class="form-horizontal" id="openGray-form"
                               th:action="@{/gray/manager/services/instance/grayStatus}"
-                              method="get">
+                              method="post">
                             <input name="serviceId" type="hidden" id="serviceIdOpenGray">
                             <input name="instanceId" type="hidden" id="instanceIdOpenGray">
                             <input name="status" type="hidden" id="instanceOpenGray">

@@ -227,7 +227,7 @@
                         <div style="text-align: center" id="openGrayShowMsg">是否关闭策略组</div>
                         <form class="form-horizontal" id="openGray-form"
                               th:action="@{/gray/manager/policy/group/status}"
-                              method="get">
+                              method="post">
                             <input name="policyGroupId" type="hidden" id="policyGroupIdOpenGray">
                             <input name="status" type="hidden" id="instanceOpenGray">
                         </form>
