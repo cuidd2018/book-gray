@@ -27,13 +27,12 @@ public interface RbacManager {
     /**
      * 添加人员
      *
-     * @param departmentId
      * @param roleId
      * @param nickName
      * @param remark
      * @return
      */
-    boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator, String account);
+    boolean addUser(String roleId, String nickName, String remark, String creator, String account);
 
     /**
      * 编辑用户

@@ -194,7 +194,7 @@ public class GrayServiceController extends BaseController {
      * @param serviceId 服务id
      * @return Void
      */
-    @RequestMapping(value = "/instance/policyGroup/relate", method = RequestMethod.GET)
+    @RequestMapping(value = "/instance/policyGroup/relate")
     public String addPolicyGroup(RedirectAttributes attr,
                                  @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId,
                                  @RequestParam(value = "policyGroupId", required = false) String groupId) {

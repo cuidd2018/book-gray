@@ -41,11 +41,7 @@ public class GrayRbacController extends BaseController {
     @RequestMapping(value = "/user/add")
     public String addUser(@RequestParam String account, @RequestParam String nickname, @RequestParam String remark, @RequestParam String roleId) {
         String udid = getUdid();
-        String departmentId = getDepartmentId();
-        if (StringUtils.isEmpty(departmentId)) {
-            return "redirect:/401";
-        }
-        rbacManager.addUser(departmentId, roleId, nickname, remark, udid, account);
+        rbacManager.addUser(roleId, nickname, remark, udid, account);
         return "redirect:/gray/manager/rbac/user/index";
     }
 

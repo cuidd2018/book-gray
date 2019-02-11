@@ -636,6 +636,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 grayPolicyVO.setPolicyGroupId(groupId);
                 grayPolicyVO.setGroupType(grayPolicyGroupEntity.getGroupType());
                 grayPolicyVO.setAlias(grayPolicyGroupEntity.getAlias());
+                grayPolicyVO.setPolicyName(grayPolicyEntity.getPolicyName());
                 grayPolicyVO.setPolicyId(grayPolicyEntity.getPolicyId());
                 grayPolicyVO.setRemark(grayPolicyEntity.getRemark());
                 grayPolicyVO.setPolicyKey(grayPolicyEntity.getPolicyKey());

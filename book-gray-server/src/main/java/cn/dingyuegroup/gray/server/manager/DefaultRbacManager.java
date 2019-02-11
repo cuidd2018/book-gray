@@ -143,7 +143,6 @@ public class DefaultRbacManager implements RbacManager {
     /**
      * 添加人员
      *
-     * @param departmentId
      * @param roleId
      * @param nickName
      * @param remark
@@ -151,16 +150,16 @@ public class DefaultRbacManager implements RbacManager {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public boolean addUser(String departmentId, String roleId, String nickName, String remark, String creator, String account) {
-        if (StringUtils.isEmpty(departmentId) || StringUtils.isEmpty(roleId) || StringUtils.isEmpty(account)) {
-            return false;
-        }
-        GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(departmentId);
-        if (department == null) {
+    public boolean addUser(String roleId, String nickName, String remark, String creator, String account) {
+        if (StringUtils.isEmpty(roleId) || StringUtils.isEmpty(account)) {
             return false;
         }
         GrayRbacRole role = grayRbacRoleMapper.selectByRoleId(roleId);
         if (role == null) {
+            return false;
+        }
+        GrayRbacDepartment department = grayRbacDepartmentMapper.selectByDepartmentId(role.getDepartmentId());
+        if (department == null) {
             return false;
         }
         lock.lock();
@@ -168,7 +167,7 @@ public class DefaultRbacManager implements RbacManager {
             GrayRbacUser user = new GrayRbacUser();
             user.setUdid(GrayRbacUser.genId());
             user.setRemark(remark);
-            user.setDepartmentId(departmentId);
+            user.setDepartmentId(role.getDepartmentId());
             user.setNickname(nickName);
             user.setCreator(creator);
             user.setAccount(account);

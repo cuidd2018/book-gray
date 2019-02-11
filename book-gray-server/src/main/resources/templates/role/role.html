@@ -35,10 +35,10 @@
                         <td th:text="${item.roleId}"></td>
                         <td th:text="${item.roleName}"></td>
                         <td>
-                            <a th:if="${item.creator == user.udid}"
+                            <a th:if="${user.admin}"
                                th:href="'javascript:showDepartments(\''+${item.roleId}+'\',\''+${item.departmentId}+'\')'"
                                th:text="${item.department}"></a>
-                            <span th:if="${item.creator != user.udid}"
+                            <span th:if="${!user.admin}"
                                   th:text="${item.department}"></span>
                         </td>
                         <td>
