@@ -44,6 +44,8 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     @Autowired
     private GrayRbacResourcesMapper grayRbacResourcesMapper;
     @Autowired
+    private GrayRbacRoleResourceMapper grayRbacRoleResourceMapper;
+    @Autowired
     private GrayServerConfig serverConfig;
     @Autowired
     private AbstractGrayService abstractGrayService;
@@ -400,7 +402,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark, String creator) {
+    public boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark, String creator, String departmentId) {
         GrayPolicyGroupEntity entity = new GrayPolicyGroupEntity();
         entity.setPolicyGroupId(GrayPolicyGroup.genId());
         entity.setEnable(enable);
@@ -408,6 +410,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         entity.setGroupType(groupType == null ? GrayPolicyGroup.TYPE.AND.name() : groupType);
         entity.setRemark(remark);
         entity.setCreator(creator);
+        entity.setDepartmentId(departmentId);
         grayPolicyGroupMapper.insert(entity);
         return true;
     }
@@ -451,7 +454,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark, String creator) {
+    public boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark, String creator, String departmentId) {
         GrayPolicyEntity grayPolicyEntity = new GrayPolicyEntity();
         grayPolicyEntity.setPolicyId(GrayPolicy.genId());
         grayPolicyEntity.setPolicyKey(policyKey);
@@ -462,6 +465,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayPolicyEntity.setPolicyName(policyName);
         grayPolicyEntity.setRemark(remark);
         grayPolicyEntity.setCreator(creator);
+        grayPolicyEntity.setDepartmentId(departmentId);
         grayPolicyMapper.insert(grayPolicyEntity);
         return true;
     }
@@ -662,8 +666,11 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public List<GrayPolicyVO> listAllGrayPolicy() {
-        List<GrayPolicyEntity> list = grayPolicyMapper.selectAll();
+    public List<GrayPolicyVO> listGrayPolicyByDepartmentId(String departmentId) {
+        if (StringUtils.isEmpty(departmentId)) {
+            return new ArrayList<>();
+        }
+        List<GrayPolicyEntity> list = grayPolicyMapper.selectByDepartmentId(departmentId);
         if (CollectionUtils.isEmpty(list)) {
             return new ArrayList<>();
         }
@@ -695,8 +702,11 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      * @return
      */
     @Override
-    public List<GrayPolicyGroupVO> listAllGrayPolicyGroup() {
-        List<GrayPolicyGroupEntity> list = grayPolicyGroupMapper.selectAll();
+    public List<GrayPolicyGroupVO> listGrayPolicyGroupByDepartmentId(String departmentId) {
+        if (StringUtils.isEmpty(departmentId)) {
+            return new ArrayList<>();
+        }
+        List<GrayPolicyGroupEntity> list = grayPolicyGroupMapper.selectByDepartmentId(departmentId);
         if (CollectionUtils.isEmpty(list)) {
             list = new ArrayList<>();
         }

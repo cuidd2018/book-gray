@@ -34,7 +34,7 @@ public class GrayPolicyController extends BaseController {
 
     @RequestMapping("/index")
     public ModelAndView index(ModelAndView model) {
-        List<GrayPolicyVO> list = grayServiceManager.listAllGrayPolicy();
+        List<GrayPolicyVO> list = grayServiceManager.listGrayPolicyByDepartmentId(getDepartmentId());
         model.addObject("list", list);
         model.setViewName("gray/allPolicy");
         return model;
@@ -45,7 +45,8 @@ public class GrayPolicyController extends BaseController {
                             @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType,
                             @RequestParam("policyName") String policyName, @RequestParam("remark") String remark) {
         String creator = getUdid();
-        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType, policyName, remark, creator);
+        String departmentId = getDepartmentId();
+        grayServiceManager.addPolicy(policyType, policyKey, policyValue, policyMatchType, policyName, remark, creator, departmentId);
         return "redirect:/gray/manager/policy/index";
     }
 
@@ -66,7 +67,7 @@ public class GrayPolicyController extends BaseController {
 
     @RequestMapping("/group/index")
     public ModelAndView groupIndex(ModelAndView model) {
-        List<GrayPolicyGroupVO> list = grayServiceManager.listAllGrayPolicyGroup();
+        List<GrayPolicyGroupVO> list = grayServiceManager.listGrayPolicyGroupByDepartmentId(getDepartmentId());
         model.addObject("list", list);
         model.setViewName("gray/policyGroup");
         return model;
@@ -75,14 +76,15 @@ public class GrayPolicyController extends BaseController {
     @RequestMapping(value = "/group/list", method = RequestMethod.GET)
     @ResponseBody
     public RespMsg listPolicyGroup() {
-        List<GrayPolicyGroupVO> list = grayServiceManager.listAllGrayPolicyGroup();
+        List<GrayPolicyGroupVO> list = grayServiceManager.listGrayPolicyGroupByDepartmentId(getDepartmentId());
         return RespMsg.success(list);
     }
 
     @RequestMapping(value = "/group/add")
     public String addGroup(@RequestParam String alias, @RequestParam Integer enable, @RequestParam String groupType, @RequestParam String remark) {
         String creator = getUdid();
-        grayServiceManager.addPolicyGroup(alias, enable, groupType, remark, creator);
+        String departmentId = getDepartmentId();
+        grayServiceManager.addPolicyGroup(alias, enable, groupType, remark, creator, departmentId);
         return "redirect:/gray/manager/policy/group/index";
     }
 
@@ -119,7 +121,7 @@ public class GrayPolicyController extends BaseController {
     @ResponseBody
     public RespMsg relatePolicys(RedirectAttributes attr, @RequestParam String policyGroupId) {
         List<GrayPolicyVO> includs = grayServiceManager.listGrayPolicyByGroup(policyGroupId);
-        List<GrayPolicyVO> all = grayServiceManager.listAllGrayPolicy();
+        List<GrayPolicyVO> all = grayServiceManager.listGrayPolicyByDepartmentId(getDepartmentId());
         List<String> policyIds = includs.stream().map(GrayPolicyVO::getPolicyId).collect(Collectors.toList());
         all = all.stream().filter(e -> !policyIds.contains(e.getPolicyId())).collect(Collectors.toList());
         attr.addAttribute("policyGroupId", policyGroupId);

@@ -134,7 +134,7 @@ public interface GrayServiceManager {
      * @param enable
      * @return
      */
-    boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark, String creator);
+    boolean addPolicyGroup(String alias, Integer enable, String groupType, String remark, String creator, String departmentId);
 
     /**
      * 删除策略组
@@ -157,7 +157,7 @@ public interface GrayServiceManager {
      *
      * @return
      */
-    boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark, String creator);
+    boolean addPolicy(String policyType, String policyKey, String policyValue, String policyMatchType, String policyName, String remark, String creator, String departmentId);
 
     /**
      * 编辑策略
@@ -224,14 +224,14 @@ public interface GrayServiceManager {
      *
      * @return
      */
-    List<GrayPolicyVO> listAllGrayPolicy();
+    List<GrayPolicyVO> listGrayPolicyByDepartmentId(String departmentId);
 
     /**
      * 获取所有策略组列表
      *
      * @return
      */
-    List<GrayPolicyGroupVO> listAllGrayPolicyGroup();
+    List<GrayPolicyGroupVO> listGrayPolicyGroupByDepartmentId(String departmentId);
 
     /**
      * 获取服务实例下的灰度策略组

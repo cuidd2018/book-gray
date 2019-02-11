@@ -495,11 +495,33 @@ public class DefaultRbacManager implements RbacManager {
         if (StringUtils.isEmpty(roleId)) {
             return false;
         }
+        List<String> resourceIds = Arrays.asList(resourceId.split(","));
+        GrayRbacRole role = grayRbacRoleMapper.selectByRoleId(roleId);
+        if (role.getIsDepartmentAdmin() == 1) {//减少管理员角色的资源，需要减少下面角色的资源
+            List<GrayRbacRoleResource> grayRbacRoleResources = grayRbacRoleResourceMapper.selectByRoleId(roleId);
+            if (!CollectionUtils.isEmpty(grayRbacRoleResources)) {
+                List<String> oldResources = grayRbacRoleResources.stream().map(GrayRbacRoleResource::getResourceId).collect(Collectors.toList());
+                oldResources.removeAll(resourceIds);//减少的资源
+                if (!CollectionUtils.isEmpty(oldResources)) {
+                    oldResources.forEach(e -> {
+                        List<GrayRbacRole> grayRbacRoles = grayRbacRoleMapper.selectByDepartmentId(role.getDepartmentId());//部门下的角色
+                        if (CollectionUtils.isEmpty(grayRbacRoles)) {
+                            return;
+                        }
+                        grayRbacRoles.forEach(f -> {
+                            GrayRbacRoleResource grayRbacRoleResource = new GrayRbacRoleResource();
+                            grayRbacRoleResource.setResourceId(e);
+                            grayRbacRoleResource.setRoleId(f.getRoleId());
+                            grayRbacRoleResourceMapper.deleteByRoleIdAndResourceId(grayRbacRoleResource);
+                        });
+                    });
+                }
+            }
+        }
         grayRbacRoleResourceMapper.deleteByRoleId(roleId);
         if (StringUtils.isEmpty(resourceId)) {
             return true;
         }
-        List<String> resourceIds = Arrays.asList(resourceId.split(","));
         resourceIds.forEach(e -> {
             GrayRbacRoleResource grayRbacRoleResource = new GrayRbacRoleResource();
             grayRbacRoleResource.setResourceId(e);

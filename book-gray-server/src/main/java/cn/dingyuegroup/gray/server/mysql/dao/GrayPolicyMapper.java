@@ -22,4 +22,6 @@ public interface GrayPolicyMapper {
     int updateByPolicyId(GrayPolicyEntity record);
 
     int deleteByPolicyId(String policyId);
+
+    List<GrayPolicyEntity> selectByDepartmentId(String departmentId);
 }

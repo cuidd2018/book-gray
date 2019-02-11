@@ -29,4 +29,6 @@ public class GrayPolicyEntity {
     private String policyName;
 
     private String creator;
+
+    private String departmentId;
 }

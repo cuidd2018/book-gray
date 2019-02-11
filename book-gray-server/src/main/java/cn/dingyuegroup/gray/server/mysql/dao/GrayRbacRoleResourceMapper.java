@@ -5,6 +5,7 @@ import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacRoleResource;
 import java.util.List;
 
 public interface GrayRbacRoleResourceMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(GrayRbacRoleResource record);
@@ -20,4 +21,6 @@ public interface GrayRbacRoleResourceMapper {
     List<GrayRbacRoleResource> selectByRoleId(String roleId);
 
     int deleteByRoleId(String roleId);
+
+    int deleteByRoleIdAndResourceId(GrayRbacRoleResource record);
 }

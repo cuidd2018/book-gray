@@ -14,9 +14,10 @@
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="policy_name" jdbcType="VARCHAR" property="policyName"/>
         <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="department_id" jdbcType="VARCHAR" property="departmentId"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, policy_id, policy_type, policy_key, is_delete, create_time, update_time, policy_value, policy_match_type, remark, policy_name, creator
+        id, policy_id, policy_type, policy_key, is_delete, create_time, update_time, policy_value, policy_match_type, remark, policy_name, creator, department_id
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_policy
@@ -27,12 +28,13 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
         insert into gray_policy (policy_id, policy_type, policy_key,
-        is_delete, create_time, update_time, policy_value, policy_match_type, remark, policy_name, creator
+        is_delete, create_time, update_time, policy_value, policy_match_type, remark, policy_name, creator,
+        department_id
         )
         values (#{policyId,jdbcType=VARCHAR}, #{policyType,jdbcType=VARCHAR}, #{policyKey,jdbcType=VARCHAR},
         #{isDelete,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
         #{policyValue,jdbcType=VARCHAR}, #{policyMatchType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
-        #{policyName,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}
+        #{policyName,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
@@ -69,10 +71,15 @@
             #{item}
         </foreach>
     </select>
-    <select id="selectByPolicyId" resultMap="BaseResultMap">
+    <select id="selectByPolicyId" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from gray_policy WHERE policy_id=#{policyId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByDepartmentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_policy WHERE department_id=#{departmentId,jdbcType=VARCHAR}
     </select>
     <update id="updateByPolicyId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyEntity">
         update gray_policy
