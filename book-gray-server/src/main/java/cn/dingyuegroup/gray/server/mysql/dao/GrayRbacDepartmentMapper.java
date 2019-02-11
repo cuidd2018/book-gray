@@ -17,4 +17,10 @@ public interface GrayRbacDepartmentMapper {
     int updateByPrimaryKey(GrayRbacDepartment record);
 
     GrayRbacDepartment selectByDepartmentId(String departmentId);
+
+    int updateByDepartmentId(GrayRbacDepartment record);
+
+    int deleteByDepartmentId(String departmentId);
+
+    List<GrayRbacDepartment> selectByCreator(String creator);
 }

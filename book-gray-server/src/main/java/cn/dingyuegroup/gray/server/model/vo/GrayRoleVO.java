@@ -14,7 +14,11 @@ public class GrayRoleVO {
 
     private String department;
 
+    private String departmentId;
+
     private boolean departmentAdmin;
+
+    private boolean admin;//总管理员
 
     private String resourceIds;
 

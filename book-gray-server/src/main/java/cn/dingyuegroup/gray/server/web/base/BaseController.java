@@ -107,6 +107,26 @@ public abstract class BaseController {
         return role.getIsDepartmentAdmin() == 1 ? true : false;
     }
 
+    public boolean isAdmin() {
+        String username = getUsername();
+        if (StringUtils.isEmpty(username)) {
+            return false;
+        }
+        String udid = getUdid();
+        if (StringUtils.isEmpty(udid)) {
+            return false;
+        }
+        GrayRbacUserRole grayRbacUserRole = grayRbacUserRoleMapper.selectByUdid(udid);
+        if (grayRbacUserRole == null) {
+            return false;
+        }
+        GrayRbacRole role = grayRbacRoleMapper.selectByRoleId(grayRbacUserRole.getRoleId());
+        if (role == null) {
+            return false;
+        }
+        return role.getIsAdmin() == 1 ? true : false;
+    }
+
     public List<GrayRbacResources> getResources() {
         String roleId = getRoleId();
         if (StringUtils.isEmpty(roleId)) {

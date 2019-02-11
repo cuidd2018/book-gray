@@ -18,4 +18,8 @@ public interface GrayRbacResourcesMapper {
     GrayRbacResources selectByResourceId(String resourceId);
 
     GrayRbacResources selectByResource(String resource);
+
+    int updateByResourcesId(GrayRbacResources record);
+
+    int deleteByResourcesId(String resourceId);
 }

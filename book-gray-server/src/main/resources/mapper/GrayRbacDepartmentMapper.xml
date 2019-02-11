@@ -5,20 +5,25 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="department_id" jdbcType="VARCHAR" property="departmentId"/>
         <result column="department_name" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, department_id, department_name
+        id, department_id, department_name, creator
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from gray_rbac_department
     where id = #{id,jdbcType=INTEGER}
   </delete>
+    <delete id="deleteByDepartmentId" parameterType="java.lang.String">
+        delete from gray_rbac_department
+        where department_id = #{departmentId,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into gray_rbac_department (department_id, department_name)
-        values (#{departmentId,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR})
+        insert into gray_rbac_department (department_id, department_name, creator)
+        values (#{departmentId,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment">
     update gray_rbac_department
@@ -43,4 +48,15 @@
         from gray_rbac_department
         where department_id = #{departmentId,jdbcType=VARCHAR}
     </select>
+    <select id="selectByCreator" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gray_rbac_department
+        where creator = #{creator,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByDepartmentId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacDepartment">
+        update gray_rbac_department
+        set department_name = #{departmentName,jdbcType=VARCHAR}
+        where department_id = #{departmentId,jdbcType=VARCHAR}
+    </update>
 </mapper>

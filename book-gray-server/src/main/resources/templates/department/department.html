@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html layout:decorate="~{common/layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:text-align="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="box-header">
+                    <div class="box-header">
+                        部门管理
+                    </div>
+                    <div th:if="${user.admin}" class="box-header">
+                        <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
+                    </div>
+                </div>
+                <table id="tableData" class="table table-bordered table-hover" style="text-align: center">
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">序号</th>
+                        <th style="text-align: center">部门编号</th>
+                        <th style="text-align: center">部门名称</th>
+                        <th style="text-align: center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item,iterStat:${list}">
+                        <td th:text="${iterStat.index +1}"></td>
+                        <td th:text="${item.departmentId}"></td>
+                        <td th:text="${item.departmentName}"></td>
+                        <td th:if="${user.udid == item.creator}" style="text-align: center">
+                            <span name="edit" title="编辑"
+                                  th:onclick="'javascript:showEditModule(\''+${item.departmentId}+'\',\''+${item.departmentName}+'\')'"
+                                  style="cursor: pointer" class="glyphicon glyphicon-edit">
+                          </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span name="trash" title="删除"
+                                  th:onclick="'javascript:showDeleteModule(\''+${item.departmentId}+'\')'"
+                                  style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            添加部门
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="add-form" th:action="@{/gray/manager/rbac/department/add}"
+                              method="post">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">部门名称:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="departmentName" required="required">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="hintDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myDeleteModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myDeleteModalLabel">
+                            删除部门
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        确认删除部门！
+                        <form class="form-horizontal" id="delete-form"
+                              th:action="@{/gray/manager/rbac/department/delete}"
+                              method="post">
+                            <input id="deleteDepartmentId" name="departmentId" type="hidden">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-danger" onclick="hintDeleteDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myEditModalLabel">
+                            修改部门
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-form" class="form-horizontal"
+                              th:action="@{/gray/manager/rbac/department/edit}"
+                              method="post">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">部门编号:</label>
+                                <div class="col-sm-6">
+                                    <input id="departmentId" type="text" class="form-control" disabled="true">
+                                    <input id="departmentIdHidden" type="hidden" class="form-control"
+                                           name="departmentId">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">部门名称:</label>
+                                <div class="col-sm-6">
+                                    <input id="departmentName" type="text" class="form-control" name="departmentName">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="hintEditDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <script>
+            // 添加
+            function showModule() {
+                $('#myModal').modal('show');
+            }
+            function hintDo() {
+                $("#add-form").submit();
+                $('#myModal').modal('hide')
+            }
+            // 删除
+            function showDeleteModule(departmentId) {
+                var m = $('#myDeleteModal');
+                m.find("#deleteDepartmentId").val(departmentId);
+                m.modal('show');
+            }
+            function hintDeleteDo() {
+                $("#delete-form").submit();
+                $('#myDeleteModal').modal('hide')
+            }
+
+            // 修改
+            function showEditModule(departmentId, departmentName) {
+                var m = $('#myEditModal').modal('show');
+                m.find("#departmentId").val(departmentId);
+                m.find("#departmentIdHidden").val(departmentId);
+                m.find("#departmentName").val(departmentName);
+                m.modal('show');
+            }
+            function hintEditDo() {
+                $("#edit-form").submit();
+                $('#myEditModal').modal('hide')
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

@@ -11,9 +11,13 @@
         id, resource_id, resource_name, resource
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from gray_rbac_resources
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+        delete from gray_rbac_resources
+        where id = #{id,jdbcType=INTEGER}
+      </delete>
+    <delete id="deleteByResourcesId" parameterType="java.lang.String">
+        delete from gray_rbac_resources
+        where resource_id = #{resourceId,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
@@ -51,4 +55,10 @@
         from gray_rbac_resources
         where resource = #{resource,jdbcType=VARCHAR} limit 1
     </select>
+    <update id="updateByResourcesId" parameterType="cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources">
+        update gray_rbac_resources
+        set resource_name = #{resourceName,jdbcType=VARCHAR},
+        resource = #{resource,jdbcType=VARCHAR}
+        where resource_id = #{resourceId,jdbcType=VARCHAR}
+    </update>
 </mapper>

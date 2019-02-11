@@ -34,19 +34,25 @@
                         <td th:text="${iterStat.index +1}"></td>
                         <td th:text="${item.roleId}"></td>
                         <td th:text="${item.roleName}"></td>
-                        <td th:text="${item.department}"></td>
+                        <td>
+                            <a th:if="${item.creator == user.udid}"
+                               th:href="'javascript:showDepartments(\''+${item.roleId}+'\',\''+${item.departmentId}+'\')'"
+                               th:text="${item.department}"></a>
+                            <span th:if="${item.creator != user.udid}"
+                                  th:text="${item.department}"></span>
+                        </td>
                         <td>
                             <span th:if="${item.departmentAdmin == true}">是</span>
                             <span th:if="${item.departmentAdmin == false}">否</span>
                         </td>
                         <td>
-                            <a th:if="${item.departmentAdmin == false}"
+                            <a th:if="${item.creator == user.udid}"
                                th:href="'javascript:showResources(\''+${item.resourceIds}+'\',\''+${item.roleId}+'\')'"
                                th:text="${item.resourceNames}"></a>
-                            <span th:if="${item.departmentAdmin == true}" th:text="${item.resourceNames}"></span>
+                            <span th:if="${item.creator != user.udid}" th:text="${item.resourceNames}"></span>
                         </td>
                         <td th:text="${item.creatorName}"></td>
-                        <td th:if="${item.departmentAdmin == false}" style="text-align: center">
+                        <td th:if="${item.creator == user.udid}" style="text-align: center">
                             <span name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.roleId}+'\',\''+${item.roleName}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-edit">
@@ -163,7 +169,7 @@
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" id="resource-form"
-                              th:action="@{/gray/manager/rbac/resources/edit}"
+                              th:action="@{/gray/manager/rbac/role/resources/edit}"
                               method="post">
                             <input name="roleId" type="hidden" id="roleIdSelect">
                             <div class="form-group row">
@@ -182,6 +188,37 @@
                 </div>
             </div>
         </div>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myDepartmentModalLabel">
+                            设置部门
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="department-form"
+                              th:action="@{/gray/manager/rbac/role/department}"
+                              method="post">
+                            <input name="roleId" type="hidden" id="roleIdSel">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label" style="padding-left:50px;">选择部门:</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control" name="departmentId" id="departmentIdSelect">
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="setDepartmentDo();">确定</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
         <script>
             // 添加
             function showModule() {
@@ -252,6 +289,42 @@
                                     result += '<input type="checkbox" class="radio22" name="resourceId" value="' + e.resourceId + '">' + e.resourceName + '</input></br>';
                                 });
                                 $("#resourceCheckbox").append(result);
+                            } else {
+                                alert(data.message);
+                            }
+                        }
+                    });
+                }
+            }
+            // 添加
+            function showDepartments(roleId, departmentId) {
+                initDepartmentList();
+                var m = $('#myDepartmentModal').modal('show');
+                m.find("#roleIdSel").val(roleId);
+                m.find("#departmentIdSelect").val(departmentId);
+                m.modal('show');
+            }
+            function setDepartmentDo() {
+                $("#department-form").submit();
+                $('#myDepartmentModal').modal('hide')
+            }
+            var departmentList;
+            //初始化cp列表
+            function initDepartmentList() {
+                if (!departmentList) {
+                    $.ajax({
+                        url: "/gray/manager/rbac/department/list",
+                        type: 'get',
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            if (data.respCode == 20000) {
+                                departmentList = data.data;
+                                var result = '<option value="">无</option>';
+                                $.each(departmentList, function (i, e) {
+                                    result += '<option value="' + e.departmentId + '">' + e.departmentName + '</option>';
+                                });
+                                $("#departmentIdSelect").append(result);
                             } else {
                                 alert(data.message);
                             }

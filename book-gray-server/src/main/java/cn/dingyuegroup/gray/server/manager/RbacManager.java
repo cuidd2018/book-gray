@@ -1,9 +1,6 @@
 package cn.dingyuegroup.gray.server.manager;
 
-import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
-import cn.dingyuegroup.gray.server.model.vo.GrayResourceVO;
-import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
-import cn.dingyuegroup.gray.server.model.vo.GrayUserVO;
+import cn.dingyuegroup.gray.server.model.vo.*;
 
 import java.util.List;
 
@@ -82,6 +79,13 @@ public interface RbacManager {
     List<GrayRoleVO> listRoles(String departmentId);
 
     /**
+     * 获取部门管理员角色
+     *
+     * @return
+     */
+    List<GrayRoleVO> listRolesByCreator(String creator);
+
+    /**
      * 添加角色
      *
      * @param departmentId
@@ -90,7 +94,7 @@ public interface RbacManager {
      * @param creator
      * @return
      */
-    boolean addRole(String departmentId, String roleName, Integer isDepartmentAdmin, String creator);
+    boolean addRole(String departmentId, String roleName, boolean isDepartmentAdmin, String creator);
 
     /**
      * 编辑角色
@@ -109,7 +113,20 @@ public interface RbacManager {
      */
     boolean deleteRole(String roleId);
 
-    List<GrayResourceVO> listResources(String roleId);
+    /**
+     * 资源列表
+     *
+     * @param roleId
+     * @return
+     */
+    List<GrayResourceVO> listResourcesByRole(String roleId);
+
+    /**
+     * 所有资源
+     *
+     * @return
+     */
+    List<GrayResourceVO> listResources();
 
     /**
      * 更新角色资源配置
@@ -117,5 +134,73 @@ public interface RbacManager {
      * @param roleId
      * @return
      */
-    boolean editResources(String roleId, String resourceId);
+    boolean editRoleResources(String roleId, String resourceId);
+
+    /**
+     * 添加资源
+     *
+     * @param env
+     * @param resourceName
+     * @return
+     */
+    boolean addResource(String env, String resourceName);
+
+    /**
+     * 编辑资源
+     *
+     * @param resourceId
+     * @param env
+     * @param resourceName
+     * @return
+     */
+    boolean editResource(String resourceId, String env, String resourceName);
+
+    /**
+     * 删除资源
+     *
+     * @param resourceId
+     * @return
+     */
+    boolean deleteResource(String resourceId);
+
+    /**
+     * 部门列表
+     *
+     * @return
+     */
+    List<GrayDepartmentVO> listDepartmentByCreator(String creator);
+
+    /**
+     * 给角色设置部门
+     *
+     * @param roleId
+     * @param departmentId
+     * @return
+     */
+    boolean setRoleDepartment(String roleId, String departmentId);
+
+    /**
+     * 添加部门
+     *
+     * @param departmentName
+     * @return
+     */
+    boolean addDepartment(String departmentName, String creator);
+
+    /**
+     * 编辑部门
+     *
+     * @param departmentId
+     * @param departmentName
+     * @return
+     */
+    boolean editDepartment(String departmentId, String departmentName);
+
+    /**
+     * 删除部门
+     *
+     * @param departmentId
+     * @return
+     */
+    boolean deleteDepartment(String departmentId);
 }

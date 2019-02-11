@@ -22,4 +22,6 @@ public interface GrayRbacRoleMapper {
     List<GrayRbacRole> selectByCreator(String creator);
 
     int editByRoleId(GrayRbacRole record);
+
+    int editDepartmentByRoleId(GrayRbacRole record);
 }

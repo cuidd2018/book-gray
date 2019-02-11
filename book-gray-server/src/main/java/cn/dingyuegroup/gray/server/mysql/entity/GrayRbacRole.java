@@ -17,6 +17,8 @@ public class GrayRbacRole {
 
     private String departmentId;
 
+    private Integer isAdmin;
+
     private Integer isDepartmentAdmin;
 
     private String creator;

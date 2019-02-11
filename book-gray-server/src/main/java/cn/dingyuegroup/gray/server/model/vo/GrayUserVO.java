@@ -11,6 +11,7 @@ public class GrayUserVO {
     private String department;
     private String roles;
     private boolean departmentAdmin;
+    private boolean admin;//总管理员
     private String udid;
     private String account;//账户
 }

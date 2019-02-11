@@ -12,7 +12,7 @@
                     <div class="box-header">
                         人员管理
                     </div>
-                    <div th:if="${user.departmentAdmin}" class="box-header">
+                    <div th:if="${user.admin || user.departmentAdmin}" class="box-header">
                         <a title="新增" onclick="showModule()"><span class="glyphicon glyphicon-plus"></span></a>
                     </div>
                 </div>
@@ -42,12 +42,12 @@
                         <td>
                             <a th:href="'javascript:showPassword(\''+${item.udid}+'\')'">重置密码</a>
                         </td>
-                        <td style="text-align: center">
-                            <span th:if="${user.udid != item.udid}" name="edit" title="编辑"
+                        <td th:if="${item.creator == user.udid}" style="text-align: center">
+                            <span name="edit" title="编辑"
                                   th:onclick="'javascript:showEditModule(\''+${item.udid}+'\',\''+${item.nickname}+'\',\''+${item.account}+'\',\''+${item.remark}+'\',\''+${item.roleId}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-edit">
                           </span>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <span th:if="${user.udid != item.udid}" name="trash" title="删除"
+                            <span name="trash" title="删除"
                                   th:onclick="'javascript:showDeleteModule(\''+${item.udid}+'\')'"
                                   style="cursor: pointer" class="glyphicon glyphicon-trash"></span>
                         </td>
@@ -111,11 +111,11 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h4 class="modal-title" id="myDeleteModalLabel">
-                            删除策略
+                            删除人员
                         </h4>
                     </div>
                     <div class="modal-body">
-                        确认删除策略！
+                        确认删除人员！
                         <form class="form-horizontal" id="delete-form"
                               th:action="@{/gray/manager/rbac/user/delete}"
                               method="post">

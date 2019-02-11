@@ -1,8 +1,8 @@
 package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.manager.RbacManager;
-import cn.dingyuegroup.gray.server.model.resp.ErrorCode;
 import cn.dingyuegroup.gray.server.model.resp.RespMsg;
+import cn.dingyuegroup.gray.server.model.vo.GrayDepartmentVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayRbacUserVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayResourceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayRoleVO;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by 170147 on 2019/1/22.
@@ -70,19 +70,15 @@ public class GrayRbacController extends BaseController {
     @RequestMapping(value = "/role/list")
     @ResponseBody
     public RespMsg listRoles() {
-        String departmentId = getDepartmentId();
-        if (StringUtils.isEmpty(departmentId)) {
-            return RespMsg.error(ErrorCode.SYSTEM_ERROR, "用户信息不完善，缺少部门信息！");
-        }
-        List<GrayRoleVO> list = rbacManager.listRoles(departmentId);
-        list = list.stream().filter(e -> !e.isDepartmentAdmin()).collect(Collectors.toList());//排除管理员角色，管理员不能创建管理员角色
+        String creator = getUdid();
+        List<GrayRoleVO> list = rbacManager.listRolesByCreator(creator);
         return RespMsg.success(list);
     }
 
     @RequestMapping(value = "/role/index")
     public ModelAndView roleIndex(ModelAndView model) {
-        String departmentId = getDepartmentId();
-        List<GrayRoleVO> list = rbacManager.listRoles(departmentId);
+        String creator = getUdid();
+        List<GrayRoleVO> list = rbacManager.listRolesByCreator(creator);
         model.addObject("list", list);
         model.setViewName("role/role");
         return model;
@@ -91,8 +87,14 @@ public class GrayRbacController extends BaseController {
     @RequestMapping(value = "/role/add")
     public String addRole(@RequestParam String roleName) {
         String departmentId = getDepartmentId();
-        String udid = getUdid();
-        rbacManager.addRole(departmentId, roleName, 0, udid);
+        String creator = getUdid();
+        boolean isAdmin = isAdmin();
+        boolean isDepartmentAdmin = false;
+        if (isAdmin) {//只有总管理员才可以创建部门管理员
+            isDepartmentAdmin = true;
+            departmentId = null;
+        }
+        rbacManager.addRole(departmentId, roleName, isDepartmentAdmin, creator);
         return "redirect:/gray/manager/rbac/role/index";
     }
 
@@ -111,18 +113,89 @@ public class GrayRbacController extends BaseController {
     @RequestMapping(value = "/resources")
     @ResponseBody
     public RespMsg listResources() {
-        String roleId = getRoleId();
-        if (StringUtils.isEmpty(roleId)) {
-            return RespMsg.error(ErrorCode.SYSTEM_ERROR, "用户信息不完善，缺少角色信息！");
+        List<GrayResourceVO> list = new ArrayList<>();
+        boolean isDepartmentAdmin = isDepartmentAdmin();
+        boolean isAdmin = isAdmin();
+        if (isAdmin) {//总管理员
+            list = rbacManager.listResources();
+        } else if (isDepartmentAdmin) {//部门管理员
+            String roleId = getRoleId();
+            list = rbacManager.listResourcesByRole(roleId);
         }
-        List<GrayResourceVO> list = rbacManager.listResources(roleId);
         return RespMsg.success(list);
     }
 
+    @RequestMapping(value = "/resources/index", method = RequestMethod.GET)
+    public ModelAndView resourcesIndex(ModelAndView model) {
+        List<GrayResourceVO> list = rbacManager.listResources();
+        model.addObject("list", list);
+        model.setViewName("resources/resources");
+        return model;
+    }
+
+    @RequestMapping(value = "/resources/add")
+    public String addResources(@RequestParam String env, @RequestParam String resourceName) {
+        rbacManager.addResource(env, resourceName);
+        return "redirect:/gray/manager/rbac/resources/index";
+    }
+
     @RequestMapping(value = "/resources/edit")
-    public String editResources(@RequestParam String roleId, @RequestParam String resourceId) {
-        rbacManager.editResources(roleId, resourceId);
+    public String editResources(@RequestParam String resourcesId, @RequestParam String env, @RequestParam String resourceName) {
+        rbacManager.editResource(resourcesId, env, resourceName);
+        return "redirect:/gray/manager/rbac/resources/index";
+    }
+
+    @RequestMapping(value = "/resources/delete")
+    public String deleteResources(@RequestParam String resourcesId) {
+        rbacManager.deleteResource(resourcesId);
+        return "redirect:/gray/manager/rbac/resources/index";
+    }
+
+    @RequestMapping(value = "/role/resources/edit")
+    public String editRoleResources(@RequestParam String roleId, @RequestParam String resourceId) {
+        rbacManager.editRoleResources(roleId, resourceId);
         return "redirect:/gray/manager/rbac/role/index";
     }
 
+    @RequestMapping(value = "/department/index", method = RequestMethod.GET)
+    public ModelAndView listDepartment(ModelAndView model) {
+        String creator = getUdid();
+        List<GrayDepartmentVO> list = rbacManager.listDepartmentByCreator(creator);
+        model.addObject("list", list);
+        model.setViewName("department/department");
+        return model;
+    }
+
+    @RequestMapping(value = "/department/list")
+    @ResponseBody
+    public RespMsg listDepartments() {
+        String creator = getUdid();
+        List<GrayDepartmentVO> list = rbacManager.listDepartmentByCreator(creator);
+        return RespMsg.success(list);
+    }
+
+    @RequestMapping(value = "/role/department")
+    public String roleDepartment(@RequestParam String roleId, @RequestParam String departmentId) {
+        rbacManager.setRoleDepartment(roleId, departmentId);
+        return "redirect:/gray/manager/rbac/role/index";
+    }
+
+    @RequestMapping(value = "/department/add")
+    public String addDepartment(@RequestParam String departmentName) {
+        String creator = getUdid();
+        rbacManager.addDepartment(departmentName, creator);
+        return "redirect:/gray/manager/rbac/department/index";
+    }
+
+    @RequestMapping(value = "/department/edit")
+    public String editDepartment(@RequestParam String departmentId, @RequestParam String departmentName) {
+        rbacManager.editDepartment(departmentId, departmentName);
+        return "redirect:/gray/manager/rbac/department/index";
+    }
+
+    @RequestMapping(value = "/department/delete")
+    public String deleteDepartment(@RequestParam String departmentId) {
+        rbacManager.deleteDepartment(departmentId);
+        return "redirect:/gray/manager/rbac/department/index";
+    }
 }

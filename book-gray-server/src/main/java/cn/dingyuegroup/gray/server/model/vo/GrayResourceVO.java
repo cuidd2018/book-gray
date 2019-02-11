@@ -7,7 +7,10 @@ import lombok.Data;
  */
 @Data
 public class GrayResourceVO {
+
     private String resourceId;
 
     private String resourceName;
+
+    private String env;
 }
