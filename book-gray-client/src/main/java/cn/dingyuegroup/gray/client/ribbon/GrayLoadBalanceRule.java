@@ -61,8 +61,8 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
         }
         if (getGrayManager().isOpen(serviceId)) {//开启了灰度
             GrayService grayService = getGrayManager().grayService(serviceId);
-            List<Server> grayServers = new ArrayList<>(grayService.getGrayInstances().size());
-            List<Server> normalServers = new ArrayList<>(servers.size() - grayService.getGrayInstances().size());
+            List<Server> grayServers = new ArrayList<>(grayService.onlineAndgrayInstances().size());
+            List<Server> normalServers = new ArrayList<>(servers.size() - grayService.onlineAndgrayInstances().size());
             for (Server server : servers) {
                 Map<String, String> serverMetadata = getServerMetadata(serviceId, server);
                 String instanceId = ServiceUtil.getInstanceId(server, serverMetadata);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,6 +25,14 @@ public class GrayService {
 
     public GrayService() {
 
+    }
+
+    public List<GrayInstance> onlineAndgrayInstances() {
+        List<GrayInstance> grayInstances = getGrayInstances();
+        if (grayInstances != null && grayInstances.size() > 0) {
+            grayInstances = grayInstances.stream().filter(e -> e.isStatus() && e.isOpenGray()).collect(Collectors.toList());//排除下线的服务
+        }
+        return grayInstances;
     }
 
     /**
@@ -63,13 +72,21 @@ public class GrayService {
     }
 
     public boolean isOpenGray() {
-        return getGrayInstances() != null
-                && !getGrayInstances().isEmpty()
+        List<GrayInstance> grayInstances = getGrayInstances();
+        if (grayInstances != null && grayInstances.size() > 0) {
+            grayInstances = grayInstances.stream().filter(e -> e.isStatus()).collect(Collectors.toList());//排除下线的服务
+        }
+        return grayInstances != null
+                && !grayInstances.isEmpty()
                 && hasGrayInstance();
     }
 
     public boolean hasGrayInstance() {
-        for (GrayInstance grayInstance : getGrayInstances()) {
+        List<GrayInstance> grayInstances = getGrayInstances();
+        if (grayInstances != null && grayInstances.size() > 0) {
+            grayInstances = grayInstances.stream().filter(e -> e.isStatus()).collect(Collectors.toList());//排除下线的服务
+        }
+        for (GrayInstance grayInstance : grayInstances) {
             if (grayInstance.isOpenGray()) {//开启灰度
                 return true;
             }
@@ -97,7 +114,7 @@ public class GrayService {
     public GrayService takeNewOpenGrayService() {
         GrayService service = toNewGrayService();
         for (GrayInstance grayInstance : grayInstances) {
-            if (grayInstance.isOpenGray() || !grayInstance.isStatus()) {//开启灰度，且在线
+            if (grayInstance.isOpenGray() || !grayInstance.isStatus()) {//开启灰度或者下线
                 service.addGrayInstance(grayInstance.takeNewOpenGrayInstance());
             }
         }
