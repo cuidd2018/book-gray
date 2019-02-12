@@ -37,11 +37,11 @@
                         <td th:text="${item.appName}"></td>
                         <td th:text="${item.instanceSize}"></td>
                         <td>
-                            <span th:if="${item.status} == true">是</span>
-                            <span th:if="${item.status} == false">否</span>
+                            <span th:if="${item.status} == true" style="color: green;font-weight: bold">是</span>
+                            <span th:if="${item.status} == false" style="color: red;font-weight: bold">否</span>
                         </td>
                         <td>
-                            <span th:if="${item.hasGrayInstances} == true" style="color: red">是</span>
+                            <span th:if="${item.hasGrayInstances} == true" style="color: red;font-weight: bold;">是</span>
                             <span th:if="${item.hasGrayInstances} == false">否</span>
                         </td>
                         <td>
