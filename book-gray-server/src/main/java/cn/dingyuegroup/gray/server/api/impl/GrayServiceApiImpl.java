@@ -37,13 +37,13 @@ public class GrayServiceApiImpl implements GrayServiceApi {
 
     @Override
     public ResponseEntity<Void> offlineInstance(@PathVariable("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
-        grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 0);
+        //grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 0);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<Void> onlineInstance(@RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
-        grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 1);
+        //grayServiceManager.editInstanceOnlineStatus(serviceId, instanceId, 1);
         return ResponseEntity.ok().build();
     }
 
