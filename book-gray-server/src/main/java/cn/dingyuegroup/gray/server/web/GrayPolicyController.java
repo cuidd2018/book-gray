@@ -6,6 +6,7 @@ import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayPolicyGroupMapper;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayPolicyGroupEntity;
+import cn.dingyuegroup.gray.server.refresh.RefreshGrayClient;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,8 @@ public class GrayPolicyController extends BaseController {
         return model;
     }
 
-    @RequestMapping(value = "/add")
+    @RefreshGrayClient
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey,
                             @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType,
                             @RequestParam("policyName") String policyName, @RequestParam("remark") String remark) {
@@ -50,7 +52,8 @@ public class GrayPolicyController extends BaseController {
         return "redirect:/gray/manager/policy/index";
     }
 
-    @RequestMapping(value = "/edit")
+    @RefreshGrayClient
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String editPolicy(@RequestParam("policyType") String policyType, @RequestParam("policyKey") String policyKey,
                              @RequestParam("policyValue") String policyValue, @RequestParam("policyMatchType") String policyMatchType,
                              @RequestParam("policyName") String policyName, @RequestParam("remark") String remark,
@@ -59,7 +62,8 @@ public class GrayPolicyController extends BaseController {
         return "redirect:/gray/manager/policy/index";
     }
 
-    @RequestMapping(value = "/delete")
+    @RefreshGrayClient
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String deletePolicy(@RequestParam String policyId) {
         grayServiceManager.delPolicy(policyId);
         return "redirect:/gray/manager/policy/index";
@@ -80,7 +84,8 @@ public class GrayPolicyController extends BaseController {
         return RespMsg.success(list);
     }
 
-    @RequestMapping(value = "/group/add")
+    @RefreshGrayClient
+    @RequestMapping(value = "/group/add", method = RequestMethod.POST)
     public String addGroup(@RequestParam String alias, @RequestParam Integer enable, @RequestParam String groupType, @RequestParam String remark) {
         String creator = getUdid();
         String departmentId = getDepartmentId();
@@ -88,19 +93,22 @@ public class GrayPolicyController extends BaseController {
         return "redirect:/gray/manager/policy/group/index";
     }
 
-    @RequestMapping(value = "/group/edit")
+    @RefreshGrayClient
+    @RequestMapping(value = "/group/edit", method = RequestMethod.POST)
     public String editGroup(@RequestParam String policyGroupId, @RequestParam String alias, @RequestParam String groupType, @RequestParam String remark) {
         grayServiceManager.editPolicyGroup(policyGroupId, alias, groupType, remark);
         return "redirect:/gray/manager/policy/group/index";
     }
 
-    @RequestMapping(value = "/group/status")
+    @RefreshGrayClient
+    @RequestMapping(value = "/group/status", method = RequestMethod.POST)
     public String editGroup(@RequestParam String policyGroupId, @RequestParam Integer status) {
         grayServiceManager.editPolicyGroupStatus(null, null, policyGroupId, status);
         return "redirect:/gray/manager/policy/group/index";
     }
 
-    @RequestMapping(value = "/group/delete")
+    @RefreshGrayClient
+    @RequestMapping(value = "/group/delete", method = RequestMethod.POST)
     public String deleteGroup(@RequestParam String policyGroupId) {
         grayServiceManager.delPolicyGroup(policyGroupId);
         return "redirect:/gray/manager/policy/group/index";
@@ -128,14 +136,16 @@ public class GrayPolicyController extends BaseController {
         return RespMsg.success(all);
     }
 
-    @RequestMapping(value = "/group/relate")
+    @RefreshGrayClient
+    @RequestMapping(value = "/group/relate", method = RequestMethod.POST)
     public String relateGroup(RedirectAttributes attr, @RequestParam String policyGroupId, @RequestParam String policyId) {
         grayServiceManager.addPolicyGroupPolicy(policyGroupId, policyId);
         attr.addAttribute("policyGroupId", policyGroupId);
         return "redirect:/gray/manager/policy/group/relate/index";
     }
 
-    @RequestMapping(value = "/group/unRelate")
+    @RefreshGrayClient
+    @RequestMapping(value = "/group/unRelate", method = RequestMethod.POST)
     public String unRelateGroup(RedirectAttributes attr, @RequestParam String policyGroupId, @RequestParam String policyId) {
         grayServiceManager.delPolicyGroupPolicy(policyGroupId, policyId);
         attr.addAttribute("policyGroupId", policyGroupId);

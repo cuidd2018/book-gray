@@ -34,4 +34,6 @@ public interface GrayInstanceMapper {
     int updateByInstanceId(GrayInstanceEntity record);
 
     int updateEnvByInstanceId(GrayInstanceEntity record);
+
+    int deletePolicyGroup(String groupId);
 }

@@ -7,6 +7,7 @@ import cn.dingyuegroup.gray.server.model.vo.GrayInstanceVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayServiceVO;
 import cn.dingyuegroup.gray.server.mysql.entity.GrayRbacResources;
+import cn.dingyuegroup.gray.server.refresh.RefreshGrayClient;
 import cn.dingyuegroup.gray.server.vertify.VertifyRequest;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,19 +57,22 @@ public class GrayServiceController extends BaseController {
         return model;
     }
 
-    @RequestMapping("/add")
+    @RefreshGrayClient
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addService(@RequestParam String appName, @RequestParam String serviceId, @RequestParam String remark) {
         grayServiceManager.addService(appName, serviceId, remark);
         return "redirect:/gray/manager/services/index";
     }
 
-    @RequestMapping("/edit")
+    @RefreshGrayClient
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String editService(@RequestParam String appName, @RequestParam String serviceId, @RequestParam String remark) {
         grayServiceManager.editService(appName, serviceId, remark);
         return "redirect:/gray/manager/services/index";
     }
 
-    @RequestMapping("/delete")
+    @RefreshGrayClient
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String deleteService(@RequestParam String serviceId) {
         grayServiceManager.deleteService(serviceId);
         return "redirect:/gray/manager/services/index";
@@ -111,21 +115,24 @@ public class GrayServiceController extends BaseController {
         return model;
     }
 
-    @RequestMapping(value = "/instances/edit")
+    @RefreshGrayClient
+    @RequestMapping(value = "/instances/edit", method = RequestMethod.POST)
     public String editInstances(RedirectAttributes attr, @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId, @RequestParam("remark") String remark) {
         grayServiceManager.editInstance(serviceId, instanceId, remark);
         attr.addAttribute("serviceId", serviceId);
         return "redirect:/gray/manager/services/instances/index";
     }
 
-    @RequestMapping(value = "/instances/delete")
+    @RefreshGrayClient
+    @RequestMapping(value = "/instances/delete", method = RequestMethod.POST)
     public String deleteInstances(RedirectAttributes attr, @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId) {
         grayServiceManager.deleteInstance(serviceId, instanceId);
         attr.addAttribute("serviceId", serviceId);
         return "redirect:/gray/manager/services/instances/index";
     }
 
-    @RequestMapping(value = "/instance/grayStatus")
+    @RefreshGrayClient
+    @RequestMapping(value = "/instance/grayStatus", method = RequestMethod.POST)
     public String editInstanceGrayStatus(RedirectAttributes attr,
                                          @RequestParam("serviceId") String serviceId,
                                          @RequestParam("instanceId") String instanceId,
@@ -135,7 +142,8 @@ public class GrayServiceController extends BaseController {
         return "redirect:/gray/manager/services/instances/index";
     }
 
-    @RequestMapping(value = "/instance/onlineStatus")
+    @RefreshGrayClient
+    @RequestMapping(value = "/instance/onlineStatus", method = RequestMethod.POST)
     public String editInstanceOnlineStatus(RedirectAttributes attr,
                                            @RequestParam("serviceId") String serviceId,
                                            @RequestParam("instanceId") String instanceId,
@@ -174,27 +182,14 @@ public class GrayServiceController extends BaseController {
         return ResponseEntity.ok(vo);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/instance/policyGroup/status", method = RequestMethod.GET)
-    public ResponseEntity<Void> editPolicyGroupStatus(@RequestParam("serviceId") String serviceId,
-                                                      @RequestParam("instanceId") String instanceId,
-                                                      @RequestParam("groupId") String groupId,
-                                                      @RequestParam("status") int enable) {
-        boolean b = grayServiceManager.editPolicyGroupStatus(serviceId, instanceId, groupId, enable);
-        if (b) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-
     /**
      * 服务实例添加策略组
      *
      * @param serviceId 服务id
      * @return Void
      */
-    @RequestMapping(value = "/instance/policyGroup/relate")
+    @RefreshGrayClient
+    @RequestMapping(value = "/instance/policyGroup/relate", method = RequestMethod.POST)
     public String addPolicyGroup(RedirectAttributes attr,
                                  @RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId,
                                  @RequestParam(value = "policyGroupId", required = false) String groupId) {
@@ -205,28 +200,6 @@ public class GrayServiceController extends BaseController {
         }
         attr.addAttribute("serviceId", serviceId);
         return "redirect:/gray/manager/services/instances/index";
-    }
-
-
-    /**
-     * 服务实例删除策略组
-     *
-     * @param serviceId     服务id
-     * @param instanceId    实例id
-     * @param policyGroupId 灰度策略组id
-     * @return Void
-     */
-    @ResponseBody
-    @RequestMapping(value = "/instance/policyGroup/unRelate", method = RequestMethod.GET)
-    public ResponseEntity<Void> delPolicyGroup(
-            @RequestParam("serviceId") String serviceId,
-            @RequestParam("instanceId") String instanceId,
-            @RequestParam("groupId") String policyGroupId) {
-        boolean b = grayServiceManager.delInstancePolicyGroup(serviceId, instanceId, policyGroupId);
-        if (b) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
     }
 
     private boolean hasAuth(GrayService grayService, List<GrayRbacResources> resourceList) {

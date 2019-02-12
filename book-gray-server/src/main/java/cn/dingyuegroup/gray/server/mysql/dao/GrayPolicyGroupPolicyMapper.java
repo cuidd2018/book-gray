@@ -22,4 +22,6 @@ public interface GrayPolicyGroupPolicyMapper {
     int countByGroupIdAndPolicyId(GrayPolicyGroupPolicy record);
 
     int deleteByGroupId(String policyGroupId);
+
+    int deleteByPolicyId(String policyId);
 }

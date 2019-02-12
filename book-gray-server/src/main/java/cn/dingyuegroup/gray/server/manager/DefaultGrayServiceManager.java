@@ -331,7 +331,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setUpdateTime(new Date());
                 grayInstanceMapper.updateStatusByInstanceId(entity);
             }
-            logger.info("更新服务实例灰度状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
+            logger.info("更新服务实例在线状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
         } finally {
             lock.unlock();
         }
@@ -424,8 +424,12 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean delPolicyGroup(String groupId) {
+        if (StringUtils.isEmpty(groupId)) {
+            return false;
+        }
         grayPolicyGroupMapper.deleteByGroupId(groupId);
         grayPolicyGroupPolicyMapper.deleteByGroupId(groupId);
+        grayInstanceMapper.deletePolicyGroup(groupId);
         return true;
     }
 
@@ -500,7 +504,11 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
      */
     @Override
     public boolean delPolicy(String policyId) {
+        if (StringUtils.isEmpty(policyId)) {
+            return false;
+        }
         grayPolicyMapper.deleteByPolicyId(policyId);
+        grayPolicyGroupPolicyMapper.deleteByPolicyId(policyId);
         return true;
     }
 

@@ -103,4 +103,8 @@
         set env = #{env,jdbcType=VARCHAR},update_time = #{updateTime,jdbcType=TIMESTAMP}
         where instance_id = #{instanceId,jdbcType=VARCHAR}
     </update>
+    <update id="deletePolicyGroup" parameterType="java.lang.String">
+        update gray_instance
+        set policy_group_id = null where policy_group_id = #{policyGroupId,jdbcType=VARCHAR}
+    </update>
 </mapper>
