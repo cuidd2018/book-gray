@@ -6,8 +6,8 @@ server:
 eureka:
   instance:
     hostname: localhost
-    lease-renewal-interval-in-seconds: 8
-    lease-expiration-duration-in-seconds: 20
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
   client:
     register-with-eureka: false
     fetch-registry: false
@@ -18,3 +18,6 @@ eureka:
   server:
     #关闭注册中心的保护机制
     enable-self-preservation: false
+    response-cache-auto-expiration-in-seconds: 30
+    response-cache-update-interval-ms: 10
+    eviction-interval-timer-in-ms: 3000
