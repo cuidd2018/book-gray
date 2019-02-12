@@ -15,11 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-/**
- * Created by whx on 2017/5/11.
- * 其中spring.aop.auto属性默认是开启的，也就是说只要引入了AOP依赖后，默认已经增加了@EnableAspectJAutoProxy。
- * 而当我们需要使用CGLIB来实现AOP的时候，需要配置spring.aop.proxy-target-class=true，不然默认使用的是标准Java的实现。
- */
 @Component
 @Aspect
 @ConditionalOnBean(GrayMQMarkerConfiguration.GrayMQMarker.class)

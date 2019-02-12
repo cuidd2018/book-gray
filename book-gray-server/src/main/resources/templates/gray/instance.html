@@ -20,6 +20,7 @@
                         <th style="text-align: center">服务ID</th>
                         <th style="text-align: center">服务名称</th>
                         <th style="text-align: center">服务实例ID</th>
+                        <th style="text-align: center">服务注册状态(服务治理)</th>
                         <th style="text-align: center">在线操作</th>
                         <th style="text-align: center">灰度操作</th>
                         <th style="text-align: center">灰度策略组</th>
@@ -35,6 +36,14 @@
                         <td th:text="${item.serviceId}"></td>
                         <td th:text="${item.appName}"></td>
                         <td th:text="${item.instanceId}"></td>
+                        <td>
+                            <span th:if="${item.eurekaStatus} == true" style="color: green;font-weight: bold">
+                                在线
+                            </span>
+                            <span th:if="${item.eurekaStatus} == false" style="color: red;font-weight: bold">
+                                下线
+                            </span>
+                        </td>
                         <td>
                             <button th:if="${item.status} == true" type="button"
                                     class="btn btn-xs btn-danger editStatus"

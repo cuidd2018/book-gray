@@ -79,6 +79,7 @@ public class EurekaGrayService extends AbstractGrayService {
             grayInstance.setOpenGray(true);//默认是开启灰度状态
             grayInstance.setMetadata(e.getMetadata());
             grayInstance.setUrl(e.getHomePageUrl());
+            grayInstance.setEurekaStatus(true);
             if (grayServiceEntity != null) {
                 grayInstance.setAppName(grayServiceEntity.getAppName());
             }
@@ -86,7 +87,7 @@ public class EurekaGrayService extends AbstractGrayService {
             if (grayInstanceEntity != null) {
                 grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
                 //eureka在线，并且持久化状态也是在线
-                grayInstance.setStatus(grayInstance.isStatus() && (grayInstanceEntity.getStatus() == 0 ? false : true));
+                grayInstance.setStatus(grayInstanceEntity.getStatus() == 0 ? false : true);
                 grayInstance.setRemark(grayInstanceEntity.getRemark());
                 if (!StringUtils.isEmpty(grayInstanceEntity.getEnv())) {
                     grayInstance.setEnv(grayInstanceEntity.getEnv());

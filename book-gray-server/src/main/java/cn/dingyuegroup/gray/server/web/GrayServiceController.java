@@ -107,6 +107,7 @@ public class GrayServiceController extends BaseController {
                     .policyGroupId(e.getGrayPolicyGroup() == null ? null : e.getGrayPolicyGroup().getPolicyGroupId())
                     .policyGroupAlias(e.getGrayPolicyGroup() == null ? null : e.getGrayPolicyGroup().getAlias())
                     .envName(e.getEnvName())
+                    .eurekaStatus(e.isEurekaStatus())
                     .build();
             list.add(vo);
         });

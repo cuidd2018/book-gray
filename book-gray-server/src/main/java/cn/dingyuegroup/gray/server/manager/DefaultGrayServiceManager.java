@@ -208,6 +208,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayInstance.setServiceId(serviceId);
         grayInstance.setInstanceId(instanceId);
         grayInstance.setStatus(false);//不在线
+        grayInstance.setEurekaStatus(false);
         grayInstance.setOpenGray(true);//默认是开启灰度状态
         GrayServiceEntity grayServiceEntity = grayServiceMapper.selectByServiceId(serviceId);
         if (grayServiceEntity != null) {
@@ -216,7 +217,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         GrayInstanceEntity grayInstanceEntity = grayInstanceMapper.selectByInstanceId(instanceId);
         if (grayInstanceEntity != null) {
             grayInstance.setOpenGray(grayInstanceEntity.getOpenGray() == 0 ? false : true);
-            grayInstance.setStatus(grayInstance.isStatus() && (grayInstanceEntity.getStatus() == 0 ? false : true));
+            grayInstance.setStatus(grayInstanceEntity.getStatus() == 0 ? false : true);
             grayInstance.setRemark(grayInstanceEntity.getRemark());
             if (!StringUtils.isEmpty(grayInstanceEntity.getEnv())) {
                 grayInstance.setEnv(grayInstanceEntity.getEnv());

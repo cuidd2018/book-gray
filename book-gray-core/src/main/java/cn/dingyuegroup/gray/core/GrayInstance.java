@@ -22,6 +22,7 @@ public class GrayInstance {
     private GrayPolicyGroup grayPolicyGroup;
     private boolean openGray = true;
     private boolean status = false;//是否在线
+    private boolean eurekaStatus = false;
     private String url;
     private Map<String, String> metadata;
     private String remark;
