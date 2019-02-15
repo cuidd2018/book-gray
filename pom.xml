@@ -35,18 +35,6 @@
         <lombok.version>1.16.12</lombok.version>
         <guava.version>27.0.1-jre</guava.version>
     </properties>
-    <repositories>
-        <repository>
-            <id>releases</id>
-            <name>Internal Releases</name>
-            <url>http://20.20.27.101:8081/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <name>Internal Snapshots</name>
-            <url>http://20.20.27.101:8081/nexus/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
     <distributionManagement>
         <repository>
             <id>releases</id>
