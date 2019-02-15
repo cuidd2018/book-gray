@@ -29,7 +29,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 @ConditionalOnBean(GrayShareSessionMarkerConfiguration.GrayShareSessionMarker.class)
 @PropertySource(value = "classpath:${gray.redis.path}", ignoreResourceNotFound = true)
-@ConfigurationProperties(prefix = "redis.session")
+@ConfigurationProperties(prefix = "gray.session")
 public class JedisConfig {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
