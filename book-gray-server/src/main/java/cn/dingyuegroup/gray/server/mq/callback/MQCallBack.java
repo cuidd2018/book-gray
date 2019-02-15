@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author whx
- * @date 2018/9/28 0028
  */
 @Component
 public class MQCallBack implements SendCallback {

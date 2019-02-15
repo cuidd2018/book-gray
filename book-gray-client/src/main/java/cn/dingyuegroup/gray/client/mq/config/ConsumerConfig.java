@@ -19,7 +19,6 @@ import java.util.Properties;
 
 /**
  * @author whx
- * @date 2018/9/27 0027
  */
 @Data
 @Configuration

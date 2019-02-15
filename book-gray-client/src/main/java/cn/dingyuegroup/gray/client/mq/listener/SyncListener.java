@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author whx
- * @date 2018/9/27 0027
  * ios用户同步账户使用
  */
 @Component

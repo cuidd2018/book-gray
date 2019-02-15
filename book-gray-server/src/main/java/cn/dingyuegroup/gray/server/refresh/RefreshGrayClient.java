@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
  * 只有返回文本的接口才能使用
  *
  * @author whx
- * @date 2017/10/10 0010
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

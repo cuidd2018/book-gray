@@ -23,7 +23,6 @@ import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * @author whx
- * @date 2017/9/29 0029
  */
 @Data
 @Configuration

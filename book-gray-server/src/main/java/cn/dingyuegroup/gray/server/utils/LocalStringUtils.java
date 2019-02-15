@@ -12,7 +12,6 @@ public class LocalStringUtils {
      *
      * @param str 待校验字符串
      * @return 是否为中文
-     * @warn 不能校验是否为中文标点符号
      */
     public static boolean isContainChinese(String str) {
         Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
@@ -74,7 +73,6 @@ public class LocalStringUtils {
 
     /**
      * 验证字符串内容是否包含下列非法字符<br>
-     * `~!#%^&*=+\\|{};:'\",<>/?○●★☆☉♀♂※¤╬の〆
      *
      * @param content 字符串内容
      * @return 't'代表不包含非法字符，otherwise代表包含非法字符。

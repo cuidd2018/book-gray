@@ -32,9 +32,6 @@ public class RefreshGrayClientAop {
     }
 
     /**
-     * "@annotation(vertifyRequest)"里的参数要和方法参数一致
-     *
-     * @return
      * @throws Throwable
      */
     @After("refreshGrayClient()")
