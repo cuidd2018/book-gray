@@ -11,6 +11,7 @@ import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistrati
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @ConditionalOnBean(EurekaClient.class)
 @AutoConfigureAfter(EurekaClientAutoConfiguration.class)
@@ -18,7 +19,6 @@ public class GrayClientEurekaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     public InstanceLocalInfo instanceLocalInfo(@Autowired EurekaRegistration registration) {
         String instanceId = registration.getInstanceConfig().getInstanceId();
         InstanceLocalInfo localInfo = new InstanceLocalInfo();

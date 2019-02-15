@@ -13,11 +13,11 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
     @Autowired
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     private RbacManager rbacManager;
 
     @Bean

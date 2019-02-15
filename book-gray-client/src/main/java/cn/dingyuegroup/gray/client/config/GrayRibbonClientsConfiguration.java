@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 public class GrayRibbonClientsConfiguration {
 
@@ -17,7 +18,6 @@ public class GrayRibbonClientsConfiguration {
      * @return
      */
     @Bean
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     public IRule ribbonRule(@Autowired(required = false) IClientConfig config) {
         GrayLoadBalanceRule rule = new GrayLoadBalanceRule();
         rule.initWithNiwsConfig(config);

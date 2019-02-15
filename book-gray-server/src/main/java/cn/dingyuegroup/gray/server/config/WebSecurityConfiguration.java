@@ -18,6 +18,7 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 import javax.annotation.Resource;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -42,7 +43,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     //2、使用@Resource
     @Resource
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     UserDetailsService userDetailsService;
 
     @Autowired

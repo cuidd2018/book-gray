@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.client.RestTemplate;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableConfigurationProperties({GrayClientProperties.class})
 @ConditionalOnBean(GrayClientMarkerConfiguration.GrayClientMarker.class)

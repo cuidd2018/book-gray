@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.List;
 
-
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableConfigurationProperties({BambooProperties.class})
 @AutoConfigureBefore({BambooFeignConfiguration.class, BambooZuulConfiguration.class})
@@ -35,7 +35,6 @@ public class BambooAutoConfiguration {
     }
 
     @Autowired
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     private SpringClientFactory springClientFactory;
     @Autowired
     private BambooProperties bambooProperties;
