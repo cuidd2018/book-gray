@@ -8,7 +8,6 @@ import cn.dingyuegroup.gray.client.context.GrayClientInitializingBean;
 import cn.dingyuegroup.gray.client.decision.DefaultGrayDecisionFactory;
 import cn.dingyuegroup.gray.client.manager.DefaultGrayManager;
 import cn.dingyuegroup.gray.client.manager.HttpInformationClient;
-import cn.dingyuegroup.gray.client.manager.RetryableInformationClient;
 import cn.dingyuegroup.gray.core.GrayDecisionFactory;
 import cn.dingyuegroup.gray.core.GrayManager;
 import cn.dingyuegroup.gray.core.InformationClient;
@@ -30,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 @RibbonClients(defaultConfiguration = GrayRibbonClientsConfiguration.class)
 public class GrayClientAutoConfiguration {
 
-
     @Bean
     public BambooAutoConfiguration.UnUseBambooIRule unUseBambooIRule() {
         return new BambooAutoConfiguration.UnUseBambooIRule();
@@ -48,22 +46,16 @@ public class GrayClientAutoConfiguration {
         return new DefaultGrayDecisionFactory();
     }
 
-
     @Configuration
-    @ConditionalOnProperty(prefix = "gray.client", value = "information-client", havingValue = "http", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "gray.client", value = {"server-name"})
     public static class HttpGrayManagerClientConfiguration {
         @Autowired
         private GrayClientProperties grayClientProperties;
 
         @Bean
         public InformationClient informationClient(@Autowired RestTemplate restTemplate) {
-            InformationClient client = new HttpInformationClient(grayClientProperties.getServerUrl(), restTemplate);
-            if (true) {
-                return client;
-            }
-            return new RetryableInformationClient(grayClientProperties.getRetryNumberOfRetries(), client);
+            return new HttpInformationClient(grayClientProperties.getServerName(), restTemplate);
         }
-
 
         @Bean
         public GrayManager grayManager(InformationClient informationClient, GrayDecisionFactory grayDecisionFactory) {
@@ -74,6 +66,4 @@ public class GrayClientAutoConfiguration {
             return new DefaultGrayManager(args);
         }
     }
-
-
 }

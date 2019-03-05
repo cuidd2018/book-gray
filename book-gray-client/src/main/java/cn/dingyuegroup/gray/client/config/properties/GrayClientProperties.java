@@ -1,6 +1,5 @@
 package cn.dingyuegroup.gray.client.config.properties;
 
-import cn.dingyuegroup.gray.client.manager.RetryableInformationClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("gray.client")
@@ -9,24 +8,9 @@ public class GrayClientProperties implements GrayClientConfig {
 
     private int serviceUpdateIntervalTimerInMs = 30000;
 
-    private String informationClient = "http";
-
-    private String serverUrl = "http://localhost:10202";
-
-    private boolean retryable = true;
-
-    private int retryNumberOfRetries = RetryableInformationClient.DEFAULT_NUMBER_OF_RETRIES;
+    private String serverName;
 
     private InstanceConfig instance = new InstanceConfig();
-
-
-    public String getInformationClient() {
-        return informationClient;
-    }
-
-    public void setInformationClient(String informationClient) {
-        this.informationClient = informationClient;
-    }
 
     @Override
     public boolean isGrayEnroll() {
@@ -38,17 +22,9 @@ public class GrayClientProperties implements GrayClientConfig {
         return instance.getGrayEnrollDealyTimeInMs();
     }
 
-    public String getServerUrl() {
-        return serverUrl;
-    }
-
     @Override
     public int getServiceUpdateIntervalTimerInMs() {
         return serviceUpdateIntervalTimerInMs;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
     }
 
 
@@ -64,21 +40,13 @@ public class GrayClientProperties implements GrayClientConfig {
         this.instance = instance;
     }
 
-
-    public boolean isRetryable() {
-        return retryable;
+    @Override
+    public String getServerName() {
+        return serverName;
     }
 
-    public void setRetryable(boolean retryable) {
-        this.retryable = retryable;
-    }
-
-    public int getRetryNumberOfRetries() {
-        return retryNumberOfRetries;
-    }
-
-    public void setRetryNumberOfRetries(int retryNumberOfRetries) {
-        this.retryNumberOfRetries = retryNumberOfRetries;
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 
     /**

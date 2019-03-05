@@ -19,7 +19,7 @@ public class GrayClientInitializingBean implements InitializingBean, Application
         GrayClientAppContext.setInstanceLocalInfo(cxt.getBean(InstanceLocalInfo.class));
         GrayClientAppContext.setGrayClientProperties(cxt.getBean(GrayClientProperties.class));
         GrayClientAppContext.setEnvironment(cxt.getEnvironment());
-        startForWork();
+        //startForWork();
 
 //        registrShutdownFunc();
     }

@@ -21,22 +21,30 @@ import java.util.Optional;
 
 public class HttpInformationClient implements InformationClient {
     private static final Logger log = LoggerFactory.getLogger(HttpInformationClient.class);
-    private final String baseUrl = "http://gray-server";
+    private final String serverName;
     private RestTemplate rest;
 
-    public HttpInformationClient(String baseUrl, RestTemplate rest) {
-        //this.baseUrl = baseUrl;
+    public HttpInformationClient(String serverName, RestTemplate rest) {
+        this.serverName = "http://" + serverName;
         this.rest = rest;
     }
 
     @Override
     public List<GrayService> listGrayService() {
-        String url = this.baseUrl + "/gray/api/services/enable";
+        log.info("\n----------------------------------------------------------\n\t"
+                        + "pull instances from gray server:\n\t"
+                        + "Local service: \t\t{}\n\t"
+                        + "Local instance: \t\t{}\n\t"
+                        + "gray service: \t\t{}\n----------------------------------------------------------",
+                GrayClientAppContext.getInstanceLocalInfo().getServiceId(), GrayClientAppContext.getInstanceLocalInfo().getInstanceId(), serverName);
+        String url = this.serverName + "/gray/api/services/enable";
         ParameterizedTypeReference<List<GrayService>> typeRef = new ParameterizedTypeReference<List<GrayService>>() {
         };
         try {
             ResponseEntity<List<GrayService>> responseEntity = rest.exchange(url, HttpMethod.GET, null, typeRef);
             log.info("灰度服务列表:{}", responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
+            log.info("\n" + "gray list: \t\t{}\n----------------------------------------------------------",
+                    responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
             return responseEntity.getBody();
         } catch (RuntimeException e) {
             log.error("获取灰度服务列表失败", e);
@@ -46,7 +54,9 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public Boolean uploadInstanceLocalInfo() {
-        String url = this.baseUrl + "/gray/api/services/uploadInstanceInfo?serviceId={1}&instanceId={2}&env={3}";
+        log.info("\n----------------------------------------------------------\n\t"
+                + "upload service enviroment to gray server\n\t----------------------------------------------------------");
+        String url = this.serverName + "/gray/api/services/uploadInstanceInfo?serviceId={1}&instanceId={2}&env={3}";
         try {
             InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
             if (localInfo == null || StringUtils.isEmpty(localInfo.getServiceId()) || StringUtils.isEmpty(localInfo.getInstanceId())) {
@@ -58,6 +68,8 @@ public class HttpInformationClient implements InformationClient {
                 return false;
             }
             rest.getForEntity(url, Void.class, localInfo.getServiceId(), localInfo.getInstanceId(), GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
+            log.info("\n----------------------------------------------------------\n\t"
+                    + "upload service enviroment to gray server done\n\t----------------------------------------------------------");
         } catch (RuntimeException e) {
             log.error("上传资源环境出错", e);
             throw e;
@@ -93,7 +105,7 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void addGrayInstance(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/api/services/instance/online?serviceId={1}&instanceId={2}";
+        String url = this.serverName + "/gray/api/services/instance/online?serviceId={1}&instanceId={2}";
         try {
             rest.getForEntity(url, Void.class, serviceId, instanceId);
         } catch (RuntimeException e) {
@@ -110,7 +122,7 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void serviceDownline(String serviceId, String instanceId) {
-        String url = this.baseUrl + "/gray/api/services/instance/offline";
+        String url = this.serverName + "/gray/api/services/instance/offline";
         try {
             Map<String, String> params = new HashMap<>();
             params.put("serviceId", serviceId);

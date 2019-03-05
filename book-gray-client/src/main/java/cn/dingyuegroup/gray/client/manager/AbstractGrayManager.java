@@ -74,10 +74,11 @@ public abstract class AbstractGrayManager implements GrayManager {
 
     @Override
     public void serviceDownline() {
-        log.debug("灰度服务下线...");
+        log.info("\n----------------------------------------------------------\n\t"
+                + "begin offline current instance\n\t----------------------------------------------------------");
         client.serviceDownline();
-        log.debug("灰度服务下线完成");
-        serviceShutdown();
+        log.info("\n----------------------------------------------------------\n\t"
+                + "offline current instance done\n\t----------------------------------------------------------");
     }
 
     protected abstract void serviceShutdown();
