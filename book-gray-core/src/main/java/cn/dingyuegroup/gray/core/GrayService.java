@@ -76,19 +76,11 @@ public class GrayService {
         if (grayInstances != null && grayInstances.size() > 0) {
             grayInstances = grayInstances.stream().filter(e -> e.isStatus()).collect(Collectors.toList());//排除下线的服务
         }
-        return grayInstances != null
-                && !grayInstances.isEmpty()
-                && hasGrayInstance();
-    }
-
-    public boolean hasGrayInstance() {
-        List<GrayInstance> grayInstances = getGrayInstances();
-        if (grayInstances != null && grayInstances.size() > 0) {
-            grayInstances = grayInstances.stream().filter(e -> e.isStatus()).collect(Collectors.toList());//排除下线的服务
-        }
-        for (GrayInstance grayInstance : grayInstances) {
-            if (grayInstance.isOpenGray()) {//开启灰度
-                return true;
+        if (grayInstances != null && !grayInstances.isEmpty()) {
+            for (GrayInstance grayInstance : grayInstances) {
+                if (grayInstance.isOpenGray()) {//开启灰度
+                    return true;
+                }
             }
         }
         return false;

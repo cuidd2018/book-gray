@@ -21,11 +21,11 @@ import java.util.Optional;
 
 public class HttpInformationClient implements InformationClient {
     private static final Logger log = LoggerFactory.getLogger(HttpInformationClient.class);
-    private final String baseUrl;
+    private final String baseUrl = "http://gray-server";
     private RestTemplate rest;
 
     public HttpInformationClient(String baseUrl, RestTemplate rest) {
-        this.baseUrl = baseUrl;
+        //this.baseUrl = baseUrl;
         this.rest = rest;
     }
 

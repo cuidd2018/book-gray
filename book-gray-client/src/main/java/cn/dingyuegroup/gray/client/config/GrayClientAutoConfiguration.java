@@ -50,17 +50,15 @@ public class GrayClientAutoConfiguration {
 
 
     @Configuration
-    @ConditionalOnProperty(prefix = "gray.client", value = "information-client", havingValue = "http", matchIfMissing
-            = true)
+    @ConditionalOnProperty(prefix = "gray.client", value = "information-client", havingValue = "http", matchIfMissing = true)
     public static class HttpGrayManagerClientConfiguration {
         @Autowired
         private GrayClientProperties grayClientProperties;
 
         @Bean
-        public InformationClient informationClient() {
-            InformationClient client = new HttpInformationClient(grayClientProperties.getServerUrl(), new
-                    RestTemplate());
-            if (!grayClientProperties.isRetryable()) {
+        public InformationClient informationClient(@Autowired RestTemplate restTemplate) {
+            InformationClient client = new HttpInformationClient(grayClientProperties.getServerUrl(), restTemplate);
+            if (true) {
                 return client;
             }
             return new RetryableInformationClient(grayClientProperties.getRetryNumberOfRetries(), client);
