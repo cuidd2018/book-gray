@@ -1,0 +1,5 @@
+##开启饥饿加载
+ribbon:
+  eager-load:
+    enabled: true
+    clients: ${spring.application.name}
