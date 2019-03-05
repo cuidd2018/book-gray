@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.client.decision;
+package cn.dingyuegroup.gray.core;
 
 public enum PolicyType {
 

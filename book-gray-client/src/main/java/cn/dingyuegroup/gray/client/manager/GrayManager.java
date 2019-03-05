@@ -1,6 +1,9 @@
-package cn.dingyuegroup.gray.core;
+package cn.dingyuegroup.gray.client.manager;
 
-import java.util.Collection;
+import cn.dingyuegroup.gray.client.decision.GrayDecision;
+import cn.dingyuegroup.gray.core.GrayInstance;
+import cn.dingyuegroup.gray.core.GrayService;
+
 import java.util.List;
 
 
@@ -13,7 +16,7 @@ public interface GrayManager {
 
     void openForWork();
 
-    boolean isOpen(String serviceId);
+    boolean isOpenGray(String serviceId);
 
     boolean isOnline(String serviceId, String instanceId);
 
@@ -26,8 +29,6 @@ public interface GrayManager {
     GrayInstance grayInstance(String serviceId, String instanceId);
 
     GrayDecision grayDecision(String serviceId, String instanceId);
-
-    void updateGrayServices(Collection<GrayService> grayServices);
 
     void serviceDownline();
 }

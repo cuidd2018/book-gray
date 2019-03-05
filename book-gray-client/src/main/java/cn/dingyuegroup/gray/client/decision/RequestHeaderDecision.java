@@ -1,6 +1,5 @@
 package cn.dingyuegroup.gray.client.decision;
 import cn.dingyuegroup.bamboo.BambooRequest;
-import cn.dingyuegroup.gray.core.GrayDecision;
 import org.apache.commons.collections.ListUtils;
 import org.springframework.util.MultiValueMap;
 

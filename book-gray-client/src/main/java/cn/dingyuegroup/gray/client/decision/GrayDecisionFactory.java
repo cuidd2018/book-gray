@@ -1,4 +1,6 @@
-package cn.dingyuegroup.gray.core;
+package cn.dingyuegroup.gray.client.decision;
+
+import cn.dingyuegroup.gray.core.GrayPolicy;
 
 /**
  * 灰度决策的工厂类

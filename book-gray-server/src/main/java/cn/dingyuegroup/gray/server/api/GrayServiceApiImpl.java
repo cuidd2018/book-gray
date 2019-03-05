@@ -1,8 +1,8 @@
-package cn.dingyuegroup.gray.server.api.impl;
+package cn.dingyuegroup.gray.server.api;
 
 import cn.dingyuegroup.gray.core.GrayService;
+import cn.dingyuegroup.gray.core.GrayServiceApi;
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
-import cn.dingyuegroup.gray.server.api.GrayServiceApi;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

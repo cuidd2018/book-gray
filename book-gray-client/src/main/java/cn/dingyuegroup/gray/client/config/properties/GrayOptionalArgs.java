@@ -1,7 +1,7 @@
 package cn.dingyuegroup.gray.client.config.properties;
 
-import cn.dingyuegroup.gray.core.GrayDecisionFactory;
-import cn.dingyuegroup.gray.core.InformationClient;
+import cn.dingyuegroup.gray.client.decision.GrayDecisionFactory;
+import cn.dingyuegroup.gray.client.manager.InformationClient;
 
 public class GrayOptionalArgs {
 

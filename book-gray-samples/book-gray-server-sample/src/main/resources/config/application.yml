@@ -17,6 +17,8 @@ eureka:
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 15
 gray:
+  server :
+    name : ${spring.application.name}
   mq:
     path: config/dev/mq.properties
   mysql:

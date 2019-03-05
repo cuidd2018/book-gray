@@ -1,7 +1,7 @@
 package cn.dingyuegroup.gray.client.context;
 
 import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
-import cn.dingyuegroup.gray.core.GrayManager;
+import cn.dingyuegroup.gray.client.manager.GrayManager;
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;

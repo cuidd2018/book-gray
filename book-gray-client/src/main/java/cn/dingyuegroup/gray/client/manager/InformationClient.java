@@ -1,4 +1,6 @@
-package cn.dingyuegroup.gray.core;
+package cn.dingyuegroup.gray.client.manager;
+
+import cn.dingyuegroup.gray.core.GrayService;
 
 import java.util.List;
 
@@ -17,24 +19,6 @@ public interface InformationClient {
      */
     List<GrayService> listGrayService();
 
-    /**
-     * 根据serviceId返回灰度服务对象
-     *
-     * @param serviceId 服务id
-     * @return 灰度服务
-     */
-    GrayService grayService(String serviceId);
-
-
-    /**
-     * 返回注册的实例对象
-     *
-     * @param serviceId  服务id
-     * @param instanceId 实例id
-     * @return 灰度实例
-     */
-    GrayInstance grayInstance(String serviceId, String instanceId);
-
 
     /**
      * 注册灰度实例
@@ -49,15 +33,6 @@ public interface InformationClient {
      * 灰度实例下线
      */
     void serviceDownline();
-
-
-    /**
-     * 灰度实例下线
-     *
-     * @param serviceId  服务id
-     * @param instanceId 实例id
-     */
-    void serviceDownline(String serviceId, String instanceId);
 
 
     Boolean uploadInstanceLocalInfo();

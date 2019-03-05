@@ -4,7 +4,7 @@ import cn.dingyuegroup.bamboo.BambooAppContext;
 import cn.dingyuegroup.bamboo.BambooRequest;
 import cn.dingyuegroup.bamboo.BambooRequestContext;
 import cn.dingyuegroup.gray.client.utils.ServiceUtil;
-import cn.dingyuegroup.gray.core.GrayDecision;
+import cn.dingyuegroup.gray.client.decision.GrayDecision;
 import com.netflix.loadbalancer.AbstractServerPredicate;
 import com.netflix.loadbalancer.PredicateKey;
 import com.netflix.loadbalancer.Server;

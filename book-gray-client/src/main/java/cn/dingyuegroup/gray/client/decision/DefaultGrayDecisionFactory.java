@@ -1,8 +1,7 @@
 package cn.dingyuegroup.gray.client.decision;
 
-import cn.dingyuegroup.gray.core.GrayDecision;
-import cn.dingyuegroup.gray.core.GrayDecisionFactory;
 import cn.dingyuegroup.gray.core.GrayPolicy;
+import cn.dingyuegroup.gray.core.PolicyType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 

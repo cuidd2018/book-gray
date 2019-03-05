@@ -1,7 +1,6 @@
 package cn.dingyuegroup.gray.client.decision;
 
 import cn.dingyuegroup.bamboo.BambooRequest;
-import cn.dingyuegroup.gray.core.GrayDecision;
 
 /**
  * 组合多个灰度策略

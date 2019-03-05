@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.core;
+package cn.dingyuegroup.gray.client.decision;
 
 import cn.dingyuegroup.bamboo.BambooRequest;
 
