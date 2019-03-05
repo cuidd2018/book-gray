@@ -31,10 +31,10 @@ public class BaseGrayManager extends AbstractGrayManager {
 
     @Override
     public void openForWork() {
-        if (clientConfig.isGrayEnroll()) {
+        /*if (clientConfig.isGrayEnroll()) {
             grayEnroll();
         }
-        updateCache();
+        updateCache();*/
         updateTimer.schedule(new UpdateTask(),
                 clientConfig.getServiceUpdateIntervalTimerInMs(),
                 clientConfig.getServiceUpdateIntervalTimerInMs());

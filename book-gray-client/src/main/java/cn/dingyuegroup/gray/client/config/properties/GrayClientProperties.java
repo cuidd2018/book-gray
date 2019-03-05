@@ -5,12 +5,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("gray.client")
 public class GrayClientProperties implements GrayClientConfig {
 
-
     private int serviceUpdateIntervalTimerInMs = 30000;
 
     private String serverName;
 
     private InstanceConfig instance = new InstanceConfig();
+
+    public enum Header {
+
+        COS("category-of-service", "gray-server");
+
+        String key;
+
+        String value;
+
+        Header(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
     @Override
     public boolean isGrayEnroll() {

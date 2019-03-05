@@ -1,5 +1,6 @@
 package cn.dingyuegroup.gray.client.manager;
 
+import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
@@ -8,15 +9,17 @@ import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class HttpInformationClient implements InformationClient {
@@ -41,7 +44,10 @@ public class HttpInformationClient implements InformationClient {
         ParameterizedTypeReference<List<GrayService>> typeRef = new ParameterizedTypeReference<List<GrayService>>() {
         };
         try {
-            ResponseEntity<List<GrayService>> responseEntity = rest.exchange(url, HttpMethod.GET, null, typeRef);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(GrayClientProperties.Header.COS.getKey(), GrayClientProperties.Header.COS.getValue());
+            HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(null, headers);
+            ResponseEntity<List<GrayService>> responseEntity = rest.exchange(url, HttpMethod.GET, requestEntity, typeRef);
             log.info("灰度服务列表:{}", responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
             log.info("\n" + "gray list: \t\t{}\n----------------------------------------------------------",
                     responseEntity.getBody() == null ? null : responseEntity.getBody().toString());
@@ -56,22 +62,29 @@ public class HttpInformationClient implements InformationClient {
     public Boolean uploadInstanceLocalInfo() {
         log.info("\n----------------------------------------------------------\n\t"
                 + "upload service enviroment to gray server\n\t----------------------------------------------------------");
-        String url = this.serverName + "/gray/api/services/uploadInstanceInfo?serviceId={1}&instanceId={2}&env={3}";
+        String url = this.serverName + "/gray/api/services/uploadInstanceInfo";
         try {
             InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
             if (localInfo == null || StringUtils.isEmpty(localInfo.getServiceId()) || StringUtils.isEmpty(localInfo.getInstanceId())) {
-                log.error("上传资源环境出错，数据不全:{}", localInfo);
+                log.error("upload service enviroment to gray error,localInfo data missing:{}", localInfo);
                 return false;
             }
             if (GrayClientAppContext.getEnvironment() == null || GrayClientAppContext.getEnvironment().getActiveProfiles().length == 0) {
-                log.error("上传资源环境出错，资源数据不全");
+                log.error("upload service enviroment to gray error,enviroment data missing:{}", localInfo);
                 return false;
             }
-            rest.getForEntity(url, Void.class, localInfo.getServiceId(), localInfo.getInstanceId(), GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(GrayClientProperties.Header.COS.getKey(), GrayClientProperties.Header.COS.getValue());
+            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+            requestBody.add("serviceId", localInfo.getServiceId());
+            requestBody.add("instanceId", localInfo.getInstanceId());
+            requestBody.add("env", GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
+            HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(requestBody, headers);
+            rest.exchange(url, HttpMethod.GET, requestEntity, Void.class);
             log.info("\n----------------------------------------------------------\n\t"
                     + "upload service enviroment to gray server done\n\t----------------------------------------------------------");
         } catch (RuntimeException e) {
-            log.error("上传资源环境出错", e);
+            log.info("upload service enviroment to gray error", e);
             throw e;
         }
         return false;
@@ -105,9 +118,15 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public void addGrayInstance(String serviceId, String instanceId) {
-        String url = this.serverName + "/gray/api/services/instance/online?serviceId={1}&instanceId={2}";
+        String url = this.serverName + "/gray/api/services/instance/online";
         try {
-            rest.getForEntity(url, Void.class, serviceId, instanceId);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(GrayClientProperties.Header.COS.getKey(), GrayClientProperties.Header.COS.getValue());
+            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+            requestBody.add("serviceId", serviceId);
+            requestBody.add("instanceId", instanceId);
+            HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(requestBody, headers);
+            rest.exchange(url, HttpMethod.GET, requestEntity, Void.class);
         } catch (RuntimeException e) {
             log.error("灰度服务实例下线失败", e);
             throw e;
@@ -124,10 +143,13 @@ public class HttpInformationClient implements InformationClient {
     public void serviceDownline(String serviceId, String instanceId) {
         String url = this.serverName + "/gray/api/services/instance/offline";
         try {
-            Map<String, String> params = new HashMap<>();
-            params.put("serviceId", serviceId);
-            params.put("instanceId", instanceId);
-            rest.getForEntity(url, Void.class, params);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(GrayClientProperties.Header.COS.getKey(), GrayClientProperties.Header.COS.getValue());
+            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+            requestBody.add("serviceId", serviceId);
+            requestBody.add("instanceId", instanceId);
+            HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(requestBody, headers);
+            rest.exchange(url, HttpMethod.GET, requestEntity, Void.class);
         } catch (Exception e) {
             log.error("灰度服务实例下线失败", e);
             throw e;
