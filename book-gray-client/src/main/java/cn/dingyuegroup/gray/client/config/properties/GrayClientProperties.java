@@ -1,12 +1,12 @@
 package cn.dingyuegroup.gray.client.config.properties;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("gray.client")
+@ConfigurationProperties(prefix = "gray.client")
 public class GrayClientProperties implements GrayClientConfig {
 
-    private int serviceUpdateIntervalTimerInMs = 30000;
-
+    private int pullInteval = 30000;
     private String serverName;
 
     private InstanceConfig instance = new InstanceConfig();
@@ -35,22 +35,21 @@ public class GrayClientProperties implements GrayClientConfig {
 
     @Override
     public boolean isGrayEnroll() {
-        return instance.isGrayEnroll();
+        return instance.isEnroll();
     }
 
     @Override
     public int grayEnrollDealyTimeInMs() {
-        return instance.getGrayEnrollDealyTimeInMs();
+        return instance.getEnrollDealy();
     }
 
     @Override
     public int getServiceUpdateIntervalTimerInMs() {
-        return serviceUpdateIntervalTimerInMs;
+        return pullInteval;
     }
 
-
-    public void setServiceUpdateIntervalTimerInMs(int serviceUpdateIntervalTimerInMs) {
-        this.serviceUpdateIntervalTimerInMs = serviceUpdateIntervalTimerInMs;
+    public void setPullInteval(Integer pullInteval) {
+        this.pullInteval = pullInteval;
     }
 
     public InstanceConfig getInstance() {
@@ -73,28 +72,12 @@ public class GrayClientProperties implements GrayClientConfig {
     /**
      * 实例
      */
+    @ConditionalOnProperty(prefix = "gray.instance")
     public class InstanceConfig {
-
-        private boolean grayEnroll = false;
-        private int grayEnrollDealyTimeInMs = 40000;
+        private boolean enroll = true;
+        private int enrollDealy = 10000;
         private boolean useMultiVersion = false;
         private String instanceId;
-
-        public boolean isGrayEnroll() {
-            return grayEnroll;
-        }
-
-        public void setGrayEnroll(boolean grayEnroll) {
-            this.grayEnroll = grayEnroll;
-        }
-
-        public int getGrayEnrollDealyTimeInMs() {
-            return grayEnrollDealyTimeInMs;
-        }
-
-        public void setGrayEnrollDealyTimeInMs(int grayEnrollDealyTimeInMs) {
-            this.grayEnrollDealyTimeInMs = grayEnrollDealyTimeInMs;
-        }
 
         /**
          * 是否使用多版本,默认不使用
@@ -115,6 +98,22 @@ public class GrayClientProperties implements GrayClientConfig {
 
         public void setInstanceId(String instanceId) {
             this.instanceId = instanceId;
+        }
+
+        public boolean isEnroll() {
+            return enroll;
+        }
+
+        public void setEnroll(boolean enroll) {
+            this.enroll = enroll;
+        }
+
+        public int getEnrollDealy() {
+            return enrollDealy;
+        }
+
+        public void setEnrollDealy(int enrollDealy) {
+            this.enrollDealy = enrollDealy;
         }
     }
 }

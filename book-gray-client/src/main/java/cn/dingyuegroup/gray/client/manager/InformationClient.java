@@ -22,11 +22,8 @@ public interface InformationClient {
 
     /**
      * 注册灰度实例
-     *
-     * @param serviceId  服务id
-     * @param instanceId 实例id
      */
-    void addGrayInstance(String serviceId, String instanceId);
+    void addGrayInstance();
 
 
     /**

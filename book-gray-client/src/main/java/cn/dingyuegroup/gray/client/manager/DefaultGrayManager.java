@@ -2,10 +2,8 @@ package cn.dingyuegroup.gray.client.manager;
 
 import cn.dingyuegroup.gray.client.config.properties.GrayClientConfig;
 import cn.dingyuegroup.gray.client.config.properties.GrayOptionalArgs;
-import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
 import cn.dingyuegroup.gray.core.GrayInstance;
 import cn.dingyuegroup.gray.core.GrayService;
-import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +102,9 @@ public class DefaultGrayManager extends AbstractGrayManager {
                 Thread.sleep(clientConfig.grayEnrollDealyTimeInMs());
             } catch (InterruptedException e) {
             }
-            InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
             try {
-                client.addGrayInstance(localInfo.getServiceId(), localInfo.getInstanceId());
+                updateCache();
+                client.addGrayInstance();
             } catch (Exception e) {
                 log.error("自身实例灰度注册失败", e);
             }

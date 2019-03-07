@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Map;
 
 @FeignClient(name = "client-a")
+@RequestMapping("/api/test")
 public interface TestClient {
 
     @RequestMapping(path = "/api/test/get", method = RequestMethod.GET)

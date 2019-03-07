@@ -6,11 +6,8 @@ import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.config.properties.GrayOptionalArgs;
 import cn.dingyuegroup.gray.client.context.GrayClientInitializingBean;
 import cn.dingyuegroup.gray.client.decision.DefaultGrayDecisionFactory;
-import cn.dingyuegroup.gray.client.manager.DefaultGrayManager;
-import cn.dingyuegroup.gray.client.manager.HttpInformationClient;
 import cn.dingyuegroup.gray.client.decision.GrayDecisionFactory;
-import cn.dingyuegroup.gray.client.manager.GrayManager;
-import cn.dingyuegroup.gray.client.manager.InformationClient;
+import cn.dingyuegroup.gray.client.manager.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,7 +17,6 @@ import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.client.RestTemplate;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
@@ -52,9 +48,12 @@ public class GrayClientAutoConfiguration {
         @Autowired
         private GrayClientProperties grayClientProperties;
 
+        @Autowired
+        private DefaultGrayServiceApi defaultGrayServiceApi;
+
         @Bean
-        public InformationClient informationClient(@Autowired RestTemplate restTemplate) {
-            return new HttpInformationClient(grayClientProperties.getServerName(), restTemplate);
+        public InformationClient informationClient() {
+            return new HttpInformationClient(grayClientProperties.getServerName(), defaultGrayServiceApi);
         }
 
         @Bean

@@ -1,6 +1,7 @@
 package cn.dingyuegroup.client.b.rest;
 
 import cn.dingyuegroup.client.b.feign.TestClient;
+import cn.dingyuegroup.gray.core.GrayServiceApi;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;

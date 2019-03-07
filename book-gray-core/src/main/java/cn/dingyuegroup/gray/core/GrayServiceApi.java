@@ -1,6 +1,5 @@
 package cn.dingyuegroup.gray.core;
 
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @RequestMapping("/gray/api")
-@FeignClient(name = "classpath:${gray.server.name}")
 public interface GrayServiceApi {
 
     @RequestMapping(value = "/services/enable", method = RequestMethod.GET)
