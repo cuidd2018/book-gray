@@ -18,7 +18,6 @@ eureka:
     lease-expiration-duration-in-seconds: 15
 gray:
   server :
-    name : ${spring.application.name}
     evict-interval : 10000
   mq:
     path: config/dev/mq.properties
