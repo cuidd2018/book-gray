@@ -1,5 +1,7 @@
-package cn.dingyuegroup.bamboo;
+package cn.dingyuegroup.bamboo.config;
 
+import cn.dingyuegroup.bamboo.BambooRibbonConnectionPoint;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
 import cn.dingyuegroup.bamboo.ribbon.EurekaServerExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

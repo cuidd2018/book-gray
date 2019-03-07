@@ -1,8 +1,8 @@
 package cn.dingyuegroup.gray.client.ribbon;
 
-import cn.dingyuegroup.bamboo.BambooAppContext;
-import cn.dingyuegroup.bamboo.BambooRequest;
-import cn.dingyuegroup.bamboo.BambooRequestContext;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
+import cn.dingyuegroup.bamboo.context.BambooRequest;
+import cn.dingyuegroup.bamboo.context.BambooRequestContext;
 import cn.dingyuegroup.gray.client.utils.ServiceUtil;
 import cn.dingyuegroup.gray.client.decision.GrayDecision;
 import com.netflix.loadbalancer.AbstractServerPredicate;

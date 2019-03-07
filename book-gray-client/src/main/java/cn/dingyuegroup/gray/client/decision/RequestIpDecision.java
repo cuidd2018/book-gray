@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.client.decision;
 
-import cn.dingyuegroup.bamboo.BambooRequest;
+import cn.dingyuegroup.bamboo.context.BambooRequest;
 
 import java.util.List;
 

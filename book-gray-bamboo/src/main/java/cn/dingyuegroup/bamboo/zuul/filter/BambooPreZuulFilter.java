@@ -1,9 +1,9 @@
 package cn.dingyuegroup.bamboo.zuul.filter;
 
-import cn.dingyuegroup.bamboo.BambooAppContext;
-import cn.dingyuegroup.bamboo.BambooRequest;
-import cn.dingyuegroup.bamboo.ConnectPointContext;
-import cn.dingyuegroup.bamboo.autoconfig.properties.BambooProperties;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
+import cn.dingyuegroup.bamboo.context.BambooRequest;
+import cn.dingyuegroup.bamboo.context.ConnectPointContext;
+import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.apache.commons.io.IOUtils;

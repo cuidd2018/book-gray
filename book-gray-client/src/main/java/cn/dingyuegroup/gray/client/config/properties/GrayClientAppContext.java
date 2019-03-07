@@ -1,6 +1,5 @@
-package cn.dingyuegroup.gray.client.context;
+package cn.dingyuegroup.gray.client.config.properties;
 
-import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.manager.GrayManager;
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
 import org.springframework.core.env.Environment;
@@ -15,7 +14,7 @@ public class GrayClientAppContext {
         return grayManager;
     }
 
-    static void setGrayManager(GrayManager grayManager) {
+    public static void setGrayManager(GrayManager grayManager) {
         GrayClientAppContext.grayManager = grayManager;
     }
 
@@ -24,7 +23,7 @@ public class GrayClientAppContext {
         return instanceLocalInfo;
     }
 
-    static void setInstanceLocalInfo(InstanceLocalInfo instanceLocalInfo) {
+    public static void setInstanceLocalInfo(InstanceLocalInfo instanceLocalInfo) {
         GrayClientAppContext.instanceLocalInfo = instanceLocalInfo;
     }
 
@@ -32,7 +31,7 @@ public class GrayClientAppContext {
         return grayClientProperties;
     }
 
-    static void setGrayClientProperties(GrayClientProperties grayClientProperties) {
+    public static void setGrayClientProperties(GrayClientProperties grayClientProperties) {
         GrayClientAppContext.grayClientProperties = grayClientProperties;
     }
 

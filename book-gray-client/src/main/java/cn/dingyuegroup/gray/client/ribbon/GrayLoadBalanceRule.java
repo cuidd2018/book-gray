@@ -1,10 +1,10 @@
 package cn.dingyuegroup.gray.client.ribbon;
 
-import cn.dingyuegroup.bamboo.BambooAppContext;
-import cn.dingyuegroup.bamboo.BambooRequestContext;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
+import cn.dingyuegroup.bamboo.context.BambooRequestContext;
 import cn.dingyuegroup.bamboo.ribbon.loadbalancer.BambooZoneAvoidanceRule;
 import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
-import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
+import cn.dingyuegroup.gray.client.config.properties.GrayClientAppContext;
 import cn.dingyuegroup.gray.client.utils.ServiceUtil;
 import cn.dingyuegroup.gray.client.manager.GrayManager;
 import cn.dingyuegroup.gray.core.GrayService;

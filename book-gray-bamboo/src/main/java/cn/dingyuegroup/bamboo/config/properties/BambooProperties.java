@@ -1,4 +1,4 @@
-package cn.dingyuegroup.bamboo.autoconfig.properties;
+package cn.dingyuegroup.bamboo.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

@@ -1,4 +1,4 @@
-package cn.dingyuegroup.bamboo;
+package cn.dingyuegroup.bamboo.context;
 
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestVariableDefault;
@@ -14,11 +14,9 @@ public class BambooRequestContext {
 
     private static final HystrixRequestVariableDefault<BambooRequestContext> CURRENT_CONTEXT = new HystrixRequestVariableDefault<BambooRequestContext>();
 
-
     private final String apiVersion;
     private final BambooRequest bambooRequest;
     private Map<String, Object> params;
-
 
     private BambooRequestContext(BambooRequest bambooRequest, String apiVersion) {
         params = new HashMap<>();

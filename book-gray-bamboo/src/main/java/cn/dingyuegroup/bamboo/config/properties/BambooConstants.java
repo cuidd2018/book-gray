@@ -1,4 +1,4 @@
-package cn.dingyuegroup.bamboo;
+package cn.dingyuegroup.bamboo.config.properties;
 
 public class BambooConstants {
 

@@ -1,6 +1,6 @@
 package cn.dingyuegroup.bamboo.zuul.filter;
 
-import cn.dingyuegroup.bamboo.BambooAppContext;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
 import com.netflix.zuul.ZuulFilter;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 

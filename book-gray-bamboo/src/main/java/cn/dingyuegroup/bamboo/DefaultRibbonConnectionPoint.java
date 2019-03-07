@@ -1,5 +1,8 @@
 package cn.dingyuegroup.bamboo;
 
+import cn.dingyuegroup.bamboo.context.BambooRequest;
+import cn.dingyuegroup.bamboo.context.BambooRequestContext;
+import cn.dingyuegroup.bamboo.context.ConnectPointContext;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

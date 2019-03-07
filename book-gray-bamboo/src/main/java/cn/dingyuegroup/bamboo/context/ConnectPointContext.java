@@ -1,8 +1,8 @@
-package cn.dingyuegroup.bamboo;
+package cn.dingyuegroup.bamboo.context;
 
 public class ConnectPointContext {
 
-    static final ThreadLocal<ConnectPointContext> contextLocal = new ThreadLocal<>();
+    public static final ThreadLocal<ConnectPointContext> contextLocal = new ThreadLocal<>();
 
 
     private BambooRequest bambooRequest;
@@ -25,7 +25,7 @@ public class ConnectPointContext {
         return excption;
     }
 
-    void setExcption(Throwable excption) {
+    public void setExcption(Throwable excption) {
         this.excption = excption;
     }
 

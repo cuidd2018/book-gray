@@ -1,6 +1,6 @@
 package cn.dingyuegroup.bamboo.web;
 
-import cn.dingyuegroup.bamboo.BambooAppContext;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
 import org.apache.commons.lang3.StringUtils;
 
 public final class RequestIpKeeper {

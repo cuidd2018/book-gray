@@ -1,6 +1,6 @@
 package cn.dingyuegroup.bamboo.ribbon.loadbalancer;
 
-import cn.dingyuegroup.bamboo.BambooRequestContext;
+import cn.dingyuegroup.bamboo.context.BambooRequestContext;
 import com.netflix.loadbalancer.AbstractServerPredicate;
 import com.netflix.loadbalancer.PredicateKey;
 import org.apache.commons.lang.ArrayUtils;

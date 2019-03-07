@@ -1,5 +1,6 @@
-package cn.dingyuegroup.bamboo;
+package cn.dingyuegroup.bamboo.config.properties;
 
+import cn.dingyuegroup.bamboo.BambooRibbonConnectionPoint;
 import cn.dingyuegroup.bamboo.ribbon.EurekaServerExtractor;
 
 public class BambooAppContext {
@@ -13,7 +14,7 @@ public class BambooAppContext {
     }
 
 
-    static void setDefaultConnectionPoint(BambooRibbonConnectionPoint connectionPoint) {
+    public static void setDefaultConnectionPoint(BambooRibbonConnectionPoint connectionPoint) {
         BambooAppContext.defaultConnectionPoint = connectionPoint;
     }
 
@@ -21,7 +22,7 @@ public class BambooAppContext {
         return eurekaServerExtractor;
     }
 
-    static void setEurekaServerExtractor(EurekaServerExtractor eurekaServerExtractor) {
+    public static void setEurekaServerExtractor(EurekaServerExtractor eurekaServerExtractor) {
         BambooAppContext.eurekaServerExtractor = eurekaServerExtractor;
     }
 
@@ -29,7 +30,7 @@ public class BambooAppContext {
         return localIp;
     }
 
-    static void setLocalIp(String localIp) {
+    public static void setLocalIp(String localIp) {
         BambooAppContext.localIp = localIp;
     }
 }

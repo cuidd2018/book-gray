@@ -1,6 +1,6 @@
 package cn.dingyuegroup.bamboo.zuul.config;
 
-import cn.dingyuegroup.bamboo.autoconfig.properties.BambooProperties;
+import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import cn.dingyuegroup.bamboo.zuul.filter.BambooPostZuulFilter;
 import cn.dingyuegroup.bamboo.zuul.filter.BambooPreZuulFilter;
 import com.netflix.zuul.http.ZuulServlet;

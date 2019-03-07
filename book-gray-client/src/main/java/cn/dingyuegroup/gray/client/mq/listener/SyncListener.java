@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.client.mq.listener;
 
-import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
+import cn.dingyuegroup.gray.client.config.properties.GrayClientAppContext;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;

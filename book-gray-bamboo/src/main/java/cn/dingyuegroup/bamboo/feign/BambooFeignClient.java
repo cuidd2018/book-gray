@@ -1,9 +1,9 @@
 package cn.dingyuegroup.bamboo.feign;
 
-import cn.dingyuegroup.bamboo.BambooAppContext;
-import cn.dingyuegroup.bamboo.BambooRequest;
-import cn.dingyuegroup.bamboo.ConnectPointContext;
-import cn.dingyuegroup.bamboo.autoconfig.properties.BambooProperties;
+import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
+import cn.dingyuegroup.bamboo.context.BambooRequest;
+import cn.dingyuegroup.bamboo.context.ConnectPointContext;
+import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import cn.dingyuegroup.bamboo.utils.WebUtils;
 import cn.dingyuegroup.bamboo.web.RequestIpKeeper;
 import feign.Client;

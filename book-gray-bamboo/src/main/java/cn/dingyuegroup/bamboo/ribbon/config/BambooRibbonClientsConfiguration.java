@@ -1,5 +1,6 @@
-package cn.dingyuegroup.bamboo.autoconfig;
+package cn.dingyuegroup.bamboo.ribbon.config;
 
+import cn.dingyuegroup.bamboo.config.BambooAutoConfiguration;
 import cn.dingyuegroup.bamboo.ribbon.loadbalancer.BambooZoneAvoidanceRule;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.IRule;

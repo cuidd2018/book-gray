@@ -1,4 +1,4 @@
-package cn.dingyuegroup.bamboo.autoconfig;
+package cn.dingyuegroup.bamboo.web.config;
 
 import cn.dingyuegroup.bamboo.web.IpKeepInterceptor;
 import org.springframework.context.annotation.Configuration;

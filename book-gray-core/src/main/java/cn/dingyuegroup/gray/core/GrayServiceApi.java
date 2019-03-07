@@ -20,5 +20,5 @@ public interface GrayServiceApi {
     ResponseEntity<Void> onlineInstance(@RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId);
 
     @RequestMapping(value = "/services/uploadInstanceInfo", method = RequestMethod.GET)
-    ResponseEntity<Void> uploadInstanceInfo(InstanceLocalInfo instanceLocalInfo);
+    ResponseEntity<Void> uploadInstanceInfo(@RequestParam("serviceId") String serviceId, @RequestParam("instanceId") String instanceId, @RequestParam("env") String env);
 }

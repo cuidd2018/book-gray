@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.client.manager;
 
-import cn.dingyuegroup.gray.client.context.GrayClientAppContext;
+import cn.dingyuegroup.gray.client.config.properties.GrayClientAppContext;
 import cn.dingyuegroup.gray.core.GrayService;
 import cn.dingyuegroup.gray.core.GrayServiceApi;
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
@@ -53,8 +53,7 @@ public class HttpInformationClient implements InformationClient {
                 log.error("upload service enviroment to gray error,enviroment data missing:{}", localInfo);
                 return false;
             }
-            localInfo.setEnv(GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
-            grayServiceApi.uploadInstanceInfo(localInfo);
+            grayServiceApi.uploadInstanceInfo(localInfo.getServiceId(), localInfo.getInstanceId(), GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
             log.info("\n----------------------------------------------------------\n\t"
                     + "upload service enviroment to gray server done\n\t----------------------------------------------------------");
         } catch (RuntimeException e) {

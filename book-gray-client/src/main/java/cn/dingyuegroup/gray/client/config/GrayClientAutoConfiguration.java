@@ -1,10 +1,9 @@
 package cn.dingyuegroup.gray.client.config;
 
-import cn.dingyuegroup.bamboo.BambooConstants;
-import cn.dingyuegroup.bamboo.autoconfig.BambooAutoConfiguration;
+import cn.dingyuegroup.bamboo.config.properties.BambooConstants;
+import cn.dingyuegroup.bamboo.config.BambooAutoConfiguration;
 import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.config.properties.GrayOptionalArgs;
-import cn.dingyuegroup.gray.client.context.GrayClientInitializingBean;
 import cn.dingyuegroup.gray.client.decision.DefaultGrayDecisionFactory;
 import cn.dingyuegroup.gray.client.decision.GrayDecisionFactory;
 import cn.dingyuegroup.gray.client.manager.*;

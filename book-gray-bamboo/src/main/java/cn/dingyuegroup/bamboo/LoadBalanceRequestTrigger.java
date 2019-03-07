@@ -1,5 +1,7 @@
 package cn.dingyuegroup.bamboo;
 
+import cn.dingyuegroup.bamboo.context.ConnectPointContext;
+
 /**
  * Ribbon请求的触发器，在ribbon请求发起时， 会被执行
  */

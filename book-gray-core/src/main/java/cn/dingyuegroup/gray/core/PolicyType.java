@@ -1,22 +1,25 @@
 package cn.dingyuegroup.gray.core;
 
+import cn.dingyuegroup.bamboo.context.BambooRequest;
+import cn.dingyuegroup.bamboo.context.BambooRequestContext;
+
 public enum PolicyType {
 
     /**
-     * @see cn.dingyuegroup.bamboo.BambooRequest#params
+     * @see BambooRequest#params
      */
     REQUEST_PARAMETER,
     /**
-     * @see cn.dingyuegroup.bamboo.BambooRequest#headers
+     * @see BambooRequest#headers
      */
     REQUEST_HEADER,
 
     /**
-     * @see cn.dingyuegroup.bamboo.BambooRequest#ip
+     * @see BambooRequest#ip
      */
     REQUEST_IP,
     /**
-     * @see cn.dingyuegroup.bamboo.BambooRequestContext#params
+     * @see BambooRequestContext#params
      */
     CONTEXT_PARAMS
 }

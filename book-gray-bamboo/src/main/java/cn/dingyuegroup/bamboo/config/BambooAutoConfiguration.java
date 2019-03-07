@@ -1,10 +1,13 @@
-package cn.dingyuegroup.bamboo.autoconfig;
+package cn.dingyuegroup.bamboo.config;
 
 import cn.dingyuegroup.bamboo.*;
-import cn.dingyuegroup.bamboo.autoconfig.properties.BambooProperties;
+import cn.dingyuegroup.bamboo.config.properties.BambooConstants;
+import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import cn.dingyuegroup.bamboo.feign.config.BambooFeignConfiguration;
 import cn.dingyuegroup.bamboo.ribbon.BambooClientHttpRequestIntercptor;
+import cn.dingyuegroup.bamboo.ribbon.config.BambooRibbonClientsConfiguration;
 import cn.dingyuegroup.bamboo.ribbon.EurekaServerExtractor;
+import cn.dingyuegroup.bamboo.web.config.BambooWebConfiguration;
 import cn.dingyuegroup.bamboo.zuul.config.BambooZuulConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -39,7 +42,6 @@ public class BambooAutoConfiguration {
     @Autowired
     private BambooProperties bambooProperties;
 
-
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
@@ -59,7 +61,6 @@ public class BambooAutoConfiguration {
     public RequestVersionExtractor requestVersionExtractor() {
         return new RequestVersionExtractor.Default();
     }
-
 
     @Bean
     @ConditionalOnMissingBean

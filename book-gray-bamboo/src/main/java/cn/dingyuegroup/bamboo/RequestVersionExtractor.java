@@ -1,6 +1,8 @@
 package cn.dingyuegroup.bamboo;
 
 
+import cn.dingyuegroup.bamboo.context.BambooRequest;
+
 /**
  * 这个接口负责获取请求需要访问的目标接口的版本。
  * 比如有些接口版本是放在路径上，如:/v1/api/test/get。也有放在uri参数中:/api/test/get?v=1。

@@ -1,5 +1,6 @@
-package cn.dingyuegroup.gray.client.context;
+package cn.dingyuegroup.gray.client.config;
 
+import cn.dingyuegroup.gray.client.config.properties.GrayClientAppContext;
 import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.manager.GrayManager;
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
@@ -20,20 +21,12 @@ public class GrayClientInitializingBean implements InitializingBean, Application
         GrayClientAppContext.setGrayClientProperties(cxt.getBean(GrayClientProperties.class));
         GrayClientAppContext.setEnvironment(cxt.getEnvironment());
         startForWork();
-
-//        registrShutdownFunc();
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.cxt = applicationContext;
     }
-
-//    private void registrShutdownFunc(){
-//        Runtime.getRuntime().addShutdownHook(new Thread(()->{
-//            shutdown();
-//        }));
-//    }
 
     @PreDestroy
     public void shutdown() {
