@@ -1,7 +1,7 @@
 package cn.dingyuegroup.gray.server.web;
 
 import cn.dingyuegroup.gray.server.config.GrayMQMarkerConfiguration;
-import cn.dingyuegroup.gray.server.manager.SendMessageManager;
+import cn.dingyuegroup.gray.server.refresh.SyncMessageService;
 import cn.dingyuegroup.gray.server.web.base.BaseController;
 import com.aliyun.openservices.shade.com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class GrayRefreshController extends BaseController {
 
     @Autowired
-    private SendMessageManager sendMessageManager;
+    private SyncMessageService syncMessageService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<Void> delPolicyGroup(
@@ -33,7 +33,7 @@ public class GrayRefreshController extends BaseController {
         Map<String, String> map = new HashMap<>();
         map.put("serviceId", serviceId);
         map.put("instanceId", instanceId);
-        sendMessageManager.sendMessage(JSON.toJSONString(map));
+        syncMessageService.sendMessage(JSON.toJSONString(map));
         return ResponseEntity.ok().build();
     }
 }

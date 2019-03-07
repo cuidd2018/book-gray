@@ -209,7 +209,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
         grayInstance.setInstanceId(instanceId);
         grayInstance.setStatus(false);//不在线
         grayInstance.setEurekaStatus(false);
-        grayInstance.setOpenGray(true);//默认是开启灰度状态
+        grayInstance.setOpenGray(false);//默认是关闭灰度状态
         GrayServiceEntity grayServiceEntity = grayServiceMapper.selectByServiceId(serviceId);
         if (grayServiceEntity != null) {
             grayInstance.setAppName(grayServiceEntity.getAppName());

@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.server.manager;
+package cn.dingyuegroup.gray.server.refresh;
 
 import cn.dingyuegroup.gray.server.config.GrayMQMarkerConfiguration;
 import com.aliyun.openservices.ons.api.Message;
@@ -18,7 +18,7 @@ import java.util.Date;
  */
 @Service
 @ConditionalOnBean(GrayMQMarkerConfiguration.GrayMQMarker.class)
-public class DefaultSendMessageManager implements SendMessageManager {
+public class SyncMessageService {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -29,7 +29,6 @@ public class DefaultSendMessageManager implements SendMessageManager {
     @Autowired
     private Producer producer;
 
-    @Override
     public void sendMessage(String json) {
         Message msg = new Message( //
                 // Message 所属的 Topic

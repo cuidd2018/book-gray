@@ -1,7 +1,6 @@
 package cn.dingyuegroup.gray.server.refresh;
 
 import cn.dingyuegroup.gray.server.config.GrayMQMarkerConfiguration;
-import cn.dingyuegroup.gray.server.manager.SendMessageManager;
 import com.aliyun.openservices.shade.com.alibaba.fastjson.JSON;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -23,7 +22,7 @@ public class RefreshGrayClientAop {
     Logger logger = LoggerFactory.getLogger(RefreshGrayClientAop.class);
 
     @Autowired
-    private SendMessageManager sendMessageManager;
+    private SyncMessageService syncMessageService;
 
     //定义切入点
     @Pointcut("@annotation(cn.dingyuegroup.gray.server.refresh.RefreshGrayClient)")
@@ -36,6 +35,6 @@ public class RefreshGrayClientAop {
      */
     @After("refreshGrayClient()")
     public void doAroundAdvice(JoinPoint joinPoint) throws Throwable {
-        sendMessageManager.sendMessage(JSON.toJSONString(new HashMap<>()));
+        syncMessageService.sendMessage(JSON.toJSONString(new HashMap<>()));
     }
 }

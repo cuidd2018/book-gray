@@ -7,7 +7,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.dingyuegroup.gray.server.config.GrayServerEurekaAutoConfiguration,\
     cn.dingyuegroup.gray.server.api.GrayServiceApiImpl,\
     cn.dingyuegroup.gray.server.manager.DefaultGrayServiceManager,\
-    cn.dingyuegroup.gray.server.manager.DefaultSendMessageManager,\
+    cn.dingyuegroup.gray.server.refresh.SyncMessageService,\
     cn.dingyuegroup.gray.server.manager.DefaultRbacManager,\
     cn.dingyuegroup.gray.server.manager.DefaultSecurityManager,\
     cn.dingyuegroup.gray.server.mq.callback.MQCallBack,\
