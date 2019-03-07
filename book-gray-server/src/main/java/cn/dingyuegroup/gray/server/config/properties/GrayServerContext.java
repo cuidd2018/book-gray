@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.server.context;
+package cn.dingyuegroup.gray.server.config.properties;
 
 
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
@@ -21,7 +21,7 @@ public class GrayServerContext {
         return grayRbacUserMapper;
     }
 
-    static void setGrayRbacUserMapper(GrayRbacUserMapper grayRbacUserMapper) {
+    public static void setGrayRbacUserMapper(GrayRbacUserMapper grayRbacUserMapper) {
         GrayServerContext.grayRbacUserMapper = grayRbacUserMapper;
     }
 
@@ -29,7 +29,7 @@ public class GrayServerContext {
         return grayServiceManager;
     }
 
-    static void setGrayServiceManager(GrayServiceManager grayServiceManager) {
+    public static void setGrayServiceManager(GrayServiceManager grayServiceManager) {
         GrayServerContext.grayServiceManager = grayServiceManager;
     }
 
@@ -37,7 +37,7 @@ public class GrayServerContext {
         return grayServerEvictor;
     }
 
-    static void setGrayServerEvictor(GrayServerEvictor grayServerEvictor) {
+    public static void setGrayServerEvictor(GrayServerEvictor grayServerEvictor) {
         GrayServerContext.grayServerEvictor = grayServerEvictor;
     }
 

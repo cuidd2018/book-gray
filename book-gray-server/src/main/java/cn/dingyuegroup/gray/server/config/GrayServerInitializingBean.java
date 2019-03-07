@@ -1,6 +1,7 @@
-package cn.dingyuegroup.gray.server.context;
+package cn.dingyuegroup.gray.server.config;
 
 import cn.dingyuegroup.gray.core.InstanceLocalInfo;
+import cn.dingyuegroup.gray.server.config.properties.GrayServerContext;
 import cn.dingyuegroup.gray.server.manager.GrayServiceManager;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
 import cn.dingyuegroup.gray.server.service.GrayServerEvictor;

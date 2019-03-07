@@ -2,7 +2,7 @@ package cn.dingyuegroup.gray.server.manager;
 
 import cn.dingyuegroup.gray.core.*;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfig;
-import cn.dingyuegroup.gray.server.context.GrayServerContext;
+import cn.dingyuegroup.gray.server.config.properties.GrayServerContext;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyGroupVO;
 import cn.dingyuegroup.gray.server.model.vo.GrayPolicyVO;
 import cn.dingyuegroup.gray.server.mysql.dao.*;

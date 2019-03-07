@@ -2,7 +2,6 @@ package cn.dingyuegroup.gray.server.config;
 
 import cn.dingyuegroup.bamboo.config.properties.BambooConstants;
 import cn.dingyuegroup.gray.server.config.properties.GrayServerConfigBean;
-import cn.dingyuegroup.gray.server.context.GrayServerInitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
 package cn.dingyuegroup.gray.server.manager;
 
-import cn.dingyuegroup.gray.server.context.GrayServerContext;
+import cn.dingyuegroup.gray.server.config.properties.GrayServerContext;
 import cn.dingyuegroup.gray.server.model.bo.GrantedAuthorityBO;
 import cn.dingyuegroup.gray.server.model.bo.UserDetailsBO;
 import cn.dingyuegroup.gray.server.mysql.dao.GrayRbacUserMapper;
