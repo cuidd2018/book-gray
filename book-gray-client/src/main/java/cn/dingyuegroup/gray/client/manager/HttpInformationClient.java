@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class HttpInformationClient implements InformationClient {
@@ -22,15 +23,15 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public List<GrayService> listGrayService() {
-        log.info("\n----------------------------------------------------------\n\t"
+        log.info("\n##################################################\n\t"
                         + "pull instances from gray server:\n\t"
                         + "Local service: \t\t{}\n\t"
                         + "Local instance: \t\t{}\n\t"
-                        + "gray service: \t\t{}\n----------------------------------------------------------",
+                        + "gray service: \t\t{}\n\t",
                 GrayClientAppContext.getInstanceLocalInfo().getServiceId(), GrayClientAppContext.getInstanceLocalInfo().getInstanceId(), serverName);
         try {
             List<GrayService> list = grayServiceApi.enableServices();
-            log.info("\n" + "gray list: \t\t{}\n----------------------------------------------------------",
+            log.info("\n" + "gray list: \t\t{}\n##################################################",
                     list == null ? null : list.toString());
             return list;
         } catch (RuntimeException e) {
@@ -41,8 +42,8 @@ public class HttpInformationClient implements InformationClient {
 
     @Override
     public Boolean uploadInstanceLocalInfo() {
-        log.info("\n----------------------------------------------------------\n\t"
-                + "upload service enviroment to gray server\n\t----------------------------------------------------------");
+        log.info("\n##################################################\n\t"
+                + "begin upload service enviroment to gray server\n\t");
         try {
             InstanceLocalInfo localInfo = GrayClientAppContext.getInstanceLocalInfo();
             if (localInfo == null || StringUtils.isEmpty(localInfo.getServiceId()) || StringUtils.isEmpty(localInfo.getInstanceId())) {
@@ -53,9 +54,12 @@ public class HttpInformationClient implements InformationClient {
                 log.error("upload service enviroment to gray error,enviroment data missing:{}", localInfo);
                 return false;
             }
+            log.info("\nLocal service: \t\t{}\n\t"
+                            + "Local instance: \t\t{}\n\t"
+                            + "env: \t\t{}\n\t",
+                    localInfo.getServiceId(), localInfo.getInstanceId(), Arrays.toString(GrayClientAppContext.getEnvironment().getActiveProfiles()));
             grayServiceApi.uploadInstanceInfo(localInfo.getServiceId(), localInfo.getInstanceId(), GrayClientAppContext.getEnvironment().getActiveProfiles()[0]);
-            log.info("\n----------------------------------------------------------\n\t"
-                    + "upload service enviroment to gray server done\n\t----------------------------------------------------------");
+            log.info("\nupload service enviroment to gray server done\n##################################################");
         } catch (RuntimeException e) {
             log.info("upload service enviroment to gray error", e);
             throw e;

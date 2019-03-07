@@ -288,16 +288,19 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setServiceId(serviceId);
                 entity.setOpenGray(status);
                 entity.setCreateTime(new Date());
-                entity.setOpenGray(1);
-                entity.setStatus(0);
+                entity.setStatus(1);
                 entity.setRemark("系统自动添加");
                 grayInstanceMapper.insert(entity);
-            } else {
+            } else if (status != entity.getStatus()) {
                 entity.setUpdateTime(new Date());
                 entity.setOpenGray(status);
                 grayInstanceMapper.updateGrayStatusByInstanceId(entity);
+                logger.info("\n##################################################\n\t"
+                        + "update instance gray status:\n\t"
+                        + "service: \t\t{}\n\t"
+                        + "instance: \t\t{}\n##################################################", serviceId, instanceId);
             }
-            logger.info("更新服务实例灰度状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
+
         } finally {
             lock.unlock();
         }
@@ -323,16 +326,19 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setServiceId(serviceId);
                 entity.setStatus(status);
                 entity.setCreateTime(new Date());
-                entity.setOpenGray(1);
-                entity.setStatus(0);
+                entity.setOpenGray(0);
                 entity.setRemark("系统自动添加");
                 grayInstanceMapper.insert(entity);
-            } else {
+            } else if (status != entity.getStatus()) {
                 entity.setStatus(status);
                 entity.setUpdateTime(new Date());
                 grayInstanceMapper.updateStatusByInstanceId(entity);
+                logger.info("\n##################################################\n\t"
+                        + "update instance online status:\n\t"
+                        + "service: \t\t{}\n\t"
+                        + "instance: \t\t{}\n##################################################", serviceId, instanceId);
             }
-            logger.info("更新服务实例在线状态成功：serviceId:{}，instanceId:{}", serviceId, instanceId);
+
         } finally {
             lock.unlock();
         }
