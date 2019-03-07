@@ -3,10 +3,10 @@ package cn.dingyuegroup.gray.client.ribbon;
 import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
 import cn.dingyuegroup.bamboo.context.BambooRequestContext;
 import cn.dingyuegroup.bamboo.ribbon.loadbalancer.BambooZoneAvoidanceRule;
-import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.config.properties.GrayClientAppContext;
-import cn.dingyuegroup.gray.client.utils.ServiceUtil;
+import cn.dingyuegroup.gray.client.config.properties.GrayClientProperties;
 import cn.dingyuegroup.gray.client.manager.GrayManager;
+import cn.dingyuegroup.gray.client.utils.ServiceUtil;
 import cn.dingyuegroup.gray.core.GrayService;
 import com.google.common.base.Optional;
 import com.netflix.client.config.IClientConfig;
@@ -57,9 +57,10 @@ public class GrayLoadBalanceRule extends ZoneAvoidanceRule {
         List<Server> servers = lb.getAllServers();
         java.util.Optional<Server> offline = servers.parallelStream().filter(e -> !isOnline(serviceId, e)).findAny();
         if (offline.isPresent()) {//有下线的服务
-            servers = servers.stream().filter(e -> isOnline(serviceId, e)).collect(Collectors.toList());//剔除下线服务
+            List<Server> onlines = servers.stream().filter(e -> isOnline(serviceId, e)).collect(Collectors.toList());//剔除下线服务
+            servers = onlines.size() > 1 ? onlines : servers;//当在线服务少于2台的时候，下线无效
         }
-        if (getGrayManager().isOpenGray(serviceId)) {//开启了灰度
+        if (servers.size() > 1 && getGrayManager().isOpenGray(serviceId)) {//可用服务多于一台且开启了灰度
             GrayService grayService = getGrayManager().grayService(serviceId);
             List<Server> grayServers = new ArrayList<>(grayService.onlineAndgrayInstances().size());
             List<Server> normalServers = new ArrayList<>(servers.size() - grayService.onlineAndgrayInstances().size());
