@@ -19,6 +19,7 @@ eureka:
 gray:
   server :
     name : ${spring.application.name}
+    evict-interval : 10000
   mq:
     path: config/dev/mq.properties
   mysql:

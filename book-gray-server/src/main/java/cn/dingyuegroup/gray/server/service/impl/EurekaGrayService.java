@@ -76,7 +76,7 @@ public class EurekaGrayService extends AbstractGrayService {
             grayInstance.setServiceId(serviceId);
             grayInstance.setInstanceId(e.getInstanceId());
             grayInstance.setStatus(true);//在线
-            grayInstance.setOpenGray(true);//默认是开启灰度状态
+            grayInstance.setOpenGray(false);//默认不开启灰度状态
             grayInstance.setMetadata(e.getMetadata());
             grayInstance.setUrl(e.getHomePageUrl());
             grayInstance.setEurekaStatus(true);
