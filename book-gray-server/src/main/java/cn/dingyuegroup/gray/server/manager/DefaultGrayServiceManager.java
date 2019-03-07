@@ -291,7 +291,7 @@ public class DefaultGrayServiceManager implements GrayServiceManager {
                 entity.setStatus(1);
                 entity.setRemark("系统自动添加");
                 grayInstanceMapper.insert(entity);
-            } else if (status != entity.getStatus()) {
+            } else if (status != entity.getOpenGray()) {
                 entity.setUpdateTime(new Date());
                 entity.setOpenGray(status);
                 grayInstanceMapper.updateGrayStatusByInstanceId(entity);
