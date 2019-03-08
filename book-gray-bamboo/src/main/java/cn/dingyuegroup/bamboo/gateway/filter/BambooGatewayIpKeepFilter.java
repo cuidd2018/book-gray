@@ -1,7 +1,7 @@
 package cn.dingyuegroup.bamboo.gateway.filter;
 
-import cn.dingyuegroup.bamboo.utils.WebUtils;
 import cn.dingyuegroup.bamboo.context.RequestIpKeeper;
+import cn.dingyuegroup.bamboo.utils.WebUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -27,6 +27,6 @@ public class BambooGatewayIpKeepFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE + 1;
+        return Ordered.LOWEST_PRECEDENCE + 2;//要比BambooPreGatewayFilter的优先级高
     }
 }

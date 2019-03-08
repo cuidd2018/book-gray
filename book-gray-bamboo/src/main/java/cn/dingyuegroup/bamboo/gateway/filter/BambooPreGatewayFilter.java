@@ -4,8 +4,8 @@ import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
 import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import cn.dingyuegroup.bamboo.context.BambooRequest;
 import cn.dingyuegroup.bamboo.context.ConnectPointContext;
-import cn.dingyuegroup.bamboo.utils.WebUtils;
 import cn.dingyuegroup.bamboo.context.RequestIpKeeper;
+import cn.dingyuegroup.bamboo.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -68,6 +68,6 @@ public class BambooPreGatewayFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
+        return Ordered.LOWEST_PRECEDENCE + 1;
     }
 }

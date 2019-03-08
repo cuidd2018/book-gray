@@ -18,13 +18,16 @@ ribbon:
     eureka:
         enabled: true
 zuul:
-  prefix: /gateway #为zuul设置一个公共的前缀
-#  routes:
-#    eureka-client: #随便定义，当不存在serviceId时，默认该值为serviceId（就是注册服务的名称，属性spring.application.name）
-#      path: /client/** #匹配/techouse/usersystem/** 均路由到cloud-client
-#      serviceId: eureka-client #指定路由到的serviceId
+  routes:
+    eureka-client: #随便定义，当不存在serviceId时，默认该值为serviceId（就是注册服务的名称，属性spring.application.name）
+      path: /** #匹配/techouse/usersystem/** 均路由到cloud-client
+      serviceId: service-a #指定路由到的serviceId
 gray:
   client:
-    server-url: http://localhost:20202 #灰度服务端的url
-    instance:
-      use-multi-version: false
+    pull-inteval : 20000
+    server-name: gray-server #灰度服务端的service name
+  instance:
+    enroll: true #是否在启动后自动注册成灰度实例
+    enroll-dealy : 20000 #注册成灰度实例的延时时长
+  mq:
+    path: config/dev/mq.properties
