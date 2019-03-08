@@ -3,6 +3,7 @@ package cn.dingyuegroup.bamboo.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -95,6 +96,39 @@ public class WebUtils {
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
+            if (ip.equals("127.0.0.1")) {
+                /** 根据网卡取本机配置的IP */
+                InetAddress inet = null;
+                try {
+                    inet = InetAddress.getLocalHost();
+                    ip = inet.getHostAddress();
+                } catch (UnknownHostException e) {
+                    log.error("[IpHelper-getIpAddr] IpHelper error.", e);
+                }
+            }
+        }
+        /**
+         * 对于通过多个代理的情况， 第一个IP为客户端真实IP,多个IP按照','分割 "***.***.***.***".length() =
+         * 15
+         */
+        if (ip != null && ip.length() > 15) {
+            if (ip.indexOf(",") > 0) {
+                ip = ip.substring(0, ip.indexOf(","));
+            }
+        }
+        return ip;
+    }
+
+    public static String getGatewayIpAddr(ServerHttpRequest request) {
+        String ip = request.getHeaders().getFirst("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeaders().getFirst("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeaders().getFirst("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddress().getAddress().getHostAddress();
             if (ip.equals("127.0.0.1")) {
                 /** 根据网卡取本机配置的IP */
                 InetAddress inet = null;

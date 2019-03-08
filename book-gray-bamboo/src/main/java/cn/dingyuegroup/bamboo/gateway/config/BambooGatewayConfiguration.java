@@ -1,6 +1,7 @@
 package cn.dingyuegroup.bamboo.gateway.config;
 
 import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
+import cn.dingyuegroup.bamboo.gateway.filter.BambooGatewayIpKeepFilter;
 import cn.dingyuegroup.bamboo.gateway.filter.BambooPostGatewayFilter;
 import cn.dingyuegroup.bamboo.gateway.filter.BambooPreGatewayFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +25,10 @@ public class BambooGatewayConfiguration {
     @Bean
     public BambooPostGatewayFilter bambooPostGatewayFilter() {
         return new BambooPostGatewayFilter();
+    }
+
+    @Bean
+    public BambooGatewayIpKeepFilter bambooGatewayIpKeepFilter() {
+        return new BambooGatewayIpKeepFilter();
     }
 }

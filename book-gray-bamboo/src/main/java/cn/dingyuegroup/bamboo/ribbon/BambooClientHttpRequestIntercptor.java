@@ -5,7 +5,7 @@ import cn.dingyuegroup.bamboo.context.BambooRequest;
 import cn.dingyuegroup.bamboo.context.ConnectPointContext;
 import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import cn.dingyuegroup.bamboo.utils.WebUtils;
-import cn.dingyuegroup.bamboo.web.RequestIpKeeper;
+import cn.dingyuegroup.bamboo.context.RequestIpKeeper;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;

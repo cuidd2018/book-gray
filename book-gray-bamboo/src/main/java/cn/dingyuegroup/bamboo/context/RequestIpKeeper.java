@@ -1,4 +1,4 @@
-package cn.dingyuegroup.bamboo.web;
+package cn.dingyuegroup.bamboo.context;
 
 import cn.dingyuegroup.bamboo.config.properties.BambooAppContext;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +19,7 @@ public final class RequestIpKeeper {
     }
 
 
-    void setIp(String ip) {
+    public void setIp(String ip) {
         ipLocal.set(ip);
     }
 

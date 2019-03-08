@@ -1,5 +1,6 @@
 package cn.dingyuegroup.bamboo.web;
 
+import cn.dingyuegroup.bamboo.context.RequestIpKeeper;
 import cn.dingyuegroup.bamboo.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
