@@ -21,7 +21,7 @@ ribbon:
         enabled: true
 gray:
   client:
-    pull-inteval : 600000
+    pull-inteval : 20000
     server-name: gray-server #灰度服务端的service name
   instance:
     enroll: true #是否在启动后自动注册成灰度实例
