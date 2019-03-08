@@ -1,4 +1,4 @@
-package cn.dingyuegroup.gray.zuul;
+package cn.dingyuegroup.gray.gateway;
 
 import cn.dingyuegroup.gray.client.EnableGrayClient;
 import org.slf4j.LoggerFactory;

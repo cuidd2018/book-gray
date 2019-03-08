@@ -1,13 +1,16 @@
 package cn.dingyuegroup.bamboo.config;
 
-import cn.dingyuegroup.bamboo.*;
+import cn.dingyuegroup.bamboo.BambooRibbonConnectionPoint;
+import cn.dingyuegroup.bamboo.DefaultRibbonConnectionPoint;
+import cn.dingyuegroup.bamboo.LoadBalanceRequestTrigger;
+import cn.dingyuegroup.bamboo.RequestVersionExtractor;
 import cn.dingyuegroup.bamboo.config.properties.BambooConstants;
 import cn.dingyuegroup.bamboo.config.properties.BambooProperties;
 import cn.dingyuegroup.bamboo.feign.config.BambooFeignConfiguration;
+import cn.dingyuegroup.bamboo.gateway.config.BambooGatewayConfiguration;
 import cn.dingyuegroup.bamboo.ribbon.BambooClientHttpRequestIntercptor;
-import cn.dingyuegroup.bamboo.ribbon.config.BambooRibbonClientsConfiguration;
 import cn.dingyuegroup.bamboo.ribbon.EurekaServerExtractor;
-import cn.dingyuegroup.bamboo.web.config.BambooWebConfiguration;
+import cn.dingyuegroup.bamboo.ribbon.config.BambooRibbonClientsConfiguration;
 import cn.dingyuegroup.bamboo.zuul.config.BambooZuulConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -18,7 +21,6 @@ import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,8 +30,7 @@ import java.util.List;
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableConfigurationProperties({BambooProperties.class})
-@AutoConfigureBefore({BambooFeignConfiguration.class, BambooZuulConfiguration.class})
-@Import(BambooWebConfiguration.class)
+@AutoConfigureBefore({BambooFeignConfiguration.class, BambooZuulConfiguration.class, BambooGatewayConfiguration.class})
 @RibbonClients(defaultConfiguration = BambooRibbonClientsConfiguration.class)
 public class BambooAutoConfiguration {
 

@@ -2,4 +2,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 	cn.dingyuegroup.bamboo.config.BambooAutoConfiguration,\
     cn.dingyuegroup.bamboo.feign.config.BambooFeignConfiguration,\
-    cn.dingyuegroup.bamboo.zuul.config.BambooZuulConfiguration
+    cn.dingyuegroup.bamboo.zuul.config.BambooZuulConfiguration,\
+    cn.dingyuegroup.bamboo.gateway.config.BambooGatewayConfiguration,\
+    cn.dingyuegroup.bamboo.web.config.BambooWebConfiguration

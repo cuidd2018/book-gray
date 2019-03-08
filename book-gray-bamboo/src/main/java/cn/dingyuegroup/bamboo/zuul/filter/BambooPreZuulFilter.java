@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.core.Ordered;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -37,7 +38,7 @@ public class BambooPreZuulFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 10000;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 
     @Override

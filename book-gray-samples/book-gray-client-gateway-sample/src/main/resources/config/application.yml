@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: query_route
+server:
+  port: 20302
+eureka:
+  client:
+    registry-fetch-interval-seconds: 10
+    instance-info-replication-interval-seconds: 10
+    serviceUrl:
+      defaultZone: http://localhost:20001/eureka/
+  instance:
+    lease-renewal-interval-in-seconds: 8
+    lease-expiration-duration-in-seconds: 20
+ribbon:
+#    ReadTimeout: 30000
+#    ConnectTimeout: 30000
+    eureka:
+        enabled: true
+gray:
+  client:
+    pull-inteval : 20000
+    server-name: gray-server #灰度服务端的service name
+  instance:
+    enroll: true #是否在启动后自动注册成灰度实例
+    enroll-dealy : 20000 #注册成灰度实例的延时时长
+  mq:
+    path: config/dev/mq.properties
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: path_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Path=/foo/{segment}
+  profiles: path_route
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: query_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Query=foo, ba.
+  profiles: query_route
