@@ -2,7 +2,7 @@ spring:
   application:
     name: api-gateway
   profiles:
-    active: query_route
+    active: dev
 server:
   port: 20302
 eureka:
