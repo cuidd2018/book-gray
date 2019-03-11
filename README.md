@@ -1,4 +1,4 @@
-#使用前提
+#适用场景
 * 目前只支持Eureka作为注册中心，ribbon作为负载均衡，hystrix做为断路器的springcloud微服务体系
 
 #产品功能
