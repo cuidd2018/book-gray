@@ -24,3 +24,13 @@
     （1）在项目启动类添加注解@EnableGrayServer，并配置灰度策略持久化mysql资源
     （2）如果要实现灰度策略的实时下发，在项目启动类添加注解@EnableGrayServerWithMQ，并配置MQ资源
     （3）如果灰度服务端要部署多节点，则需要在项目启动类添加注解@EnableShareSession，并配置redis资源
+    
+#打包顺序
+book-gray-bamboo
+book-gray
+book-gray-starter-bamboo
+book-gray-core
+book-gray-client
+book-gray-starter-client
+book-gray-server
+book-gray-starter-server
